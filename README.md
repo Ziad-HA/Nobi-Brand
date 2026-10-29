@@ -1,4 +1,4 @@
-# Nobi — streetwear
+# Nobi-streetwear
 
 Modern React storefront for a fictional streetwear house. Built with Vite, React Router, and a local cart.
 
