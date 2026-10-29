@@ -2,37 +2,59 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
 export default function Login() {
+  const [step, setStep] = useState('email') // email | code
   const [email, setEmail] = useState('')
-  const [status, setStatus] = useState('idle') // idle | loading | sent | error
+  const [code, setCode] = useState('')
+  const [status, setStatus] = useState('idle') // idle | loading | error
   const [message, setMessage] = useState('')
   const [user, setUser] = useState(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null))
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_e, session) => {
       setUser(session?.user ?? null)
     })
     return () => subscription.unsubscribe()
   }, [])
 
-  async function handleSubmit(e) {
+  async function sendCode(e) {
     e.preventDefault()
     setStatus('loading')
     setMessage('')
 
     const { error } = await supabase.auth.signInWithOtp({
       email: email.trim(),
-      options: {
-        shouldCreateUser: true,
-        emailRedirectTo: window.location.origin + import.meta.env.BASE_URL,
-      },
+      options: { shouldCreateUser: true },
     })
 
     if (error) {
       setStatus('error')
       setMessage(error.message)
     } else {
-      setStatus('sent')
+      setStatus('idle')
+      setStep('code')
+      setMessage('We sent a code to your email.')
+    }
+  }
+
+  async function verifyCode(e) {
+    e.preventDefault()
+    setStatus('loading')
+    setMessage('')
+
+    const { error } = await supabase.auth.verifyOtp({
+      email: email.trim(),
+      token: code.trim(),
+      type: 'email',
+    })
+
+    if (error) {
+      setStatus('error')
+      setMessage('Invalid or expired code.')
+    } else {
+      setStatus('idle')
     }
   }
 
@@ -57,12 +79,8 @@ export default function Login() {
         <p className="eyebrow">Members</p>
         <h1>Be With Us</h1>
 
-        {status === 'sent' ? (
-          <p className="lede">
-            Check your inbox. We sent a link to {email}.
-          </p>
-        ) : (
-          <form className="checkout-form" onSubmit={handleSubmit}>
+        {step === 'email' ? (
+          <form className="checkout-form" onSubmit={sendCode}>
             <label>
               Email
               <input
@@ -74,12 +92,42 @@ export default function Login() {
                 autoComplete="email"
               />
             </label>
-
             <button className="btn btn-primary" disabled={status === 'loading'}>
-              {status === 'loading' ? 'Sending...' : 'Be With Us'}
+              {status === 'loading' ? 'Sending...' : 'Send code'}
             </button>
-
             {message && <p className="muted">{message}</p>}
+          </form>
+        ) : (
+          <form className="checkout-form" onSubmit={verifyCode}>
+            <p className="muted">Code sent to {email}</p>
+            <label>
+              Code
+              <input
+                type="text"
+                inputMode="numeric"
+                required
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                placeholder="Enter the code"
+                autoComplete="one-time-code"
+              />
+            </label>
+            <button className="btn btn-primary" disabled={status === 'loading'}>
+              {status === 'loading' ? 'Checking...' : 'Be With Us'}
+            </button>
+            {message && <p className="muted">{message}</p>}
+            <button
+              type="button"
+              className="text-link"
+              onClick={() => {
+                setStep('email')
+                setCode('')
+                setMessage('')
+                setStatus('idle')
+              }}
+            >
+              Use a different email
+            </button>
           </form>
         )}
       </div>
