@@ -814,3 +814,43 @@ h3 {
     gap: 0.4rem;
   }
 }
+.auth-page {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.auth-box {
+  width: 100%;
+  max-width: 28rem;
+}
+
+.auth-box h1 {
+  font-size: clamp(3rem, 8vw, 5rem);
+  margin-bottom: 1.5rem;
+}
+
+.auth-box .checkout-form {
+  margin: 1.5rem auto 0;
+  text-align: left;
+}
+
+.auth-box .text-link {
+  justify-self: center;
+  width: fit-content;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+}
+
+.footer-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 14rem));
+  gap: 3rem;
+  justify-content: center;
+}
