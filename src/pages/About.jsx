@@ -1,8 +1,8 @@
 export default function About() {
   return (
     <section className="section about-page">
-      <p className="eyebrow">The house</p>
-      <h1>KAGE is a night brand.</h1>
+      <p className="eyebrow">Who's Nobi?</p>
+      <h1>Nobi is a night brand.</h1>
       <div className="about-grid">
         <p className="lede">
           We started in a shared studio above a closed bar: one rail, two
@@ -37,10 +37,11 @@ export default function About() {
         </div>
       </div>
       <img
-        className="about-image"
-        src="/images/studio.jpg"
-        alt="Studio rack"
-      />
+  className="about-image"
+  alt="Nobi TRAP"
+  src={`${import.meta.env.BASE_URL}images/TRAP.jpg`}
+
+/>
     </section>
   )
 }

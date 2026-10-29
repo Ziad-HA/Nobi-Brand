@@ -9,10 +9,10 @@ export default function Home() {
   return (
     <>
       <section className="hero">
-        <img
-          src="/images/hero.jpg"
-          alt="KAGE campaign"
-        />
+       <img
+      src={`${import.meta.env.BASE_URL}images/TRAP.jpg`}
+      alt="Nobi campaign"
+/>
         <div className="hero-copy">
           <p className="eyebrow">Season 04 · Night Shift</p>
           <h1>
@@ -33,10 +33,10 @@ export default function Home() {
             </Link>
           </div>
         </div>
-        <p className="hero-stamp">KAGE / 09</p>
+        <p className="hero-stamp">Nobi / 09</p>
       </section>
 
-      <Marquee items={['Limited runs', 'Night cargo', 'Shadow core', 'No restocks', 'City grade']} />
+      <Marquee items={['CORTEIZ', 'CORTEIZ', ' CORTEIZ', 'CORTEIZ', 'CORTEIZ']} />
 
       <section className="section">
         <div className="section-head">
@@ -60,19 +60,19 @@ export default function Home() {
           <p className="eyebrow">House notes</p>
           <h2>Built like a night shift, not a trend cycle.</h2>
           <p>
-            KAGE cuts streetwear for people who actually wear it — late trains,
+            Nobi cuts streetwear for people who actually wear it — late trains,
             wet pavement, rooms that don’t close until four. Every piece is a
             small run. When it’s gone, it’s gone.
           </p>
           <Link to="/about" className="btn btn-primary">
-            The house
+Who's Nobi?
           </Link>
         </div>
         <div className="split-media">
           <img
-            src="/images/look-berlin.jpg"
-            alt="Editorial look"
-          />
+    src={`${import.meta.env.BASE_URL}images/download.jpg`}
+  alt="Editorial look"
+         />
         </div>
       </section>
 

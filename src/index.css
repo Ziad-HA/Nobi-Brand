@@ -83,7 +83,21 @@ h3 {
   font-size: 1.35rem;
   letter-spacing: 0.04em;
 }
+.hero-copy h1 {
+  font-size: clamp(2.6rem, 7vw, 5.5rem);
+}
+.hero-copy h1 {
+  font-size: clamp(2.6rem, 7vw, 5.5rem);
+}
 
+.hero-copy .lede {
+  font-size: 0.95rem;
+  max-width: 30rem;
+}
+
+.hero-copy .eyebrow {
+  font-size: 0.65rem;
+}
 .eyebrow {
   font-size: 0.72rem;
   letter-spacing: 0.22em;
@@ -512,18 +526,21 @@ h3 {
 }
 
 .look-masonry {
-  columns: 3;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 0.8rem;
+  max-width: 1100px;
 }
 
 .look-masonry figure {
-  break-inside: avoid;
-  margin-bottom: 0.8rem;
+  margin: 0;
   position: relative;
 }
 
 .look-masonry img {
   width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
 }
 
 .look-masonry figcaption {
@@ -532,11 +549,6 @@ h3 {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
-}
-
-.look-masonry .tall img {
-  min-height: 520px;
-  object-fit: cover;
 }
 
 .about-grid {
@@ -574,11 +586,11 @@ h3 {
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
-
 .about-image {
   width: 100%;
-  max-height: 620px;
+  max-height: 380px;
   object-fit: cover;
+
 }
 
 .cart-layout {

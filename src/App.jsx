@@ -8,6 +8,7 @@ import Lookbook from './pages/Lookbook'
 import About from './pages/About'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
+import Login from './pages/Login'
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/login" element={<Login />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

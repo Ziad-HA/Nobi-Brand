@@ -6,6 +6,7 @@ const links = [
   { to: '/shop', label: 'Shop' },
   { to: '/lookbook', label: 'Lookbook' },
   { to: '/about', label: 'About' },
+  { to: '/login', label: 'Login' }
 ]
 
 export default function Navbar() {
