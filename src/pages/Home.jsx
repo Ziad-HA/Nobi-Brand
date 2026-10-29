@@ -9,10 +9,10 @@ export default function Home() {
   return (
     <>
       <section className="hero">
-       <img
-      src={`${import.meta.env.BASE_URL}images/TRAP.jpg`}
-      alt="Nobi campaign"
-/>
+        <img
+          src={`${import.meta.env.BASE_URL}images/TRAP.jpg`}
+          alt="Nobi campaign"
+        />
         <div className="hero-copy">
           <p className="eyebrow">Season 04 · Night Shift</p>
           <h1>
@@ -55,7 +55,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="split">
+      <section className="split split-bg">
+        <div className="split-media">
+          <img
+            src={`${import.meta.env.BASE_URL}images/download.jpg`}
+            alt="Editorial look"
+          />
+        </div>
+
         <div className="split-copy">
           <p className="eyebrow">House notes</p>
           <h2>Built like a night shift, not a trend cycle.</h2>
@@ -65,14 +72,8 @@ export default function Home() {
             small run. When it’s gone, it’s gone.
           </p>
           <Link to="/about" className="btn btn-primary">
-Who's Nobi?
+            Who's Nobi?
           </Link>
-        </div>
-        <div className="split-media">
-          <img
-    src={`${import.meta.env.BASE_URL}images/download.jpg`}
-  alt="Editorial look"
-         />
         </div>
       </section>
 
