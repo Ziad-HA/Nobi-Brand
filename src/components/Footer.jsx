@@ -5,7 +5,6 @@ export default function Footer() {
   const [email, setEmail] = useState('')
   const [done, setDone] = useState(false)
   const { pathname } = useLocation()
-
   const hideNewsletter = pathname === '/login' || pathname === '/reset-password'
 
   const onSubmit = (e) => {
