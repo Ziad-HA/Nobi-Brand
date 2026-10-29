@@ -854,3 +854,13 @@ h3 {
   gap: 3rem;
   justify-content: center;
 }
+.footer-top-single {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  text-align: center;
+}
+
+.footer-top-single .footer-cols {
+  grid-template-columns: repeat(2, minmax(0, 14rem));
+  gap: 4rem;
+}

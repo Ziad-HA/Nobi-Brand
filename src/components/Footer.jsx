@@ -1,9 +1,12 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 
 export default function Footer() {
   const [email, setEmail] = useState('')
   const [done, setDone] = useState(false)
+  const { pathname } = useLocation()
+
+  const hideNewsletter = pathname === '/login' || pathname === '/reset-password'
 
   const onSubmit = (e) => {
     e.preventDefault()
@@ -13,25 +16,27 @@ export default function Footer() {
 
   return (
     <footer className="footer">
-      <div className="footer-top">
-        <div>
-          <p className="eyebrow">Drop alerts</p>
-          <h2>Stay on the list.</h2>
-          {done ? (
-            <p className="muted">You’re in. Next drop hits your inbox first.</p>
-          ) : (
-            <form className="newsletter" onSubmit={onSubmit}>
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <button type="submit">Join</button>
-            </form>
-          )}
-        </div>
+      <div className={`footer-top ${hideNewsletter ? 'footer-top-single' : ''}`}>
+        {!hideNewsletter && (
+          <div>
+            <p className="eyebrow">Drop alerts</p>
+            <h2>Stay on the list.</h2>
+            {done ? (
+              <p className="muted">You’re in. Next drop hits your inbox first.</p>
+            ) : (
+              <form className="newsletter" onSubmit={onSubmit}>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <button type="submit">Join</button>
+              </form>
+            )}
+          </div>
+        )}
         <div className="footer-cols">
           <div>
             <p className="eyebrow">House</p>
