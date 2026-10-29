@@ -1,10 +1,10 @@
-import { Link } from 'react-router-dom'
-import Marquee from '../components/Marquee'
-import ProductCard from '../components/ProductCard'
-import { lookbook, products } from '../data/products'
+import { Link } from "react-router-dom";
+import Marquee from "../components/Marquee";
+import ProductCard from "../components/ProductCard";
+import { lookbook, products } from "../data/products";
 
 export default function Home() {
-  const featured = products.slice(0, 4)
+  const featured = products.slice(0, 4);
 
   return (
     <>
@@ -36,7 +36,7 @@ export default function Home() {
         <p className="hero-stamp">Nobi / 09</p>
       </section>
 
-      <Marquee items={['CORTEIZ', 'CORTEIZ', ' CORTEIZ', 'CORTEIZ', 'CORTEIZ']} />
+      <Marquee items={["Nobi", "Nobi", " Nobi", "Nobi", "Nobi"]} />
 
       <section className="section">
         <div className="section-head">
@@ -97,5 +97,5 @@ export default function Home() {
         </div>
       </section>
     </>
-  )
+  );
 }
