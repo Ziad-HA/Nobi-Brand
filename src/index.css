@@ -2353,3 +2353,31 @@ button,
     transition: none !important;
   }
 }
+
+
+.social-links {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.social-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.25s ease;
+}
+
+.social-links a:hover {
+  color: var(--volt);
+}
+
+.social-links svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}

@@ -1,18 +1,22 @@
 
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import Marquee from "../components/Marquee";
 import ProductCard from "../components/ProductCard";
 import { lookbook, products } from "../data/products";
 
 export default function Home() {
   const featured = products.slice(0, 4);
+  const [showImages, setShowImages] = useState(false);
 
   return (
     <>
+      {/* HERO */}
       <section className="hero home-hero">
         <img
           src={`${import.meta.env.BASE_URL}images/TRAP.jpg`}
           alt="Nobi campaign"
+          onLoad={() => setShowImages(true)}
         />
 
         <div className="hero-overlay" />
@@ -43,16 +47,21 @@ export default function Home() {
         </div>
 
         <p className="hero-stamp">NOBI / 09</p>
-        <span className="hero-bottom-label">UNIFORM FOR THE AFTER HOURS</span>
+        <span className="hero-bottom-label">
+          UNIFORM FOR THE AFTER HOURS
+        </span>
       </section>
 
       <Marquee items={["Nobi", "Nobi", "Nobi", "Nobi", "Nobi"]} />
 
+      {/* FEATURED PRODUCTS */}
       <section className="section home-products">
         <div className="section-head">
           <div>
             <p className="eyebrow">The latest selection</p>
-            <h2>DROP 09<span>.</span></h2>
+            <h2>
+              DROP 09<span>.</span>
+            </h2>
           </div>
 
           <Link to="/shop" className="text-link">
@@ -60,20 +69,28 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="product-grid">
-          {featured.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {showImages && (
+          <div className="product-grid">
+            {featured.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
       </section>
 
+      {/* BRAND STORY */}
       <section className="split split-bg home-story">
         <div className="split-media">
-          <img
-            src={`${import.meta.env.BASE_URL}images/download.jpg`}
-            alt="Nobi editorial campaign"
-          />
-          <span className="story-image-label">NOBI / EDITORIAL 004</span>
+          {showImages && (
+            <img
+              src={`${import.meta.env.BASE_URL}images/download.jpg`}
+              alt="Nobi editorial campaign"
+            />
+          )}
+
+          <span className="story-image-label">
+            NOBI / EDITORIAL 004
+          </span>
         </div>
 
         <div className="split-copy">
@@ -97,11 +114,14 @@ export default function Home() {
         </div>
       </section>
 
+      {/* LOOKBOOK */}
       <section className="section home-lookbook">
         <div className="section-head">
           <div>
             <p className="eyebrow">Captured after dark</p>
-            <h2>LOOKBOOK<span>.</span></h2>
+            <h2>
+              LOOKBOOK<span>.</span>
+            </h2>
           </div>
 
           <Link to="/lookbook" className="text-link">
@@ -109,22 +129,26 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="look-strip">
-          {lookbook.slice(0, 4).map((shot, index) => (
-            <Link to="/lookbook" key={shot.id} className="look-tile">
-              <img src={shot.image} alt={shot.city} />
-              <span className="look-number">
-                0{index + 1}
-              </span>
-              <span className="look-city">{shot.city}</span>
-            </Link>
-          ))}
-        </div>
+        {showImages && (
+          <div className="look-strip">
+            {lookbook.slice(0, 4).map((shot, index) => (
+              <Link to="/lookbook" key={shot.id} className="look-tile">
+                <img src={shot.image} alt={shot.city} />
+                <span className="look-number">0{index + 1}</span>
+                <span className="look-city">{shot.city}</span>
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
 
+      {/* FINAL SECTION */}
       <section className="home-final">
         <p className="eyebrow">NOBI / AFTER HOURS</p>
-        <h2>OWN THE NIGHT<span>.</span></h2>
+        <h2>
+          OWN THE NIGHT<span>.</span>
+        </h2>
+
         <Link to="/shop" className="btn btn-primary">
           Shop the collection
         </Link>
