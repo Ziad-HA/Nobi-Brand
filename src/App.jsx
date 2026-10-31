@@ -4,6 +4,7 @@ import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-route
 import { CartProvider } from './context/CartContext'
 import Layout from './components/Layout'
 import Intro from './components/Intro'
+
 import Home from './pages/Home'
 import Shop from './pages/Shop'
 import Product from './pages/Product'

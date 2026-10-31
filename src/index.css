@@ -1,3 +1,4 @@
+
 :root {
   --bg: #090909;
   --surface: #121212;
@@ -310,6 +311,7 @@ h3 {
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   padding: 0.85rem 0;
+  white-space: nowrap;
 }
 
 .marquee-track {
@@ -320,6 +322,7 @@ h3 {
   font-family: var(--display);
   font-size: 1.6rem;
   letter-spacing: 0.12em;
+  will-change: transform;
 }
 
 .marquee em {
@@ -328,8 +331,18 @@ h3 {
 }
 
 @keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+
   to {
     transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
   }
 }
 
@@ -416,6 +429,7 @@ h3 {
 }
 
 /* Split with blurred background image */
+
 .split.split-bg {
   position: relative;
   display: block;
@@ -1074,6 +1088,7 @@ h3 {
     height: 240px;
   }
 }
+
 /* ---------- Season page ---------- */
 
 .season-page h1 {
@@ -1145,6 +1160,7 @@ h3 {
 @media (max-width: 520px) {
   .season-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
 /* ---------- Hero scene ---------- */
 
 .hero-scene {
@@ -1269,10 +1285,6 @@ h3 {
 
 @media (prefers-reduced-motion: reduce) {
   .intro { display: none; }
-}
-/* Fix Product Page Layout */
-.product-page {
-  display: block;
 }
 
 /* =================================
@@ -1587,5 +1599,757 @@ h3 {
 
   .related-products .product-grid {
     gap: 10px;
+  }
+}
+
+/* =================================
+   ABOUT PAGE - REFINED DESIGN
+================================= */
+
+.about-page {
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.about-heading {
+  position: relative;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.about-page .about-heading h1 {
+  max-width: 1050px;
+  font-size: clamp(4rem, 10vw, 8rem);
+  line-height: 0.88;
+  text-transform: uppercase;
+  margin-top: 1.5rem;
+}
+
+.about-index {
+  display: block;
+  margin-top: 2rem;
+  color: var(--muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+}
+
+.about-grid {
+  grid-template-columns: 1fr 0.8fr;
+  gap: 8vw;
+  margin-top: 4rem;
+  align-items: start;
+}
+
+.about-grid .lede {
+  font-size: clamp(1.25rem, 2.2vw, 1.8rem);
+  line-height: 1.55;
+  color: var(--text);
+  max-width: 34rem;
+}
+
+.about-copy {
+  gap: 1.5rem;
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: var(--muted);
+}
+
+.about-copy p {
+  max-width: 34rem;
+}
+
+.about-page .stats {
+  margin: 5rem 0 3rem;
+  padding: 2rem 0;
+  gap: 2rem;
+}
+
+.about-page .stats > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.about-page .stats strong {
+  font-size: clamp(3.5rem, 6vw, 5.5rem);
+  line-height: 1;
+  color: var(--volt);
+}
+
+.about-page .stats span {
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+}
+
+.about-image-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.about-page .about-image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.7s ease;
+}
+
+.about-image-wrap:hover .about-image {
+  transform: scale(1.025);
+}
+
+.about-image-label {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  padding: 0.5rem 0.7rem;
+  background: rgba(9, 9, 9, 0.8);
+  color: var(--volt);
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+}
+
+/* ABOUT MOBILE */
+
+@media (max-width: 640px) {
+  .about-page {
+    padding: 3rem 5vw;
+  }
+
+  .about-page .about-heading h1 {
+    font-size: clamp(3.3rem, 14vw, 5rem);
+    line-height: 0.92;
+    margin-top: 1.2rem;
+  }
+
+  .about-index {
+    margin-top: 1.4rem;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 1.8rem;
+    margin-top: 2.5rem;
+  }
+
+  .about-grid .lede {
+    font-size: 1.2rem;
+  }
+
+  .about-copy {
+    font-size: 0.9rem;
+    gap: 1.2rem;
+  }
+
+  .about-page .stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+    margin: 3rem 0 2rem;
+    padding: 1.5rem 0;
+  }
+
+  .about-page .stats strong {
+    font-size: clamp(2.5rem, 10vw, 3.5rem);
+  }
+
+  .about-page .stats span {
+    font-size: 0.55rem;
+    letter-spacing: 0.08em;
+  }
+
+  .about-page .about-image {
+    aspect-ratio: 4 / 5;
+  }
+}
+
+/* =========================================
+   NOBI HOME PAGE - DESIGN UPDATE
+========================================= */
+
+/* HERO */
+
+.home-hero {
+  min-height: min(780px, 88vh);
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: #090909;
+}
+
+.home-hero > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(5, 5, 5, 0.88) 0%,
+      rgba(5, 5, 5, 0.58) 42%,
+      rgba(5, 5, 5, 0.05) 100%
+    ),
+    linear-gradient(
+      0deg,
+      rgba(5, 5, 5, 0.5),
+      transparent 35%
+    );
+}
+
+.home-hero-copy {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 750px;
+  padding: 5rem 0;
+  margin-left: 0;
+  left: 0;
+}
+
+.home-hero-copy h1 {
+  font-size: clamp(5rem, 11vw, 10rem);
+  line-height: 0.78;
+  letter-spacing: -0.025em;
+  margin: 1.5rem 0;
+}
+
+.home-hero-copy h1 span,
+.home-products h2 span,
+.home-story h2 span,
+.home-lookbook h2 span,
+.home-final h2 span {
+  color: var(--volt);
+}
+
+.home-hero-copy .lede {
+  max-width: 430px;
+  line-height: 1.7;
+  color: #d0d0ca;
+  margin-bottom: 2rem;
+}
+
+.home-hero .hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.home-hero .hero-stamp {
+  position: absolute;
+  z-index: 2;
+  right: 6%;
+  top: 3rem;
+  color: var(--text);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+}
+
+.hero-bottom-label {
+  position: absolute;
+  z-index: 2;
+  right: 6%;
+  bottom: 2rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+}
+
+/* FEATURED PRODUCTS */
+
+.home-products {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+}
+
+.home-products .section-head,
+.home-lookbook .section-head {
+  align-items: end;
+  margin-bottom: 2.5rem;
+}
+
+.home-products .section-head h2,
+.home-lookbook .section-head h2 {
+  font-size: clamp(3.5rem, 7vw, 6rem);
+  margin-top: 0.5rem;
+}
+
+.home-products .text-link,
+.home-lookbook .text-link {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding-bottom: 0.5rem;
+}
+
+/* BRAND STORY */
+
+.home-story {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.home-story .split-media {
+  position: relative;
+  overflow: hidden;
+}
+
+.home-story .split-media img {
+  width: 100%;
+  height: 100%;
+  min-height: 550px;
+  object-fit: cover;
+  transition: transform 0.7s ease;
+}
+
+.home-story .split-media:hover img {
+  transform: scale(1.03);
+}
+
+.story-image-label {
+  position: absolute;
+  bottom: 1.2rem;
+  left: 1.2rem;
+  color: var(--volt);
+  background: rgba(9, 9, 9, 0.8);
+  padding: 0.6rem 0.8rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+}
+
+.home-story .split-copy {
+  padding: 4rem;
+}
+
+.home-story .split-copy h2 {
+  font-size: clamp(3rem, 5vw, 5.5rem);
+  line-height: 0.95;
+  margin: 1.5rem 0;
+}
+
+.home-story .split-copy > p:not(.eyebrow) {
+  color: var(--muted);
+  line-height: 1.9;
+  max-width: 440px;
+  margin-bottom: 2rem;
+}
+
+/* LOOKBOOK */
+
+.home-lookbook {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+}
+
+.home-lookbook .look-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.home-lookbook .look-tile {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: var(--surface);
+  aspect-ratio: 3 / 4;
+}
+
+.home-lookbook .look-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.home-lookbook .look-tile:hover img {
+  transform: scale(1.06);
+}
+
+.look-number {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  color: var(--volt);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+}
+
+.look-city {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 2.5rem 1rem 1rem;
+  color: white;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+}
+
+/* FINAL CTA */
+
+.home-final {
+  padding: 6rem 5vw;
+  text-align: center;
+  border-top: 1px solid var(--line);
+  background: #0d0d0d;
+}
+
+.home-final h2 {
+  font-size: clamp(4rem, 10vw, 9rem);
+  line-height: 0.9;
+  margin: 1.2rem 0 2rem;
+}
+
+/* TABLET */
+
+@media (max-width: 980px) {
+  .home-hero {
+    min-height: 680px;
+  }
+
+  .home-hero-copy {
+    margin-left: 6%;
+  }
+
+  .home-story .split-copy {
+    padding: 2.5rem;
+  }
+
+  .home-lookbook .look-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 640px) {
+  .home-hero {
+    min-height: 680px;
+    align-items: end;
+  }
+
+  .home-hero > img {
+    object-position: center;
+  }
+
+  .hero-overlay {
+    background:
+      linear-gradient(
+        0deg,
+        rgba(5, 5, 5, 0.95) 0%,
+        rgba(5, 5, 5, 0.65) 48%,
+        rgba(5, 5, 5, 0.12) 100%
+      );
+  }
+
+  .home-hero-copy {
+    margin: 0;
+    padding: 3rem 6vw 5rem;
+  }
+
+  .home-hero-copy h1 {
+    font-size: clamp(4.5rem, 17vw, 6.5rem);
+    line-height: 0.82;
+  }
+
+  .home-hero-copy .lede {
+    font-size: 0.95rem;
+  }
+
+  .home-hero .hero-stamp {
+    top: 1.5rem;
+    right: 6vw;
+  }
+
+  .hero-bottom-label {
+    display: none;
+  }
+
+  .home-products,
+  .home-lookbook {
+    padding: 4rem 5vw;
+  }
+
+  .home-products .section-head,
+  .home-lookbook .section-head {
+    gap: 1rem;
+    align-items: end;
+  }
+
+  .home-products .section-head h2,
+  .home-lookbook .section-head h2 {
+    font-size: 3.5rem;
+  }
+
+  .home-story {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .home-story .split-media img {
+    min-height: 0;
+    aspect-ratio: 4 / 5;
+  }
+
+  .home-story .split-copy {
+    padding: 3rem 6vw;
+  }
+
+  .home-story .split-copy h2 {
+    font-size: clamp(3rem, 12vw, 4.5rem);
+  }
+
+  .home-lookbook .look-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+
+  .home-final {
+    padding: 5rem 5vw;
+  }
+
+  .home-final h2 {
+    font-size: clamp(3.8rem, 15vw, 6rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero *,
+  .home-story *,
+  .home-lookbook * {
+    transition: none !important;
+  }
+}
+
+.home-hero-copy {
+  padding-left: 2rem;
+}
+
+/* ---------- Navbar Hover Effect ---------- */
+
+.nav-links a {
+  position: relative;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: color 0.25s ease, background 0.25s ease;
+}
+
+.nav-links a:hover {
+  color: var(--volt);
+  background: rgba(214, 255, 58, 0.08);
+}
+
+.nav-links a.active {
+  color: var(--volt);
+}
+
+/* =================================
+  
+/* =========================================
+   NOBI - LUXURY STAGGER PAGE REVEAL
+========================================= */
+
+@keyframes nobi-luxury-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.luxury-page > * {
+  animation: nobi-luxury-reveal 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Headings first */
+.luxury-page h1,
+.luxury-page h2,
+.luxury-page .eyebrow {
+  animation: nobi-luxury-reveal 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.05s;
+}
+
+/* Images second */
+.luxury-page img {
+  animation: nobi-luxury-reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.18s;
+}
+
+/* Content third */
+.luxury-page p,
+.luxury-page button,
+.luxury-page .btn,
+.luxury-page .text-link {
+  animation: nobi-luxury-reveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.3s;
+}
+
+/* Product cards */
+.luxury-page .product-card:nth-child(1) { animation-delay: 0.2s; }
+.luxury-page .product-card:nth-child(2) { animation-delay: 0.3s; }
+.luxury-page .product-card:nth-child(3) { animation-delay: 0.4s; }
+.luxury-page .product-card:nth-child(4) { animation-delay: 0.5s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .luxury-page,
+  .luxury-page * {
+    animation: none !important;
+  }
+}
+
+
+/* =========================================
+   NOBI - LUXURY STAGGER PAGE REVEAL
+========================================= */
+
+@keyframes nobi-luxury-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.luxury-page > * {
+  animation: nobi-luxury-reveal 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.luxury-page h1,
+.luxury-page h2,
+.luxury-page .eyebrow {
+  animation: nobi-luxury-reveal 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.05s;
+}
+
+.luxury-page img {
+  animation: nobi-luxury-reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.18s;
+}
+
+.luxury-page p,
+.luxury-page button,
+.luxury-page .btn,
+.luxury-page .text-link {
+  animation: nobi-luxury-reveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.3s;
+}
+
+.luxury-page .product-card:nth-child(1) { animation-delay: 0.2s; }
+.luxury-page .product-card:nth-child(2) { animation-delay: 0.3s; }
+.luxury-page .product-card:nth-child(3) { animation-delay: 0.4s; }
+.luxury-page .product-card:nth-child(4) { animation-delay: 0.5s; }
+
+/* =========================================
+   NOBI - PREMIUM HOVER EFFECTS
+========================================= */
+
+a,
+button,
+.btn,
+.text-link,
+.product-option-button,
+.product-size-button,
+.filters button,
+.chips button,
+.product-add-button,
+.product-view-bag,
+.season-card {
+  transition:
+    color 0.3s ease,
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: var(--volt);
+  background: rgba(214, 255, 58, 0.08);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #e4ff76;
+  transform: translateY(-2px);
+}
+
+.btn-ghost:hover {
+  border-color: var(--volt);
+  color: var(--volt);
+}
+
+.product-card:hover .product-media img {
+  transform: scale(1.06);
+}
+
+.look-tile img {
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.look-tile:hover img {
+  transform: scale(1.045);
+}
+
+.product-add-button:hover:not(:disabled) {
+  background: #e4ff76;
+}
+
+.product-view-bag:hover {
+  border-color: var(--volt);
+  color: var(--volt);
+}
+
+.product-option-button:hover,
+.product-size-button:hover {
+  border-color: var(--volt);
+  color: var(--volt);
+}
+
+.filters button:hover,
+.chips button:hover {
+  border-color: var(--volt);
+  color: var(--volt);
+}
+
+.season-card:hover {
+  transform: translateY(-4px);
+}
+
+.footer-cols a:hover {
+  color: var(--volt);
+}
+
+/* Keep the normal browser cursor */
+
+@media (prefers-reduced-motion: reduce) {
+  .luxury-page,
+  .luxury-page *,
+  a,
+  button,
+  .product-card img,
+  .look-tile img {
+    animation: none !important;
+    transition: none !important;
   }
 }

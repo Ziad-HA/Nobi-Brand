@@ -1,14 +1,20 @@
+
 export default function About() {
   return (
     <section className="section about-page">
-      <p className="eyebrow">Who's Nobi?</p>
-      <h1>Nobi is a night brand.</h1>
+      <div className="about-heading">
+        <p className="eyebrow">Who's Nobi?</p>
+        <h1>Nobi is a night brand.</h1>
+        <span className="about-index">NOBI / ABOUT — 001</span>
+      </div>
+
       <div className="about-grid">
         <p className="lede">
           We started in a shared studio above a closed bar: one rail, two
           patterns, and a rule that nothing ships unless it survives a week of
           actual wear.
         </p>
+
         <div className="about-copy">
           <p>
             Streetwear here is not a costume. It’s a uniform for people who
@@ -22,6 +28,7 @@ export default function About() {
           </p>
         </div>
       </div>
+
       <div className="stats">
         <div>
           <strong>09</strong>
@@ -36,12 +43,15 @@ export default function About() {
           <span>GSM core fleece</span>
         </div>
       </div>
-      <img
-  className="about-image"
-  alt="Nobi TRAP"
-  src={`${import.meta.env.BASE_URL}images/TRAP.jpg`}
 
-/>
+      <div className="about-image-wrap">
+        <img
+          className="about-image"
+          alt="Nobi TRAP"
+          src={`${import.meta.env.BASE_URL}images/TRAP.jpg`}
+        />
+        <span className="about-image-label">NOBI — VISUAL ARCHIVE</span>
+      </div>
     </section>
   )
 }
