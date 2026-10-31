@@ -42,12 +42,11 @@ export default function Product() {
     .filter((p) => p.id !== product.id)
     .slice(0, 4)
 
-  const onAdd = () => {
-    if (product.soldOut) return
-
-    addItem(product, { size, color })
-    setAdded(true)
-    setTimeout(() => setAdded(false), 1800)
+ const onAdd = () => {
+  if (product.soldOut) return
+  addItem(product, { size, color })
+  setAdded(true)
+}
   }
 
   return (
