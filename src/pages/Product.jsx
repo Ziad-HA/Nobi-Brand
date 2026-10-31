@@ -1,3 +1,4 @@
+
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { products } from '../data/products'
@@ -9,6 +10,7 @@ export default function Product() {
   const navigate = useNavigate()
   const product = products.find((p) => p.id === id)
   const { addItem } = useCart()
+
   const [size, setSize] = useState(product?.sizes[0] ?? '')
   const [color, setColor] = useState(product?.colors[0] ?? '')
   const [shot, setShot] = useState(0)
@@ -35,86 +37,61 @@ export default function Product() {
   }
 
   return (
-    <section className="product-page" style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px 40px', color: '#fff' }}>
-      
-      {/* المعرض على الشمال والتفاصيل جنبه بنفس المقاسات */}
-      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', gap: '60px', alignItems: 'flex-start', marginBottom: '100px' }}>
-        
-        {/* صندوق الصور والمعرض */}
-        <div style={{ width: '55%', flexShrink: 0 }}>
-          <div style={{ width: '100%', height: '650px', backgroundColor: '#0b0b0b', borderRadius: '4px', overflow: 'hidden', border: '1px solid #1a1a1a', marginBottom: '16px' }}>
-            <img 
-              src={product.images[shot]} 
-              alt={product.name} 
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+    <section className="product-page">
+
+      <div className="product-layout">
+
+        {/* Product images */}
+        <div className="product-gallery">
+          <div className="product-main-image">
+            <img
+              src={product.images[shot]}
+              alt={product.name}
             />
           </div>
-          
-          {/* الصور المصغرة */}
-          <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '8px' }}>
+
+          <div className="product-thumbnails">
             {product.images.map((src, i) => (
-              <button 
-                key={src} 
+              <button
+                key={src}
                 onClick={() => setShot(i)}
-                style={{
-                  width: '90px',
-                  height: '100px',
-                  borderRadius: '4px',
-                  overflow: 'hidden',
-                  border: shot === i ? '1px solid #fff' : '1px solid #222',
-                  opacity: shot === i ? 1 : 0.4,
-                  cursor: 'pointer',
-                  backgroundColor: '#111',
-                  padding: 0,
-                  flexShrink: 0
-                }}
+                className={`product-thumbnail ${shot === i ? 'active' : ''}`}
               >
-                <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img src={src} alt="" />
               </button>
             ))}
           </div>
         </div>
 
-        {/* صندوق التفاصيل والكتابة على اليمين */}
-        <div style={{ width: '40%', paddingTop: '10px' }}>
-          <p style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '2px', color: '#888', marginBottom: '12px' }}>
+        {/* Product information */}
+        <div className="product-details">
+
+          <p className="product-category">
             {product.tag} · {product.category}
           </p>
-          
-          <h1 style={{ fontSize: '42px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '-1px', margin: '0 0 16px 0', lineHeight: '1.1' }}>
+
+          <h1 className="product-title">
             {product.name}
           </h1>
-          
-          <p style={{ fontSize: '24px', fontFamily: 'monospace', fontWeight: 'bold', color: '#fff', marginBottom: '24px' }}>
+
+          <p className="product-price">
             ${product.price}
           </p>
 
-          <p style={{ fontSize: '14px', color: '#bbb', lineHeight: '1.7', marginBottom: '32px' }}>
+          <p className="product-description">
             {product.description}
           </p>
 
-          {/* اختيار اللون */}
-          <div style={{ marginBottom: '28px' }}>
-            <p style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1.5px', color: '#888', fontWeight: 'bold', marginBottom: '12px' }}>
-              COLOR
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+          {/* Color selection */}
+          <div className="product-option">
+            <p className="product-option-label">COLOR</p>
+
+            <div className="product-option-list">
               {product.colors.map((c) => (
-                <button 
-                  key={c} 
+                <button
+                  key={c}
                   onClick={() => setColor(c)}
-                  style={{
-                    padding: '10px 24px',
-                    fontSize: '12px',
-                    fontFamily: 'monospace',
-                    textTransform: 'uppercase',
-                    borderRadius: '4px',
-                    border: 'none',
-                    backgroundColor: color === c ? '#ccff00' : '#161616',
-                    color: color === c ? '#000' : '#888',
-                    fontWeight: 'bold',
-                    cursor: 'pointer'
-                  }}
+                  className={`product-color-btn ${color === c ? 'active' : ''}`}
                 >
                   {c}
                 </button>
@@ -122,31 +99,16 @@ export default function Product() {
             </div>
           </div>
 
-          {/* اختيار المقاس */}
-          <div style={{ marginBottom: '40px' }}>
-            <p style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1.5px', color: '#888', fontWeight: 'bold', marginBottom: '12px' }}>
-              SIZE
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+          {/* Size selection */}
+          <div className="product-option product-size-option">
+            <p className="product-option-label">SIZE</p>
+
+            <div className="product-option-list">
               {product.sizes.map((s) => (
-                <button 
-                  key={s} 
+                <button
+                  key={s}
                   onClick={() => setSize(s)}
-                  style={{
-                    width: '48px',
-                    height: '48px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '13px',
-                    fontFamily: 'monospace',
-                    fontWeight: 'bold',
-                    borderRadius: '4px',
-                    border: 'none',
-                    backgroundColor: size === s ? '#ccff00' : '#161616',
-                    color: size === s ? '#000' : '#888',
-                    cursor: 'pointer'
-                  }}
+                  className={`product-size-btn ${size === s ? 'active' : ''}`}
                 >
                   {s}
                 </button>
@@ -154,65 +116,43 @@ export default function Product() {
             </div>
           </div>
 
-          {/* أزرار الإضافة للسلة */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <button 
-              disabled={product.soldOut} 
+          {/* Add to cart */}
+          <div className="product-actions">
+            <button
+              disabled={product.soldOut}
               onClick={onAdd}
-              style={{
-                width: '100%',
-                padding: '18px',
-                fontSize: '13px',
-                fontWeight: '900',
-                textTransform: 'uppercase',
-                letterSpacing: '2px',
-                borderRadius: '4px',
-                border: 'none',
-                backgroundColor: product.soldOut ? '#222' : '#ccff00',
-                color: product.soldOut ? '#555' : '#000',
-                cursor: product.soldOut ? 'not-allowed' : 'pointer',
-                transition: 'all 0.2s'
-              }}
+              className="product-add-btn"
             >
-              {product.soldOut ? 'Sold out' : added ? 'Added to bag ✓' : 'ADD TO BAG'}
+              {product.soldOut
+                ? 'Sold out'
+                : added
+                  ? 'Added to bag ✓'
+                  : 'ADD TO BAG'}
             </button>
 
             {added && (
-              <button 
+              <button
                 onClick={() => navigate('/cart')}
-                style={{
-                  width: '100%',
-                  padding: '14px',
-                  fontSize: '12px',
-                  fontWeight: 'bold',
-                  textTransform: 'uppercase',
-                  letterSpacing: '1px',
-                  borderRadius: '4px',
-                  border: '1px solid #333',
-                  backgroundColor: '#111',
-                  color: '#fff',
-                  cursor: 'pointer'
-                }}
+                className="product-view-bag-btn"
               >
                 View bag
               </button>
             )}
           </div>
         </div>
-
       </div>
 
-      {/* قسم Also in the drop تحت خالص */}
-      <div style={{ borderTop: '1px solid #1a1a1a', paddingTop: '60px', width: '100%' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: '900', textTransform: 'uppercase', marginBottom: '30px', letterSpacing: '-0.5px' }}>
-          Also in the drop
-        </h2>
-        <div className="product-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
+      {/* Related products */}
+      <div className="product-related">
+        <h2>Also in the drop</h2>
+
+        <div className="product-grid">
           {related.map((item) => (
             <ProductCard key={item.id} product={item} />
           ))}
         </div>
       </div>
+
     </section>
   )
 }
