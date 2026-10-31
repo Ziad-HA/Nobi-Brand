@@ -1074,3 +1074,74 @@ h3 {
     height: 240px;
   }
 }
+/* ---------- Season page ---------- */
+
+.season-page h1 {
+  font-size: clamp(3.4rem, 9vw, 7rem);
+}
+
+.season-page .back-link {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+
+.season-page .back-link:hover {
+  color: var(--volt);
+}
+
+.season-desc {
+  max-width: 32rem;
+  margin: 1.2rem 0 3rem;
+  color: var(--muted);
+}
+
+.season-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.season-card {
+  display: block;
+  border: 1px solid var(--line);
+  padding: 0.6rem;
+  transition: border-color 0.2s;
+}
+
+.season-card:hover {
+  border-color: var(--volt);
+}
+
+.season-card img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  background: var(--surface);
+}
+
+.season-card h3 {
+  margin: 0.8rem 0 0.25rem;
+  font-size: 1.1rem;
+}
+
+.season-card p {
+  font-size: 0.8rem;
+  color: var(--volt);
+}
+
+@media (max-width: 1100px) {
+  .season-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+@media (max-width: 800px) {
+  .season-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 520px) {
+  .season-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

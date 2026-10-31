@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Shop from './pages/Shop'
 import Product from './pages/Product'
 import Lookbook from './pages/Lookbook'
+import SeasonPage from './pages/SeasonPage'
 import About from './pages/About'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
@@ -20,6 +21,7 @@ export default function App() {
             <Route path="/shop" element={<Shop />} />
             <Route path="/product/:id" element={<Product />} />
             <Route path="/lookbook" element={<Lookbook />} />
+            <Route path="/lookbook/:slug" element={<SeasonPage />} />
             <Route path="/about" element={<About />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />

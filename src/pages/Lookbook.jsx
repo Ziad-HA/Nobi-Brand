@@ -1,6 +1,9 @@
+import { Link } from "react-router-dom";
 import { lookbook } from "../data/products";
 
 export default function Lookbook() {
+  const shots = lookbook.slice(0, 4);
+
   return (
     <section className="section lookbook-page">
       <div className="section-head">
@@ -13,9 +16,11 @@ export default function Lookbook() {
         </p>
       </div>
       <div className="look-masonry">
-        {lookbook.map((shot, i) => (
-          <figure key={shot.id} className={i % 3 === 0 ? "tall" : ""}>
-            <img src={shot.image} alt={`${shot.city} look`} />
+        {shots.map((shot, i) => (
+          <figure key={shot.id}>
+            <Link to={`/lookbook/${shot.city.toLowerCase()}`}>
+              <img src={shot.image} alt={`${shot.city} look`} />
+            </Link>
             <figcaption>
               {String(i + 1).padStart(2, "0")} / {shot.city}
             </figcaption>
