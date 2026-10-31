@@ -2381,3 +2381,49 @@ button,
   height: 18px;
   flex-shrink: 0;
 }
+
+/* =========================================
+   NOBI HOME - MOBILE SECTION ALIGNMENT
+========================================= */
+
+@media (max-width: 640px) {
+  .home-products .section-head,
+  .home-lookbook .section-head {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+  }
+
+  .home-products .section-head > div,
+  .home-lookbook .section-head > div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .home-products .section-head h2,
+  .home-lookbook .section-head h2 {
+    text-align: center;
+    width: 100%;
+  }
+
+  .home-products .section-head .eyebrow,
+  .home-lookbook .section-head .eyebrow {
+    text-align: center;
+  }
+
+  .home-products .section-head .text-link,
+  .home-lookbook .section-head .text-link {
+    display: inline-block;
+    width: fit-content;
+    text-align: center;
+    margin: 0 auto;
+  }
+}
