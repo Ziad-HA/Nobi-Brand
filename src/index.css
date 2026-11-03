@@ -5,7 +5,7 @@
   --line: #232323;
   --text: #f4f4f0;
   --muted: #8c8c86;
-  --volt: #d6ff3a;
+  --volt: hsl(72, 100%, 61%);
   --volt-ink: #101400;
   --font: 'Outfit', system-ui, sans-serif;
   --display: 'Bebas Neue', 'Arial Narrow', sans-serif;
@@ -2702,3 +2702,4 @@ button,
     gap: 12px;
   }
 }
+  

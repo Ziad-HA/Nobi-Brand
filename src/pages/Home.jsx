@@ -37,7 +37,7 @@ export default function Home() {
 
           <div className="hero-actions">
             <Link to="/shop" className="btn btn-primary">
-              Shop drop 09
+              Shop drop 26
             </Link>
 
             <Link to="/lookbook" className="btn btn-ghost">
@@ -60,7 +60,7 @@ export default function Home() {
           <div>
             <p className="eyebrow">The latest selection</p>
             <h2>
-              DROP 09<span>.</span>
+              DROP 26<span>.</span>
             </h2>
           </div>
 
