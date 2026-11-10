@@ -1,16 +1,17 @@
 
-export default function Marquee({ items }) {
-  const loop = [...items, ...items]
+export default function Marquee({ items = [] }) {
+  const loop = [...items, ...items, ...items]
 
   return (
-    <div className="marquee" aria-hidden="true">
+    <section className="marquee" aria-label="NOBI brand statement">
       <div className="marquee-track">
         {loop.map((item, i) => (
-          <span key={`${item}-${i}`}>
-            {item} <em>✦</em>
-          </span>
+          <div className="marquee-item" key={`${item}-${i}`}>
+            <span className="marquee-text">{item}</span>
+            <span className="marquee-symbol">✳</span>
+          </div>
         ))}
       </div>
-    </div>
+    </section>
   )
 }

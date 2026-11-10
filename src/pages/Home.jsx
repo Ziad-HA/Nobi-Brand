@@ -1,7 +1,6 @@
 
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import Marquee from "../components/Marquee";
 import ProductCard from "../components/ProductCard";
 import { lookbook, products } from "../data/products";
 
@@ -51,8 +50,6 @@ export default function Home() {
           UNIFORM FOR THE AFTER HOURS
         </span>
       </section>
-
-      <Marquee items={["Nobi", "Nobi", "Nobi", "Nobi", "Nobi"]} />
 
       {/* FEATURED PRODUCTS */}
       <section className="section home-products">

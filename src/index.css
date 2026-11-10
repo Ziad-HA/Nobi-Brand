@@ -304,39 +304,31 @@ h3 {
   color: var(--volt);
 }
 
-/* ---------- Marquee ---------- */
-
-.marquee {
-  overflow: hidden;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  padding: 0.85rem 0;
-  white-space: nowrap;
+/* Pause on hover */
+@media (hover: hover) {
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
 }
 
-.marquee-track {
-  display: flex;
-  gap: 2.4rem;
-  width: max-content;
-  animation: marquee 22s linear infinite;
-  font-family: var(--display);
-  font-size: 1.6rem;
-  letter-spacing: 0.12em;
-  will-change: transform;
-}
-
-.marquee em {
-  color: var(--volt);
-  font-style: normal;
-}
-
-@keyframes marquee {
-  from {
-    transform: translateX(0);
+/* Mobile */
+@media (max-width: 768px) {
+  .marquee {
+    padding: 25px 0;
   }
 
-  to {
-    transform: translateX(-50%);
+  .marquee-item {
+    gap: 30px;
+    padding-right: 30px;
+  }
+
+  .marquee-text {
+    font-size: 76px;
+    letter-spacing: -1px;
+  }
+
+  .marquee-symbol {
+    font-size: 24px;
   }
 }
 
@@ -2702,4 +2694,9 @@ button,
     gap: 12px;
   }
 }
-  
+  /* Reduce space between Hero and Drop 26 */
+
+.home-products {
+  margin-top: 0 !important;
+  padding-top: 35px !important;
+}
