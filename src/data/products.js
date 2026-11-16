@@ -1,4 +1,3 @@
-
 const img = (name) => `${import.meta.env.BASE_URL}images/${name}.jpg`
 
 const productImg = (number) =>
@@ -6,7 +5,6 @@ const productImg = (number) =>
 
 export const products = [
   {
-<<<<<<< HEAD
     id: 'nobi-game-changers-raglan',
     season: 's26',
     name: 'Game Changers Raglan Jersey',
@@ -25,7 +23,80 @@ export const products = [
     name: 'Night Contour Track Jacket',
     price: 135,
     category: 'Outerwear',
-=======
+    tag: 'Core',
+    colors: ['Pitch Black'],
+    sizes: ['S', 'M', 'L', 'XL'],
+    soldOut: false,
+    images: [productImg(2)],
+    description: 'Technical matte nylon zip jacket featuring high-contrast white contour piping along the spine and sleeves. Finished with bold archival back typography, funnel neck, and elasticated storm cuffs.'
+  },
+  {
+    id: 'nobi-washed-charcoal-hoodie',
+    season: 's26',
+    name: 'Washed Charcoal Heavy Hoodie',
+    price: 115,
+    category: 'Outerwear',
+    tag: 'Limited',
+    colors: ['Washed Charcoal'],
+    sizes: ['S', 'M', 'L', 'XL'],
+    soldOut: false,
+    images: [productImg(3)],
+    description: '460 GSM custom-milled brushed French terry fleece in a vintage stone-wash treatment. Dropped shoulder cut with seamless kangaroo pocket, double-layered hood, and raw distressed seam detailing.'
+  },
+  {
+    id: 'nobi-arabic-script-baggy-denim',
+    season: 's26',
+    name: 'Archival Arabic Script Denim',
+    price: 125,
+    category: 'Bottoms',
+    tag: 'Drop 26',
+    colors: ['Washed Indigo Blue'],
+    sizes: ['30', '32', '34', '36'],
+    soldOut: false,
+    images: [productImg(4)],
+    description: '14.5oz rigid raw-feel denim with an extreme wide-leg puddle drape and heavy sneaker stack. Features custom white Arabic script embroidery across back pockets and reinforced rivet construction.'
+  },
+  {
+    id: 'nobi-night-contour-track-pants',
+    season: 's26',
+    name: 'Night Contour Track Pants',
+    price: 105,
+    category: 'Bottoms',
+    tag: 'New',
+    colors: ['Pitch Black'],
+    sizes: ['S', 'M', 'L', 'XL'],
+    soldOut: false,
+    images: [productImg(5)],
+    description: 'Relaxed nylon track trousers mirroring the jacket with sweeping white contour lines along the outer legs. Elastic waistband with extended drawstring and zippered hems for custom silhouette flared stacking.'
+  },
+  {
+    id: 'nobi-editorial-tracksuit-set',
+    season: 's26',
+    name: 'Contour Tracksuit Full Set',
+    price: 220,
+    category: 'Outerwear',
+    tag: 'Exclusive',
+    colors: ['Pitch Black'],
+    sizes: ['S', 'M', 'L', 'XL'],
+    soldOut: false,
+    images: [productImg(6)],
+    description: 'Complete night uniform set comprising the contour track jacket and matching flared track trousers. Engineered in ultra-durable matte windbreaker nylon with distinctive fluid contour architecture.'
+  },
+  {
+    id: 'nobi-tactical-knit-balaclava',
+    season: 's26',
+    name: 'Tactical Changer Balaclava',
+    price: 45,
+    category: 'Accessories',
+    tag: 'Core',
+    colors: ['Pitch Black'],
+    sizes: ['One Size'],
+    soldOut: false,
+    images: [productImg(7)],
+    description: 'Heavyweight thermal rib-knit tactical balaclava with contrast white jacquard lettering on the brow. Breathable, secure stretch fit engineered for night rides and sub-zero layered styling.'
+  },
+
+  {
     id: 'nobi-signal-tee',
     name: 'Signal Tee',
     price: 45,
@@ -54,34 +125,10 @@ export const products = [
     name: 'Static Tee',
     price: 42,
     category: 'Tops',
->>>>>>> 3546285a82257991cb529a8cd051b16bccacef79
     tag: 'Core',
-    colors: ['Pitch Black'],
+    colors: ['Black'],
     sizes: ['S', 'M', 'L', 'XL'],
     soldOut: false,
-<<<<<<< HEAD
-    images: [productImg(2)],
-    description: 'Technical matte nylon zip jacket featuring high-contrast white contour piping along the spine and sleeves. Finished with bold archival back typography, funnel neck, and elasticated storm cuffs.'
-  },
-  {
-    id: 'nobi-washed-charcoal-hoodie',
-    season: 's26',
-    name: 'Washed Charcoal Heavy Hoodie',
-    price: 115,
-    category: 'Outerwear',
-    tag: 'Limited',
-    colors: ['Washed Charcoal'],
-    sizes: ['S', 'M', 'L', 'XL'],
-    soldOut: false,
-    images: [productImg(3)],
-    description: '460 GSM custom-milled brushed French terry fleece in a vintage stone-wash treatment. Dropped shoulder cut with seamless kangaroo pocket, double-layered hood, and raw distressed seam detailing.'
-  },
-  {
-    id: 'nobi-arabic-script-baggy-denim',
-    season: 's26',
-    name: 'Archival Arabic Script Denim',
-    price: 125,
-=======
     images: [img('tee-static'), img('tee-static-front')],
     description: 'Glitched NO SIGNAL graphic with scan-line slices and a barcode strip on the back, small N mark on the chest. Heavy black cotton in a relaxed, oversized fit.'
   },
@@ -177,64 +224,28 @@ export const products = [
     season: 's24',
     name: 'Wide Camo Cargo Pants',
     price: 70,
->>>>>>> 3546285a82257991cb529a8cd051b16bccacef79
     category: 'Bottoms',
-    tag: 'Drop 26',
-    colors: ['Washed Indigo Blue'],
-    sizes: ['30', '32', '34', '36'],
+    tag: 'S24',
+    colors: ['Camo'],
+    sizes: ['S', 'M', 'L', 'XL'],
     soldOut: false,
-<<<<<<< HEAD
-    images: [productImg(4)],
-    description: '14.5oz rigid raw-feel denim with an extreme wide-leg puddle drape and heavy sneaker stack. Features custom white Arabic script embroidery across back pockets and reinforced rivet construction.'
-=======
     images: [img('S24')],
     description: 'Wide-leg camo cargo pants with deep utility pockets and a relaxed drop.'
->>>>>>> 3546285a82257991cb529a8cd051b16bccacef79
   },
   {
-    id: 'nobi-night-contour-track-pants',
-    season: 's26',
-    name: 'Night Contour Track Pants',
-    price: 105,
+    id: 's23-washed-grey-shorts',
+    season: 's23',
+    name: 'Washed Grey Shorts',
+    price: 40,
     category: 'Bottoms',
-    tag: 'New',
-    colors: ['Pitch Black'],
+    tag: 'S23',
+    colors: ['Grey'],
     sizes: ['S', 'M', 'L', 'XL'],
     soldOut: false,
-<<<<<<< HEAD
-    images: [productImg(5)],
-    description: 'Relaxed nylon track trousers mirroring the jacket with sweeping white contour lines along the outer legs. Elastic waistband with extended drawstring and zippered hems for custom silhouette flared stacking.'
-  },
-  {
-    id: 'nobi-editorial-tracksuit-set',
-    season: 's26',
-    name: 'Contour Tracksuit Full Set',
-    price: 220,
-    category: 'Outerwear',
-    tag: 'Exclusive',
-    colors: ['Pitch Black'],
-    sizes: ['S', 'M', 'L', 'XL'],
-    soldOut: false,
-    images: [productImg(6)],
-    description: 'Complete night uniform set comprising the contour track jacket and matching flared track trousers. Engineered in ultra-durable matte windbreaker nylon with distinctive fluid contour architecture.'
-  },
-  {
-    id: 'nobi-tactical-knit-balaclava',
-    season: 's26',
-    name: 'Tactical Changer Balaclava',
-    price: 45,
-    category: 'Accessories',
-    tag: 'Core',
-    colors: ['Pitch Black'],
-    sizes: ['One Size'],
-    soldOut: false,
-    images: [productImg(7)],
-    description: 'Heavyweight thermal rib-knit tactical balaclava with contrast white jacquard lettering on the brow. Breathable, secure stretch fit engineered for night rides and sub-zero layered styling.'
-=======
     images: [img('S23')],
     description: 'Washed grey fleece shorts with a printed side graphic and an easy fit.'
->>>>>>> 3546285a82257991cb529a8cd051b16bccacef79
-  },
+  }
+
 ]
 
 export const lookbook = [
@@ -246,7 +257,6 @@ export const lookbook = [
   { id: 6, city: 'S21', image: img('S21') },
 ]
 
-<<<<<<< HEAD
 export const categories = [
   'All',
   'Outerwear',
@@ -254,6 +264,3 @@ export const categories = [
   'Bottoms',
   'Accessories'
 ]
-=======
-export const categories = ['All', 'Outerwear', 'Tops', 'Bottoms', 'Accessories']
->>>>>>> 3546285a82257991cb529a8cd051b16bccacef79
