@@ -4632,3 +4632,35 @@ select {
  .intro-enter { bottom:9%; }
  .intro-phase-zoom .intro-map-wrap { transform:translate(-50%,-46%) scale(3.1); }
 }
+
+/* Egypt-centered zoom and title reveal */
+.intro-phase-zoom .intro-map-wrap,
+.intro-phase-title .intro-map-wrap,
+.intro-phase-leave .intro-map-wrap {
+  transform:translate(calc(-50% - 10vw),calc(-50% + 5vh)) scale(4.35);
+  transform-origin:50% 50%;
+  filter:brightness(1.45);
+  transition:transform 1.2s cubic-bezier(.16,.82,.22,1),filter 1.2s ease;
+}
+.intro-phase-title .intro-world-title {
+  position:absolute; z-index:12; left:50%; top:50%; width:100%;
+  transform:translate(-50%,-50%); padding:0 1rem; color:#f5f5ef;
+  text-align:center; font:400 clamp(2.8rem,9vw,8rem)/.85 var(--display);
+  letter-spacing:.025em;
+  text-shadow:0 5px 35px rgba(0,0,0,.9),0 0 35px rgba(214,255,58,.25);
+  animation:intro-title-hit .55s cubic-bezier(.16,1,.3,1) both;
+}
+.intro-phase-title .intro-map-wrap { filter:brightness(.72); }
+.intro-phase-leave { animation:intro-curtain-out .5s cubic-bezier(.7,0,.2,1) forwards; }
+@keyframes intro-title-hit {
+  from { opacity:0; letter-spacing:.18em; filter:blur(12px); }
+  to { opacity:1; letter-spacing:.025em; filter:blur(0); }
+}
+@media (max-width:700px) {
+  .intro-phase-zoom .intro-map-wrap,
+  .intro-phase-title .intro-map-wrap,
+  .intro-phase-leave .intro-map-wrap {
+    transform:translate(calc(-50% - 8vw),calc(-50% + 3vh)) scale(3.35);
+  }
+  .intro-phase-title .intro-world-title { font-size:clamp(2.6rem,12vw,5rem); }
+}
