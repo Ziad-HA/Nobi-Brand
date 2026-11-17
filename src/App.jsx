@@ -7,7 +7,7 @@ import {
   Routes,
   useLocation
 } from 'react-router-dom'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 
 import { CartProvider } from './context/CartContext'
 import Layout from './components/Layout'
@@ -59,6 +59,19 @@ const pageVariants = {
 
 function AnimatedRoutes() {
   const location = useLocation()
+  const reduceMotion = useReducedMotion()
+
+  const variants = reduceMotion
+    ? {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 },
+      }
+    : {
+        initial: { opacity: 0, y: 14 },
+        animate: { opacity: 1, y: 0 },
+        exit: { opacity: 0, y: -8 },
+      }
 
   return (
     <>
@@ -67,12 +80,12 @@ function AnimatedRoutes() {
       <AnimatePresence mode="wait">
         <motion.div
           key={location.pathname}
-          variants={pageVariants}
+          variants={variants}
           initial="initial"
           animate="animate"
           exit="exit"
           transition={{
-            duration: 0.3,
+            duration: reduceMotion ? 0.01 : 0.42,
             ease: [0.16, 1, 0.3, 1]
           }}
         >
