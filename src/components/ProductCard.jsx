@@ -1,6 +1,6 @@
 import TiltLink, { Glare } from './TiltLink'
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, priority = false }) {
   const secondaryImage = product.images?.[1]
 
   return (
@@ -10,7 +10,8 @@ export default function ProductCard({ product }) {
           className="product-image-primary"
           src={product.images?.[0]}
           alt={product.name}
-          loading="lazy"
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "auto"}
           decoding="async"
         />
         {secondaryImage && (
