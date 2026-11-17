@@ -3,6 +3,16 @@ import { useEffect } from 'react'
 const SITE = 'Nobi'
 const DEFAULT_DESC = 'Nobi — streetwear cut for the night. Limited drops, oversized silhouettes, city-grade construction.'
 
+function setCanonical(pathname) {
+  let link = document.head.querySelector('link[rel="canonical"]')
+  if (!link) {
+    link = document.createElement('link')
+    link.setAttribute('rel', 'canonical')
+    document.head.appendChild(link)
+  }
+  link.setAttribute('href', new URL(pathname, window.location.origin).href)
+}
+
 function setMeta(attr, key, content) {
   let el = document.head.querySelector(`meta[${attr}="${key}"]`)
   if (!el) {
@@ -20,6 +30,8 @@ export default function usePageMeta(title, description = DEFAULT_DESC, image) {
   useEffect(() => {
     const full = title ? `${title} — ${SITE}` : `${SITE} - Streetwear`
     document.title = full
+    setCanonical(window.location.pathname)
+    setMeta('property', 'og:url', window.location.href)
     setMeta('name', 'description', description)
     setMeta('property', 'og:title', full)
     setMeta('property', 'og:description', description)
