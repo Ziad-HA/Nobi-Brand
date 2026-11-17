@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+import usePageMeta from '../lib/usePageMeta'
 
 export default function Checkout() {
   const { items, subtotal, clearCart } = useCart()
   const navigate = useNavigate()
   const [placed, setPlaced] = useState(false)
+  usePageMeta('Checkout')
 
   if (!items.length && !placed) {
     return (

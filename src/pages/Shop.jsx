@@ -1,9 +1,13 @@
 import { useMemo, useState } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import ProductCard from '../components/ProductCard'
 import { categories, products } from '../data/products'
+import usePageMeta from '../lib/usePageMeta'
 
 export default function Shop() {
   const [filter, setFilter] = useState('All')
+  const reduce = useReducedMotion()
+  usePageMeta('Shop the Drop', 'Limited streetwear drops: outerwear, tops, bottoms and accessories cut for the night.')
 
   const list = useMemo(
     () => (filter === 'All' ? products : products.filter((p) => p.category === filter)),
@@ -47,10 +51,16 @@ export default function Shop() {
         </div>
       ) : (
         <div className="product-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {list.map((product) => (
-            <div key={product.id} className="group transition-transform duration-500 hover:-translate-y-1">
+          {list.map((product, i) => (
+            <motion.div
+              key={product.id}
+              initial={reduce ? false : { opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.15 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: (i % 3) * 0.08 }}
+            >
               <ProductCard product={product} />
-            </div>
+            </motion.div>
           ))}
         </div>
       )}

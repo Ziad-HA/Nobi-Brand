@@ -1,10 +1,12 @@
 import { useParams, Link } from "react-router-dom";
 import { seasons } from "../data/seasons";
 import { products } from "../data/products";
+import usePageMeta from "../lib/usePageMeta";
 
 export default function SeasonPage() {
   const { slug } = useParams();
   const season = seasons.find((s) => s.slug === slug);
+  usePageMeta(season ? `Season ${season.label} Lookbook` : "Season not found", season?.description);
 
   if (!season) {
     return (

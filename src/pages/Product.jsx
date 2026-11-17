@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { products } from '../data/products'
 import { useCart } from '../context/CartContext'
 import ProductCard from '../components/ProductCard'
+import usePageMeta from '../lib/usePageMeta'
 
 export default function Product() {
   const { id } = useParams()
@@ -15,6 +16,7 @@ export default function Product() {
   const [color, setColor] = useState(product?.colors[0] ?? '')
   const [shot, setShot] = useState(0)
   const [added, setAdded] = useState(false)
+  usePageMeta(product?.name ?? 'Not found', product?.description, product?.images?.[0])
 
   if (!product) {
     return (

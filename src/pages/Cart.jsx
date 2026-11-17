@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+import usePageMeta from '../lib/usePageMeta'
 
 export default function Cart() {
   const { items, updateQty, removeItem, subtotal } = useCart()
+  usePageMeta('Bag')
 
   if (!items.length) {
     return (
