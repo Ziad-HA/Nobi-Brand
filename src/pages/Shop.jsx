@@ -4,60 +4,111 @@ import ProductCard from '../components/ProductCard'
 import { categories, products } from '../data/products'
 import usePageMeta from '../lib/usePageMeta'
 
+const sortOptions = [
+  { value: 'featured', label: 'Featured' },
+  { value: 'price-low', label: 'Price: low to high' },
+  { value: 'price-high', label: 'Price: high to low' },
+  { value: 'name', label: 'Name: A to Z' },
+]
+
 export default function Shop() {
   const [filter, setFilter] = useState('All')
+  const [query, setQuery] = useState('')
+  const [sort, setSort] = useState('featured')
+  const [availability, setAvailability] = useState('all')
   const reduce = useReducedMotion()
   usePageMeta('Shop the Drop', 'Limited streetwear drops: outerwear, tops, bottoms and accessories cut for the night.')
 
-  const list = useMemo(
-    () => (filter === 'All' ? products : products.filter((p) => p.category === filter)),
-    [filter],
-  )
+  const list = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase()
+    const filtered = products.filter((product) => {
+      const matchesCategory = filter === 'All' || product.category === filter
+      const matchesQuery = !normalizedQuery || [product.name, product.category, product.tag]
+        .filter(Boolean)
+        .some((value) => value.toLowerCase().includes(normalizedQuery))
+      const matchesAvailability = availability === 'all' || (availability === 'available' ? !product.soldOut : product.soldOut)
+      return matchesCategory && matchesQuery && matchesAvailability
+    })
+
+    if (sort === 'price-low') return filtered.sort((a, b) => a.price - b.price)
+    if (sort === 'price-high') return filtered.sort((a, b) => b.price - a.price)
+    if (sort === 'name') return filtered.sort((a, b) => a.name.localeCompare(b.name))
+    return filtered
+  }, [filter, query, sort, availability])
 
   return (
     <section className="section shop-page max-w-7xl mx-auto px-4 md:px-8 py-12 text-white">
-      {/* Header Section */}
-      <div className="section-head flex flex-col md:flex-row md:items-end justify-between mb-10 border-b border-neutral-800 pb-6 gap-4">
+      <div className="section-head shop-heading">
         <div>
-          <p className="eyebrow text-xs uppercase tracking-widest text-neutral-500 mb-1">Catalog</p>
-          <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tight">Shop Drop</h1>
+          <p className="eyebrow">Catalog / NOBI archive</p>
+          <h1>Shop the drop<span>.</span></h1>
+          <p className="shop-intro">Pieces made to be worn on repeat. Find your next uniform.</p>
         </div>
-        <p className="muted text-sm font-mono text-neutral-400 bg-neutral-900/60 px-4 py-2 rounded-full border border-neutral-800 w-fit">
-          {list.length} {list.length === 1 ? 'piece' : 'pieces'} available
-        </p>
+        <p className="shop-count">{list.length} {list.length === 1 ? 'piece' : 'pieces'} found</p>
       </div>
 
-      {/* Category Filters */}
-      <div className="filters flex flex-wrap gap-2 md:gap-3 mb-12">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            className={`px-5 py-2.5 text-xs md:text-sm font-bold uppercase tracking-wider rounded-full transition-all duration-300 border ${
-              filter === cat
-                ? 'bg-white text-black border-white shadow-lg shadow-white/10 scale-105'
-                : 'bg-neutral-900/40 text-neutral-400 border-neutral-800 hover:border-neutral-600 hover:text-white'
-            }`}
-            onClick={() => setFilter(cat)}
-          >
-            {cat}
-          </button>
-        ))}
+      <div className="shop-toolbar">
+        <label className="shop-search">
+          <span className="sr-only">Search products</span>
+          <span aria-hidden="true">⌕</span>
+          <input
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search the collection"
+          />
+          {query && <button type="button" onClick={() => setQuery('')} aria-label="Clear search">×</button>}
+        </label>
+        <label className="shop-sort">
+          <span>Sort</span>
+          <select value={sort} onChange={(event) => setSort(event.target.value)}>
+            {sortOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+          </select>
+        </label>
       </div>
 
-      {/* Product Grid */}
+      <div className="shop-filter-row">
+        <div className="filters" aria-label="Filter by category">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              className={filter === cat ? 'is-active' : ''}
+              aria-pressed={filter === cat}
+              onClick={() => setFilter(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+        <label className="availability-filter">
+          <input
+            type="checkbox"
+            checked={availability === 'available'}
+            onChange={(event) => setAvailability(event.target.checked ? 'available' : 'all')}
+          />
+          <span>Available only</span>
+        </label>
+      </div>
+
       {list.length === 0 ? (
-        <div className="text-center py-24 text-neutral-500">
-          <p className="text-lg uppercase tracking-wider">No pieces found in this category.</p>
+        <div className="shop-empty">
+          <p className="eyebrow">No match</p>
+          <h2>Nothing in this edit.</h2>
+          <p>Try another search or clear your filters.</p>
+          <button type="button" className="btn btn-ghost" onClick={() => { setQuery(''); setFilter('All'); setAvailability('all') }}>
+            Clear filters
+          </button>
         </div>
       ) : (
-        <div className="product-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {list.map((product, i) => (
+        <div className="product-grid shop-product-grid">
+          {list.map((product, index) => (
             <motion.div
               key={product.id}
-              initial={reduce ? false : { opacity: 0, y: 32 }}
+              initial={reduce ? false : { opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: (i % 3) * 0.08 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1], delay: (index % 4) * 0.045 }}
             >
               <ProductCard product={product} />
             </motion.div>
