@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 const CartContext = createContext(null)
 const STORAGE_KEY = 'Nobi-cart'
@@ -27,7 +27,7 @@ export function CartProvider({ children }) {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)) } catch { /* Session-only fallback. */ }
   }, [items])
 
-  const addItem = (product, { size, color } = {}) => {
+  const addItem = useCallback((product, { size, color } = {}) => {
     if (!product || product.soldOut || !size || !color) return false
     setItems((prev) => {
       const key = `${product.id}-${size}-${color}`
@@ -37,21 +37,22 @@ export function CartProvider({ children }) {
     })
     setIsCartOpen(true)
     return true
-  }
+  }, [])
 
-  const updateQty = (key, qty) => {
+  const updateQty = useCallback((key, qty) => {
     const nextQty = Math.floor(Number(qty))
     setItems((prev) => !Number.isFinite(nextQty) || nextQty < 1
       ? prev.filter((item) => item.key !== key)
       : prev.map((item) => item.key === key ? { ...item, qty: Math.min(nextQty, 99) } : item))
-  }
-  const removeItem = (key) => setItems((prev) => prev.filter((item) => item.key !== key))
-  const clearCart = () => setItems([])
-  const openCart = () => setIsCartOpen(true)
-  const closeCart = () => setIsCartOpen(false)
+  }, [])
+  const removeItem = useCallback((key) => setItems((prev) => prev.filter((item) => item.key !== key)), [])
+  const clearCart = useCallback(() => setItems([]), [])
+  const openCart = useCallback(() => setIsCartOpen(true), [])
+  const closeCart = useCallback(() => setIsCartOpen(false), [])
   const count = items.reduce((sum, item) => sum + item.qty, 0)
   const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0)
-  const value = useMemo(() => ({ items, addItem, updateQty, removeItem, clearCart, count, subtotal, isCartOpen, openCart, closeCart }), [items, count, subtotal, isCartOpen])
+  const value = useMemo(() => ({ items, addItem, updateQty, removeItem, clearCart, count, subtotal, isCartOpen, openCart, closeCart }),
+    [items, addItem, updateQty, removeItem, clearCart, count, subtotal, isCartOpen, openCart, closeCart])
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }
 
