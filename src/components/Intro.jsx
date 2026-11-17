@@ -121,12 +121,14 @@ export default function Intro() {
           <div className="nobi-intro-map-crosshair crosshair-one" />
           <div className="nobi-intro-map-crosshair crosshair-two" />
           <div className="nobi-intro-map-viewport">
-            <WorldMap />
-            <div className="nobi-intro-target">
-              <span className="nobi-intro-target-ring" />
-              <span className="nobi-intro-target-dot" />
+            <div className="nobi-intro-map-scene">
+              <WorldMap />
+              <div className="nobi-intro-target">
+                <span className="nobi-intro-target-ring" />
+                <span className="nobi-intro-target-dot" />
+              </div>
+              <div className="nobi-intro-egypt-label">EGYPT <span>31° 14′ N</span></div>
             </div>
-            <div className="nobi-intro-egypt-label">EGYPT <span>31° 14′ N</span></div>
           </div>
           <span className="nobi-intro-map-coordinate coordinate-left">30° 02′ E</span>
           <span className="nobi-intro-map-coordinate coordinate-right">N / 001</span>
