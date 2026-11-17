@@ -1,63 +1,89 @@
 import { useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase'
+import { isSupabaseConfigured, supabase } from '../lib/supabase'
 
 export default function Login() {
-  const [mode, setMode] = useState('login') // login | signup
+  const [mode, setMode] = useState('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [status, setStatus] = useState('idle') // idle | loading | error
+  const [status, setStatus] = useState('idle')
   const [message, setMessage] = useState('')
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null))
+    if (!isSupabaseConfigured || !supabase) {
+      setMessage('Account features are unavailable until Supabase is configured.')
+      return undefined
+    }
+
+    let active = true
+    supabase.auth.getSession()
+      .then(({ data, error }) => {
+        if (!active) return
+        if (error) setMessage(error.message)
+        setUser(data?.session?.user ?? null)
+      })
+      .catch(() => {
+        if (active) setMessage('Could not connect to the account service. Please try again.')
+      })
+
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_e, session) => {
-      setUser(session?.user ?? null)
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (active) setUser(session?.user ?? null)
     })
-    return () => subscription.unsubscribe()
+
+    return () => {
+      active = false
+      subscription.unsubscribe()
+    }
   }, [])
 
-  async function handleSubmit(e) {
-    e.preventDefault()
+  async function handleSubmit(event) {
+    event.preventDefault()
+    if (!supabase) {
+      setStatus('error')
+      setMessage('Account features are unavailable until Supabase is configured.')
+      return
+    }
+
     setStatus('loading')
     setMessage('')
 
-    if (mode === 'signup') {
-      const { data, error } = await supabase.auth.signUp({
-        email: email.trim(),
-        password,
-      })
+    try {
+      if (mode === 'signup') {
+        const { data, error } = await supabase.auth.signUp({
+          email: email.trim(),
+          password,
+        })
 
-      if (error) {
-        setStatus('error')
-        setMessage(error.message)
+        if (error) throw error
+
+        setStatus('idle')
+        setMessage(
+          data.session
+            ? 'Your account has been created.'
+            : 'Check your email for a confirmation link to finish creating your account.',
+        )
         return
       }
 
-      if (!data.session) {
-        // لو الكونفيرم لسه مفعّل
-        setStatus('error')
-        setMessage('Email confirmation is still enabled in Supabase.')
-        return
-      }
-
-      setStatus('idle')
-    } else {
       const { error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password,
       })
 
-      if (error) {
-        setStatus('error')
-        setMessage(error.message)
-        return
-      }
-
+      if (error) throw error
       setStatus('idle')
+    } catch (error) {
+      setStatus('error')
+      setMessage(error instanceof Error ? error.message : 'Something went wrong. Please try again.')
     }
+  }
+
+  async function handleSignOut() {
+    if (!supabase) return
+    const { error } = await supabase.auth.signOut()
+    if (error) setMessage(error.message)
   }
 
   if (user) {
@@ -67,9 +93,10 @@ export default function Login() {
           <p className="eyebrow">Signed in</p>
           <h1>Welcome.</h1>
           <p className="muted" style={{ margin: '1rem 0' }}>{user.email}</p>
-          <button className="btn btn-ghost" onClick={() => supabase.auth.signOut()}>
+          <button className="btn btn-ghost" type="button" onClick={handleSignOut}>
             Log out
           </button>
+          {message && <p className="muted" role="status">{message}</p>}
         </div>
       </section>
     )
@@ -88,7 +115,7 @@ export default function Login() {
               type="email"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(event) => setEmail(event.target.value)}
               placeholder="you@example.com"
               autoComplete="email"
             />
@@ -101,13 +128,13 @@ export default function Login() {
               required
               minLength={6}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(event) => setPassword(event.target.value)}
               placeholder="At least 6 characters"
               autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
             />
           </label>
 
-          <button className="btn btn-primary" disabled={status === 'loading'}>
+          <button className="btn btn-primary" disabled={status === 'loading' || !isSupabaseConfigured}>
             {status === 'loading'
               ? 'Please wait...'
               : mode === 'login'
@@ -115,7 +142,7 @@ export default function Login() {
               : 'Create account'}
           </button>
 
-          {message && <p className="muted">{message}</p>}
+          {message && <p className="muted" role="status">{message}</p>}
 
           <button
             type="button"
