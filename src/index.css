@@ -4602,3 +4602,33 @@ select {
 @media (prefers-reduced-motion:reduce) {
   .intro-streetwear { display:none !important; }
 }
+
+/* Fast map-first intro refinement */
+.intro-streetwear { display:block; }
+.intro-mini-brand { position:absolute; z-index:8; top:clamp(1.1rem,3vh,2rem); left:50%; transform:translateX(-50%); color:#f4f4f0; font:800 .8rem var(--display); letter-spacing:.32em; }
+.intro-map-wrap { width:min(94vw,1120px); aspect-ratio:1.5; top:48%; }
+.intro-globe { inset:4% 2%; border-radius:48%; background:radial-gradient(ellipse at 50% 45%,#252c1b 0,#11150f 58%,#080908 100%); }
+.intro-world-svg { padding:2%; opacity:1; }
+.intro-map-orbit { inset:5% 0; }
+.intro-map-orbit-two { inset:0 12%; }
+.intro-enter { left:50%; right:auto; bottom:8%; transform:translateX(-50%); padding:.75rem 1.25rem; }
+.intro-enter:hover { transform:translate(-50%,-2px); }
+.intro-arrival-text { position:absolute; z-index:9; left:50%; bottom:9%; transform:translateX(-50%); color:var(--intro-acid); font:800 clamp(1.6rem,5vw,3.4rem) var(--display); letter-spacing:.08em; white-space:nowrap; text-shadow:0 0 28px rgba(214,255,58,.35); animation:intro-arrival-pop .32s cubic-bezier(.16,1,.3,1) both; }
+.intro-skip { top:1rem; right:1rem; bottom:auto; padding:.55rem .7rem; }
+.intro-phase-spin .intro-map-wrap { animation:intro-map-whip .85s cubic-bezier(.45,0,.2,1) both; }
+.intro-phase-spin .intro-globe { animation:intro-world-spin .22s linear infinite; }
+.intro-phase-arrival .intro-map-wrap { transform:translate(-50%,-48%) scale(1.08); }
+.intro-phase-arrival .intro-egypt-pin { animation:intro-pin-lock .32s cubic-bezier(.16,1,.3,1) forwards; }
+.intro-phase-zoom .intro-map-wrap { transform:translate(-50%,-46%) scale(4.2); filter:brightness(1.5); }
+.intro-phase-zoom .intro-egypt-pin { opacity:1; }
+.intro-phase-leave { animation:intro-curtain-out .38s cubic-bezier(.7,0,.2,1) forwards; pointer-events:none; }
+@keyframes intro-map-whip { 0% { transform:translate(-50%,-50%) scale(.88) rotate(-8deg); } 100% { transform:translate(-50%,-50%) scale(1) rotate(0); } }
+@keyframes intro-arrival-pop { from { opacity:0; transform:translate(-50%,12px) scale(.9); } to { opacity:1; transform:translate(-50%,0) scale(1); } }
+@keyframes intro-world-spin { from { transform:rotateZ(0deg) rotateY(0deg); } to { transform:rotateZ(360deg) rotateY(0deg); } }
+@media (max-width:700px) {
+ .intro-map-wrap { width:132vw; top:47%; }
+ .intro-globe { inset:5% 0; }
+ .intro-world-svg { padding:0; }
+ .intro-enter { bottom:9%; }
+ .intro-phase-zoom .intro-map-wrap { transform:translate(-50%,-46%) scale(3.1); }
+}
