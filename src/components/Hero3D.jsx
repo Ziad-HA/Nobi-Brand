@@ -13,7 +13,7 @@ function seeded(seed) {
   }
 }
 
-const DUST_MAX = 220
+const DUST_MAX = 150
 const DUST = (() => {
   const rand = seeded(11)
   const pos = new Float32Array(DUST_MAX * 3)
@@ -141,12 +141,13 @@ export default function Hero3D() {
     if (wrap.current) io.observe(wrap.current)
 
     mq.addEventListener('change', onMq)
-    window.addEventListener('pointermove', onMove, { passive: true })
+    const finePointer = window.matchMedia('(pointer: fine)').matches
+    if (finePointer) window.addEventListener('pointermove', onMove, { passive: true })
     document.addEventListener('visibilitychange', onVis)
     return () => {
       io.disconnect()
       mq.removeEventListener('change', onMq)
-      window.removeEventListener('pointermove', onMove)
+      if (finePointer) window.removeEventListener('pointermove', onMove)
       document.removeEventListener('visibilitychange', onVis)
     }
   }, [])
@@ -158,7 +159,7 @@ export default function Hero3D() {
     <div ref={wrap} className="hero-3d" aria-hidden="true">
       <Canvas
         frameloop={frameloop}
-        dpr={[1, 1.5]}
+        dpr={[1, 1.25]}
         camera={{ position: [0, 0, 6], fov: 40 }}
         gl={{ antialias: false, alpha: true, powerPreference: 'low-power' }}
       >
