@@ -16,6 +16,7 @@ export default function Product() {
   const [shot, setShot] = useState(0)
   const [added, setAdded] = useState(false)
   const reduceMotion = useReducedMotion()
+  const reduceMotion = useReducedMotion()
   usePageMeta(product?.name ?? 'Not found', product?.description, product?.images?.[0])
 
   if (!product) {
@@ -37,6 +38,13 @@ export default function Product() {
     if (event.key === 'ArrowLeft') showPreviousImage()
     if (event.key === 'ArrowRight') showNextImage()
   }
+  const showPreviousImage = () => setShot((current) => (current - 1 + images.length) % images.length)
+  const showNextImage = () => setShot((current) => (current + 1) % images.length)
+  const onGalleryKeyDown = (event) => {
+    if (images.length < 2) return
+    if (event.key === 'ArrowLeft') showPreviousImage()
+    if (event.key === 'ArrowRight') showNextImage()
+  }
   const onAdd = () => {
     if (product.soldOut || !size || !color) return
     addItem(product, { size, color })
@@ -47,8 +55,25 @@ export default function Product() {
     <section className="product-page product-detail-page">
       <div className="product-layout">
         <div className="product-gallery">
-          <div className="product-main-image">
-            {images[shot] && <img src={images[shot]} alt={product.name} fetchPriority="high" decoding="async" />}
+          <div
+            className="product-main-image"
+            tabIndex={images.length > 1 ? 0 : undefined}
+            onKeyDown={onGalleryKeyDown}
+            role={images.length > 1 ? "group" : undefined}
+            aria-label={images.length > 1 ? "Product image gallery. Use left and right arrow keys to change images." : undefined}
+          >
+            {images[shot] && (
+              <motion.img
+                key={images[shot]}
+                src={images[shot]}
+                alt={product.name}
+                fetchPriority="high"
+                decoding="async"
+                initial={reduceMotion ? false : { opacity: 0.55, scale: 1.015 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: reduceMotion ? 0 : 0.35 }}
+              />
+            )}
             <span className="product-image-index">{String(shot + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}</span>
           </div>
           {images.length > 1 && (
