@@ -1,12 +1,30 @@
 import TiltLink, { Glare } from './TiltLink'
 
 export default function ProductCard({ product }) {
+  const secondaryImage = product.images?.[1]
+
   return (
-    <TiltLink to={`/product/${product.id}`} className="product-card" max={13} hoverScale={1.06}>
+    <TiltLink to={`/product/${product.id}`} className="product-card" max={13} hoverScale={1.035}>
       <div className="product-media">
-        <img src={product.images[0]} alt={product.name} loading="lazy" decoding="async" />
+        <img
+          className="product-image-primary"
+          src={product.images?.[0]}
+          alt={product.name}
+          loading="lazy"
+          decoding="async"
+        />
+        {secondaryImage && (
+          <img
+            className="product-image-secondary"
+            src={secondaryImage}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+        )}
         <Glare />
         <span className="chip">{product.soldOut ? 'Sold out' : product.tag}</span>
+        <span className="product-card-action" aria-hidden="true">View piece <span>↗</span></span>
       </div>
       <div className="product-meta">
         <div>
