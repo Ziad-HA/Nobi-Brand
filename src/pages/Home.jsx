@@ -6,6 +6,7 @@ import OrbitGallery from "../components/OrbitGallery";
 import TiltLink, { Glare } from "../components/TiltLink";
 import { lookbook, products } from "../data/products";
 import usePageMeta from "../lib/usePageMeta";
+import DropCountdown from "../components/DropCountdown";
 
 export default function Home() {
   const reduceMotion = useReducedMotion();
@@ -116,6 +117,8 @@ export default function Home() {
           </TiltLink>
         ))}
       />
+
+      <DropCountdown />
 
       <motion.section className="home-final" {...reveal}>
         <p className="eyebrow">NOBI / AFTER HOURS</p>
