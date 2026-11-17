@@ -16,7 +16,6 @@ export default function Product() {
   const [shot, setShot] = useState(0)
   const [added, setAdded] = useState(false)
   const reduceMotion = useReducedMotion()
-  const reduceMotion = useReducedMotion()
   usePageMeta(product?.name ?? 'Not found', product?.description, product?.images?.[0])
 
   if (!product) {
@@ -31,13 +30,6 @@ export default function Product() {
 
   const related = products.filter((item) => item.id !== product.id && item.category === product.category).slice(0, 4)
   const images = product.images?.length ? product.images : []
-  const showPreviousImage = () => setShot((current) => (current - 1 + images.length) % images.length)
-  const showNextImage = () => setShot((current) => (current + 1) % images.length)
-  const onGalleryKeyDown = (event) => {
-    if (images.length < 2) return
-    if (event.key === 'ArrowLeft') showPreviousImage()
-    if (event.key === 'ArrowRight') showNextImage()
-  }
   const showPreviousImage = () => setShot((current) => (current - 1 + images.length) % images.length)
   const showNextImage = () => setShot((current) => (current + 1) % images.length)
   const onGalleryKeyDown = (event) => {
