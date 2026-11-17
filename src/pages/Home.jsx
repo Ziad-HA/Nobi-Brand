@@ -2,6 +2,9 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import ProductCard from "../components/ProductCard";
+import Hero3DLayer from "../components/Hero3DLayer";
+import Scroll3D from "../components/Scroll3D";
+import TiltLink from "../components/TiltLink";
 import { lookbook, products } from "../data/products";
 
 export default function Home() {
@@ -19,6 +22,7 @@ export default function Home() {
         />
 
         <div className="hero-overlay" />
+        <Hero3DLayer />
 
         <div className="hero-copy home-hero-copy">
           <p className="eyebrow">Season 04 · Night Shift</p>
@@ -129,11 +133,13 @@ export default function Home() {
         {showImages && (
           <div className="look-strip">
             {lookbook.slice(0, 4).map((shot, index) => (
-              <Link to="/lookbook" key={shot.id} className="look-tile">
-                <img src={shot.image} alt={shot.city} />
-                <span className="look-number">0{index + 1}</span>
-                <span className="look-city">{shot.city}</span>
-              </Link>
+              <Scroll3D key={shot.id} dir={index % 2 ? -1 : 1}>
+                <TiltLink to="/lookbook" className="look-tile" aria-label={`Season ${shot.city} lookbook`}>
+                  <img src={shot.image} alt="" />
+                  <span className="look-number" aria-hidden="true">0{index + 1}</span>
+                  <span className="look-city">{shot.city}</span>
+                </TiltLink>
+              </Scroll3D>
             ))}
           </div>
         )}

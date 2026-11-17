@@ -14,9 +14,10 @@ export default function Layout() {
 
   return (
     <>
+      <a className="skip-link" href="#main">Skip to content</a>
       <Navbar />
 
-      <main key={pageKey} className="luxury-page">
+      <main id="main" tabIndex={-1} key={pageKey} className="luxury-page">
         <Outlet />
       </main>
 

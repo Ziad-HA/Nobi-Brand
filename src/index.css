@@ -2158,12 +2158,12 @@ h3 {
 @keyframes nobi-luxury-reveal {
   from {
     opacity: 0;
-    transform: translateY(26px);
+    translate: 0 26px;
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    translate: 0 0;
   }
 }
 
@@ -2699,4 +2699,90 @@ button,
 .home-products {
   margin-top: 0 !important;
   padding-top: 35px !important;
+}
+
+/* =========================================
+   NOBI - 3D LAYER, ACCESSIBILITY, TOUCH
+========================================= */
+
+/* Hero WebGL knot sits between the photo/overlay and the copy. It never takes pointer events. */
+.hero-3d {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-3d canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Cards that tip in 3D. framer-motion drives transform, so CSS must not transition it as well. */
+.tilt3d {
+  display: block;
+  transition: none;
+  will-change: transform;
+  touch-action: manipulation;
+}
+
+.scroll3d {
+  will-change: transform;
+}
+
+main {
+  overflow-x: clip;
+}
+
+/* Keyboard users: always see where focus is, and jump past the nav. */
+:focus-visible {
+  outline: 2px solid var(--volt);
+  outline-offset: 3px;
+}
+
+main:focus {
+  outline: none;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.6rem;
+  left: 0.6rem;
+  z-index: 1000;
+  padding: 0.7rem 1rem;
+  background: var(--volt);
+  color: var(--volt-ink);
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* 44px touch target for the mobile menu button: invisible hit area, the icon keeps its size. */
+.nav-toggle::after {
+  content: '';
+  position: absolute;
+  inset: -14px -10px;
+}
+
+button,
+.btn,
+.filters button,
+.chips button {
+  touch-action: manipulation;
+}
+
+/* Reduced motion: no WebGL spin, no 3D, no reveal animation. Content shows in its final state. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

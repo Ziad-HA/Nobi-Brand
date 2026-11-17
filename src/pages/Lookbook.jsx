@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
 import { lookbook } from "../data/products";
+import Scroll3D from "../components/Scroll3D";
+import TiltLink from "../components/TiltLink";
 
 export default function Lookbook() {
   const shots = lookbook.slice(0, 4);
@@ -17,14 +18,16 @@ export default function Lookbook() {
       </div>
       <div className="look-masonry">
         {shots.map((shot, i) => (
-          <figure key={shot.id}>
-            <Link to={`/lookbook/${shot.city.toLowerCase()}`}>
-              <img src={shot.image} alt={`${shot.city} look`} />
-            </Link>
-            <figcaption>
-              {String(i + 1).padStart(2, "0")} / {shot.city}
-            </figcaption>
-          </figure>
+          <Scroll3D key={shot.id} dir={i % 2 ? -1 : 1}>
+            <figure>
+              <TiltLink to={`/lookbook/${shot.city.toLowerCase()}`} aria-label={`Open season ${shot.city}`}>
+                <img src={shot.image} alt={`Season ${shot.city} look`} />
+              </TiltLink>
+              <figcaption>
+                {String(i + 1).padStart(2, "0")} / {shot.city}
+              </figcaption>
+            </figure>
+          </Scroll3D>
         ))}
       </div>
     </section>
