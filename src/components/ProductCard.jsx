@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import TiltLink, { Glare } from './TiltLink'
 import ProductQuickView from './ProductQuickView'
 import { useWishlist } from '../context/WishlistContext'
@@ -8,6 +8,7 @@ export default function ProductCard({ product, priority = false }) {
   const secondaryImage = product.images?.[1]
   const { isWishlisted, toggleWishlist } = useWishlist()
   const saved = isWishlisted(product.id)
+  const closeQuickView = useCallback(() => setQuickViewOpen(false), [])
 
   return (
     <>
@@ -25,7 +26,7 @@ export default function ProductCard({ product, priority = false }) {
         <button type="button" className={`product-wishlist-btn ${saved ? 'is-saved' : ''}`} aria-label={saved ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`} aria-pressed={saved} onClick={() => toggleWishlist(product.id)}>{saved ? '♥' : '♡'}</button>
         <button type="button" className="product-quick-view-btn" onClick={() => setQuickViewOpen(true)}>Quick view <span>↗</span></button>
       </article>
-      <ProductQuickView product={quickViewOpen ? product : null} onClose={() => setQuickViewOpen(false)} />
+      <ProductQuickView product={quickViewOpen ? product : null} onClose={closeQuickView} />
     </>
   )
 }
