@@ -33,30 +33,6 @@ function ScrollToTop() {
   return null
 }
 
-// NOBI - FLASH CUT PAGE TRANSITION
-const pageVariants = {
-  initial: {
-    opacity: 0,
-    scale: 0.94,
-    y: 22,
-    filter: 'blur(8px)'
-  },
-
-  animate: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    filter: 'blur(0px)'
-  },
-
-  exit: {
-    opacity: 0,
-    scale: 1.04,
-    y: -10,
-    filter: 'blur(5px)'
-  }
-}
-
 function AnimatedRoutes() {
   const location = useLocation()
   const reduceMotion = useReducedMotion()
