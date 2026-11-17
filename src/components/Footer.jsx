@@ -31,7 +31,7 @@ export default function Footer() {
 
             {done ? (
               <p className="muted">
-                You're in. Next drop hits your inbox first.
+                This is a preview — email signups are not connected yet.
               </p>
             ) : (
               <form className="newsletter" onSubmit={onSubmit}>
@@ -128,9 +128,13 @@ export default function Footer() {
           CUT FOR THE NIGHT. MADE IN SMALL RUNS.
         </p>
 
-        <a href="#" className="back-to-top">
+        <button
+          type="button"
+          className="back-to-top"
+          onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })}
+        >
           BACK TO TOP ↑
-        </a>
+        </button>
       </div>
     </footer>
   )
