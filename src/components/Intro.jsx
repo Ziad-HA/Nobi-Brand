@@ -76,7 +76,7 @@ export default function Intro() {
           </span>
         ))}
       </div>
-      <p className="intro-skip muted">Click to skip</p>
+      <button type="button" className="intro-skip muted" onClick={skip} aria-label="Skip intro">Skip intro ↗</button>
       <div className="intro-count">{String(progress).padStart(3, '0')}</div>
       <div className="intro-bar">
         <i style={{ transform: `scaleX(${progress / 100})` }} />
