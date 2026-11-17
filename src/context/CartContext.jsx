@@ -7,9 +7,26 @@ function readCart() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     const parsed = raw ? JSON.parse(raw) : []
-    return Array.isArray(parsed)
-      ? parsed.filter((item) => item && item.key && item.id && Number(item.qty) > 0)
-      : []
+    if (!Array.isArray(parsed)) return []
+
+    return parsed
+      .filter((item) => {
+        const qty = Number(item?.qty)
+        const price = Number(item?.price)
+        return item && item.key && item.id && Number.isFinite(qty) &&
+          qty >= 1 && Number.isFinite(price) && price >= 0
+      })
+      .map((item) => ({
+        ...item,
+        key: String(item.key),
+        id: String(item.id),
+        name: String(item.name || 'NOBI piece'),
+        image: typeof item.image === 'string' ? item.image : '',
+        size: String(item.size || ''),
+        color: String(item.color || ''),
+        price: Number(item.price),
+        qty: Math.min(99, Math.floor(Number(item.qty))),
+      }))
   } catch {
     return []
   }
@@ -26,14 +43,14 @@ export function CartProvider({ children }) {
     }
   }, [items])
 
-  const addItem = (product, { size, color }) => {
-    if (!product || product.soldOut) return
+  const addItem = (product, { size, color } = {}) => {
+    if (!product || product.soldOut || !size || !color) return
     setItems((prev) => {
       const key = `${product.id}-${size}-${color}`
       const existing = prev.find((item) => item.key === key)
       if (existing) {
         return prev.map((item) =>
-          item.key === key ? { ...item, qty: item.qty + 1 } : item,
+          item.key === key ? { ...item, qty: Math.min(99, item.qty + 1) } : item,
         )
       }
       return [
@@ -42,7 +59,7 @@ export function CartProvider({ children }) {
           key,
           id: product.id,
           name: product.name,
-          price: Number(product.price) || 0,
+          price: Math.max(0, Number(product.price) || 0),
           image: product.images?.[0] ?? '',
           size,
           color,
