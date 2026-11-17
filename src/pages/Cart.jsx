@@ -41,7 +41,7 @@ export default function Cart() {
                     <span>{item.qty}</span>
                     <button type="button" onClick={() => updateQty(item.key, item.qty + 1)} aria-label={`Increase quantity of ${item.name}`} disabled={item.qty >= 99}>+</button>
                   </div>
-                  <button className="remove-btn" type="button" onClick={() => removeItem(item.key)} aria-label={`Remove ${item.name} from your bag`}>Remove</button>
+                  <button className="remove-btn" type="button" onClick={() => removeItem(item.key)} aria-label={`Remove ${item.name} from your bag`} data-sound="remove">Remove</button>
                 </div>
               </div>
               <strong className="cart-item-price">${(item.price * item.qty).toFixed(2)}</strong>
