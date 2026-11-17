@@ -3,9 +3,9 @@ import { useLocation } from 'react-router-dom'
 import { playSoundEffect } from '../lib/soundEffects'
 
 const KEY = 'nobi-intro'
-const SPIN_TIME = 2600
-const ARRIVAL_TIME = 1250
-const ZOOM_TIME = 1450
+const SPIN_TIME = 850
+const ARRIVAL_TIME = 450
+const ZOOM_TIME = 700
 
 const shouldPlay = (pathname) => {
   if (pathname !== '/') return false
@@ -26,7 +26,7 @@ function WorldMap() {
       <div className="intro-map-orbit intro-map-orbit-two" />
       <div className="intro-globe">
         <div className="intro-globe-grid" />
-        <svg className="intro-world-svg" viewBox="0 0 720 420" role="img" aria-label="Stylized world map">
+        <svg className="intro-world-svg" viewBox="0 0 720 420" role="img" aria-label="World map with Egypt highlighted">
           <defs>
             <pattern id="intro-map-dots" width="8" height="8" patternUnits="userSpaceOnUse">
               <circle cx="1.5" cy="1.5" r="1" fill="currentColor" opacity=".22" />
@@ -44,10 +44,7 @@ function WorldMap() {
           <path className="intro-egypt-highlight" d="m430 158 24-5 13 9-4 20-19 7-17-12Z" />
           <path className="intro-egypt-highlight" d="m451 191 17-3 9 13-6 17-15-2-8-13Z" opacity=".45" />
         </svg>
-        <div className="intro-egypt-pin">
-          <span />
-          <b>EGYPT</b>
-        </div>
+        <div className="intro-egypt-pin"><span /><b>EGYPT</b></div>
       </div>
     </div>
   )
@@ -72,13 +69,9 @@ export default function Intro() {
 
   const finish = () => {
     timers.current.forEach(clearTimeout)
-    try {
-      sessionStorage.setItem(KEY, '1')
-    } catch {
-      /* ignore */
-    }
+    try { sessionStorage.setItem(KEY, '1') } catch { /* ignore */ }
     setPhase('leave')
-    timers.current.push(setTimeout(() => setPhase('done'), 760))
+    timers.current.push(setTimeout(() => setPhase('done'), 380))
   }
 
   const start = () => {
@@ -99,30 +92,15 @@ export default function Intro() {
   if (phase === 'done') return null
 
   return (
-    <div className={`intro intro-streetwear intro-phase-${phase}`} aria-label="NOBI arrival intro">
+    <div className={`intro intro-streetwear intro-phase-${phase}`} aria-label="NOBI intro">
       <div className="intro-noise" />
-      <div className="intro-topline">
-        <span>NOBI® / GLOBAL STREET UNIT</span>
-        <span>EST. AFTER DARK</span>
-      </div>
-      <div className="intro-coordinate">31°12' N — 29°55' E</div>
+      <div className="intro-mini-brand">NOBI®</div>
       <WorldMap />
-      <div className="intro-copy">
-        <p className="intro-kicker">WORLDWIDE MOVEMENT / 001</p>
-        <h1>{phase === 'ready' ? 'THE WORLD IS YOURS.' : phase === 'arrival' ? 'WE’RE HERE.' : 'NOBI HAS LANDED.'}</h1>
-        <p className="intro-location">CAIRO, EGYPT <span>—</span> 31.2001° N / 29.9187° E</p>
-      </div>
-      <div className="intro-bottomline">
-        <span className="intro-status">{phase === 'ready' ? 'READY TO DEPLOY' : phase === 'spin' ? 'SCANNING LOCATIONS' : phase === 'arrival' ? 'DESTINATION LOCKED' : 'ENTERING THE DROP'}</span>
-        <span className="intro-index">N° 001 / 026</span>
-      </div>
-      {phase === 'ready' ? (
-        <button type="button" className="intro-enter" onClick={start}>
-          TAP TO ENTER <span>↗</span>
-        </button>
-      ) : (
-        <button type="button" className="intro-skip" onClick={finish}>SKIP INTRO ↗</button>
+      {phase === 'arrival' && <div className="intro-arrival-text">WE’RE HERE.</div>}
+      {phase === 'ready' && (
+        <button type="button" className="intro-enter" onClick={start}>ENTER <span>↗</span></button>
       )}
+      {phase !== 'ready' && <button type="button" className="intro-skip" onClick={finish}>SKIP</button>}
     </div>
   )
 }
