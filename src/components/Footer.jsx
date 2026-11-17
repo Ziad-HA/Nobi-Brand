@@ -60,11 +60,10 @@ export default function Footer() {
             <Link to="/about">About</Link>
           </div>
 
-          <div className="footer-col">
-            <p className="eyebrow">SUPPORT</p>
-            <a href="#shipping">Shipping</a>
-            <a href="#returns">Returns</a>
-            <a href="#size">Size guide</a>
+          <div className="footer-col footer-support">
+            <p className="eyebrow">ORDER INFO</p>
+            <p>Shipping and delivery details will be confirmed before checkout.</p>
+            <p>Returns and sizing information will be published with the store policies.</p>
           </div>
 
           <div className="footer-col footer-socials">
