@@ -50,6 +50,14 @@ export function playSoundEffect(kind = 'tap') {
     return
   }
 
+  if (kind === 'intro-reveal') {
+    // Wide, soft transition whoosh as the intro gives way to the storefront.
+    playTone(context, { frequency: 62, endFrequency: 210, startAt: now, duration: 0.95, volume: 0.105, type: 'sine' })
+    playTone(context, { frequency: 180, endFrequency: 720, startAt: now + 0.08, duration: 0.72, volume: 0.045, type: 'triangle' })
+    playTone(context, { frequency: 920, endFrequency: 420, startAt: now + 0.28, duration: 0.52, volume: 0.022, type: 'sine' })
+    return
+  }
+
   if (kind === 'add') {
     playTone(context, { frequency: 520, endFrequency: 760, startAt: now, duration: 0.11, volume: 0.055 })
     playTone(context, { frequency: 780, endFrequency: 1040, startAt: now + 0.065, duration: 0.13, volume: 0.035, type: 'triangle' })
