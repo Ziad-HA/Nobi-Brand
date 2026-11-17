@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { playSoundEffect } from '../lib/soundEffects'
+import './IntroCinematic.css'
 
 const STORAGE_KEY = 'nobi-intro-v2'
 
@@ -17,31 +18,26 @@ function canShowIntro(pathname) {
   }
 }
 
-function WorldMap() {
+function GlobeScene() {
   return (
-    <svg
-      className="nobi-intro-map"
-      viewBox="0 0 720 420"
-      role="img"
-      aria-label="World map highlighting Egypt"
-    >
-      <defs>
-        <pattern id="nobi-map-texture" width="5" height="5" patternUnits="userSpaceOnUse">
-          <circle cx="1" cy="1" r=".65" fill="currentColor" opacity=".3" />
-        </pattern>
-      </defs>
-      <g className="nobi-intro-continents" fill="url(#nobi-map-texture)" stroke="currentColor" strokeWidth="1.25" strokeLinejoin="round">
-        <path d="M72 104 96 77 132 69 151 47 194 55 216 78 250 81 267 105 250 128 223 133 207 159 178 166 160 194 131 184 119 159 92 151 81 128Z" />
-        <path d="m218 190 29 10 20 34-9 39-20 43-15 51-19-13-7-47-18-34 9-42Z" />
-        <path d="m316 82 31-21 46 5 28-18 50 11 31 25 43 2 24 26-13 27-36 3-18 24-36-7-23 21-29-7-23-32-31-4-20-24-28 4-19-20Z" />
-        <path d="m368 174 34-12 35 17 22 40-9 44-26 39-18 49-26-8-16-41-21-30 7-47Z" />
-        <path d="m504 238 37-17 45 12 26 28-14 28-44 4-36-18Z" />
-        <path d="m567 99 32-12 28 16-5 27-34 11-24-17Z" />
-        <path d="m626 297 20-8 15 12-8 22-23 2-13-13Z" />
-      </g>
-      <path className="nobi-intro-egypt-shape" d="m430 158 24-5 13 9-4 20-19 7-17-12Z" />
-      <path className="nobi-intro-egypt-shape" d="m451 191 17-3 9 13-6 17-15-2-8-13Z" opacity=".42" />
-    </svg>
+    <div className="nobi-intro-globe-scene" aria-hidden="true">
+      <div className="nobi-intro-globe-halo" />
+      <div className="nobi-intro-globe">
+        <svg className="nobi-intro-globe-map" viewBox="0 0 720 420" preserveAspectRatio="xMidYMid meet">
+          <g>
+            <path d="M72 104 96 77 132 69 151 47 194 55 216 78 250 81 267 105 250 128 223 133 207 159 178 166 160 194 131 184 119 159 92 151 81 128Z" />
+            <path d="m218 190 29 10 20 34-9 39-20 43-15 51-19-13-7-47-18-34 9-42Z" />
+            <path d="m316 82 31-21 46 5 28-18 50 11 31 25 43 2 24 26-13 27-36 3-18 24-36-7-23 21-29-7-23-32-31-4-20-24-28 4-19-20Z" />
+            <path d="m368 174 34-12 35 17 22 40-9 44-26 39-18 49-26-8-16-41-21-30 7-47Z" />
+            <path d="m504 238 37-17 45 12 26 28-14 28-44 4-36-18Z" />
+            <path d="m567 99 32-12 28 16-5 27-34 11-24-17Z" />
+          </g>
+        </svg>
+        <span className="nobi-intro-globe-target" />
+        <span className="nobi-intro-globe-scan" />
+        <span className="nobi-intro-globe-caption">NORTH AFRICA / TARGET ACQUIRED</span>
+      </div>
+    </div>
   )
 }
 
@@ -127,6 +123,7 @@ export default function Intro() {
         </div>
 
         <div className="nobi-intro-map-frame nobi-intro-camera-frame">
+          <GlobeScene />
           <div className="nobi-intro-drone-scene">
             <div className="nobi-intro-city-grid" />
             <svg className="nobi-intro-city-roads" viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
@@ -168,11 +165,6 @@ export default function Intro() {
           <div className="nobi-intro-camera-vignette" />
           <span className="nobi-intro-camera-caption">EGYPT → CAIRO</span>
           <span className="nobi-intro-camera-altitude">LOCATION <b>LOCKED</b></span>
-        </div>
-        
-        <div className="nobi-intro-stage-bottom">
-          <span>FROM EVERYWHERE</span>
-          <span>TO SOMEWHERE</span>
         </div>
       </div>
 
