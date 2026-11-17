@@ -85,7 +85,7 @@ export default function Intro() {
         playSoundEffect('intro-arrive')
       }, 2600),
       window.setTimeout(() => setPhase('statement'), 3500),
-      window.setTimeout(() => setPhase('exit'), 4650),
+      window.setTimeout(() => setPhase('exit'), 5200),
       window.setTimeout(() => {
         try {
           sessionStorage.setItem(STORAGE_KEY, '1')
@@ -93,7 +93,7 @@ export default function Intro() {
           // Storage can be unavailable in private browsing.
         }
         setPhase('done')
-      }, 5750),
+      }, 6500),
     ]
 
     return () => timers.current.forEach(window.clearTimeout)
