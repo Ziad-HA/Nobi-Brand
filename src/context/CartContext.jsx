@@ -3,21 +3,31 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 const CartContext = createContext(null)
 const STORAGE_KEY = 'Nobi-cart'
 
+function readCart() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    const parsed = raw ? JSON.parse(raw) : []
+    return Array.isArray(parsed)
+      ? parsed.filter((item) => item && item.key && item.id && Number(item.qty) > 0)
+      : []
+  } catch {
+    return []
+  }
+}
+
 export function CartProvider({ children }) {
-  const [items, setItems] = useState(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      return raw ? JSON.parse(raw) : []
-    } catch {
-      return []
-    }
-  })
+  const [items, setItems] = useState(readCart)
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
+    } catch {
+      // The cart remains usable for the current session if storage is unavailable.
+    }
   }, [items])
 
   const addItem = (product, { size, color }) => {
+    if (!product || product.soldOut) return
     setItems((prev) => {
       const key = `${product.id}-${size}-${color}`
       const existing = prev.find((item) => item.key === key)
@@ -32,8 +42,8 @@ export function CartProvider({ children }) {
           key,
           id: product.id,
           name: product.name,
-          price: product.price,
-          image: product.images[0],
+          price: Number(product.price) || 0,
+          image: product.images?.[0] ?? '',
           size,
           color,
           qty: 1,
@@ -43,8 +53,11 @@ export function CartProvider({ children }) {
   }
 
   const updateQty = (key, qty) => {
+    const nextQty = Math.floor(Number(qty))
     setItems((prev) =>
-      qty < 1 ? prev.filter((item) => item.key !== key) : prev.map((item) => (item.key === key ? { ...item, qty } : item)),
+      !Number.isFinite(nextQty) || nextQty < 1
+        ? prev.filter((item) => item.key !== key)
+        : prev.map((item) => item.key === key ? { ...item, qty: Math.min(nextQty, 99) } : item),
     )
   }
 
