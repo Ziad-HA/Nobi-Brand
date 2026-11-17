@@ -5306,3 +5306,17 @@ html.nobi-intro-active body {
   .nobi-intro-v2.phase-statement .nobi-intro-map-scene,
   .nobi-intro-v2.phase-exit .nobi-intro-map-scene { transform:scale(2.65); }
 }
+
+
+@media (max-width:700px) {
+  .nobi-intro-map-scene { width:100%; left:0; }
+  .nobi-intro-map-scene .nobi-intro-map {
+    width:145%;
+    max-width:none;
+    left:-22.5%;
+    padding:0;
+  }
+  .nobi-intro-target,
+  .nobi-intro-egypt-label { left:69.6%; }
+  .nobi-intro-map-scene { transform-origin:69.6% 43%; }
+}
