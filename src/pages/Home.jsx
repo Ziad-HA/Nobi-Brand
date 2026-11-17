@@ -16,6 +16,8 @@ export default function Home() {
         <img
           src={`${import.meta.env.BASE_URL}images/TRAP.jpg`}
           alt="Nobi campaign"
+          loading="eager"
+          fetchPriority="high"
           decoding="async"
         />
         <div className="hero-overlay" />
