@@ -4381,6 +4381,10 @@ select {
 .nav-right .nav-wishlist, .nav-right .nav-cart { display:inline-flex; align-items:center; gap:.3rem; min-height:44px; border:0; background:transparent; color:var(--text); font-size:.76rem; letter-spacing:.13em; text-transform:uppercase; white-space:nowrap; }
 .nav-right .nav-wishlist.active, .nav-right .nav-wishlist:hover, .nav-right .nav-cart:hover { color:var(--volt); }
 .nav-right .nav-wishlist span, .nav-right .nav-cart span { color:var(--volt); font-size:.7rem; }
+.nav-right .nav-wishlist { gap:.42rem; cursor:pointer; pointer-events:auto; position:relative; z-index:2; }
+.nav-wishlist-heart { display:block; width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; transition:transform .22s ease, fill .22s ease; pointer-events:none; }
+.nav-right .nav-wishlist:hover .nav-wishlist-heart, .nav-right .nav-wishlist.active .nav-wishlist-heart { fill:currentColor; transform:scale(1.12); }
+.nav-right .nav-wishlist:focus-visible { outline:2px solid var(--volt); outline-offset:5px; }
 .drop-countdown { margin:2rem 6vw 5rem; padding:clamp(1.5rem,5vw,3.5rem); display:flex; align-items:center; justify-content:space-between; gap:2rem; background:#111; border:1px solid var(--line); }
 .drop-countdown h2 { font-size:clamp(2.3rem,5vw,4.5rem); }
 .drop-countdown > div:first-child > p:last-child { color:var(--muted); margin-top:.6rem; font-size:.8rem; }
