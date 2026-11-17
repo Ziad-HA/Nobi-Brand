@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { products } from '../data/products'
@@ -9,152 +8,130 @@ import usePageMeta from '../lib/usePageMeta'
 export default function Product() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const product = products.find((p) => p.id === id)
+  const product = products.find((item) => item.id === id)
   const { addItem } = useCart()
-
-  const [size, setSize] = useState(product?.sizes[0] ?? '')
-  const [color, setColor] = useState(product?.colors[0] ?? '')
+  const [size, setSize] = useState(product?.sizes?.[0] ?? '')
+  const [color, setColor] = useState(product?.colors?.[0] ?? '')
   const [shot, setShot] = useState(0)
   const [added, setAdded] = useState(false)
   usePageMeta(product?.name ?? 'Not found', product?.description, product?.images?.[0])
 
   if (!product) {
     return (
-      <section className="section" style={{ textAlign: 'center', padding: '100px 20px', color: '#fff' }}>
-        <h1>Piece not found.</h1>
-        <Link to="/shop" className="text-link" style={{ color: '#aaa', textDecoration: 'underline' }}>
-          Back to shop
-        </Link>
+      <section className="section product-not-found">
+        <p className="eyebrow">NOBI archive</p>
+        <h1>Piece not found<span>.</span></h1>
+        <Link to="/shop" className="btn btn-primary">Back to shop</Link>
       </section>
     )
   }
 
-  const related = products.filter((p) => p.id !== product.id).slice(0, 4)
-
+  const related = products.filter((item) => item.id !== product.id && item.category === product.category).slice(0, 4)
+  const images = product.images?.length ? product.images : []
   const onAdd = () => {
-    if (product.soldOut) return
+    if (product.soldOut || !size || !color) return
     addItem(product, { size, color })
     setAdded(true)
-    setTimeout(() => setAdded(false), 1800)
   }
 
   return (
-    <section className="product-page">
-
+    <section className="product-page product-detail-page">
       <div className="product-layout">
-
-        {/* Product images */}
         <div className="product-gallery">
           <div className="product-main-image">
-            <img
-              src={product.images[shot]}
-              alt={product.name}
-            />
+            {images[shot] && <img src={images[shot]} alt={product.name} fetchPriority="high" decoding="async" />}
+            <span className="product-image-index">{String(shot + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}</span>
           </div>
-
-          <div className="product-thumbnails">
-            {product.images.map((src, i) => (
-              <button
-                key={src}
-                onClick={() => setShot(i)}
-                className={`product-thumbnail ${shot === i ? 'active' : ''}`}
-              >
-                <img src={src} alt="" loading="lazy" decoding="async" />
-              </button>
-            ))}
-          </div>
+          {images.length > 1 && (
+            <div className="product-thumbnails" aria-label="Product images">
+              {images.map((src, index) => (
+                <button
+                  key={src}
+                  type="button"
+                  onClick={() => setShot(index)}
+                  className={shot === index ? 'active' : ''}
+                  aria-label={`Show product image ${index + 1}`}
+                  aria-pressed={shot === index}
+                >
+                  <img src={src} alt="" loading="lazy" decoding="async" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Product information */}
         <div className="product-details">
+          <Link to="/shop" className="product-back-link">← Back to shop</Link>
+          <p className="product-category">{product.tag} <span>·</span> {product.category}</p>
+          <h1 className="product-title">{product.name}</h1>
+          <p className="product-price">${product.price}</p>
+          <p className="product-description">{product.description}</p>
 
-          <p className="product-category">
-            {product.tag} · {product.category}
-          </p>
-
-          <h1 className="product-title">
-            {product.name}
-          </h1>
-
-          <p className="product-price">
-            ${product.price}
-          </p>
-
-          <p className="product-description">
-            {product.description}
-          </p>
-
-          {/* Color selection */}
+          <div className="product-detail-rule" />
           <div className="product-option">
-            <p className="product-option-label">COLOR</p>
-
+            <div className="product-option-heading"><p className="product-option-label">Color</p><strong>{color}</strong></div>
             <div className="product-option-list">
-              {product.colors.map((c) => (
+              {product.colors.map((item) => (
                 <button
-                  key={c}
-                  onClick={() => setColor(c)}
-                  className={`product-color-btn ${color === c ? 'active' : ''}`}
+                  key={item}
+                  type="button"
+                  onClick={() => setColor(item)}
+                  className={color === item ? 'active' : ''}
+                  aria-pressed={color === item}
                 >
-                  {c}
+                  {item}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Size selection */}
           <div className="product-option product-size-option">
-            <p className="product-option-label">SIZE</p>
-
+            <div className="product-option-heading"><p className="product-option-label">Select size</p><span>Choose your fit</span></div>
             <div className="product-option-list">
-              {product.sizes.map((s) => (
+              {product.sizes.map((item) => (
                 <button
-                  key={s}
-                  onClick={() => setSize(s)}
-                  className={`product-size-btn ${size === s ? 'active' : ''}`}
+                  key={item}
+                  type="button"
+                  onClick={() => setSize(item)}
+                  className={size === item ? 'active' : ''}
+                  aria-pressed={size === item}
                 >
-                  {s}
+                  {item}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Add to cart */}
           <div className="product-actions">
-            <button
-              disabled={product.soldOut}
-              onClick={onAdd}
-              className="product-add-btn"
-            >
-              {product.soldOut
-                ? 'Sold out'
-                : added
-                  ? 'Added to bag ✓'
-                  : 'ADD TO BAG'}
+            <button disabled={product.soldOut} onClick={onAdd} className="product-add-btn" type="button">
+              {product.soldOut ? 'Sold out' : added ? 'Added to bag ✓' : 'Add to bag — ' + '$' + product.price}
             </button>
-
             {added && (
-              <button
-                onClick={() => navigate('/cart')}
-                className="product-view-bag-btn"
-              >
+              <button onClick={() => navigate('/cart')} className="product-view-bag-btn" type="button">
                 View bag
               </button>
             )}
           </div>
+
+          <div className="product-service-notes">
+            <p><span>01</span> Small-batch streetwear</p>
+            <p><span>02</span> Shipping calculated at checkout</p>
+            <p><span>03</span> Secure your size before the drop moves</p>
+          </div>
         </div>
       </div>
 
-      {/* Related products */}
-      <div className="product-related">
-        <h2>Also in the drop</h2>
-
-        <div className="product-grid">
-          {related.map((item) => (
-            <ProductCard key={item.id} product={item} />
-          ))}
+      {related.length > 0 && (
+        <div className="product-related">
+          <div className="section-head">
+            <div><p className="eyebrow">Keep exploring</p><h2>More from {product.category}<span>.</span></h2></div>
+            <Link to="/shop" className="text-link">All pieces ↗</Link>
+          </div>
+          <div className="product-grid">
+            {related.map((item) => <ProductCard key={item.id} product={item} />)}
+          </div>
         </div>
-      </div>
-
+      )}
     </section>
   )
 }
