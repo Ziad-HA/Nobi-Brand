@@ -9,11 +9,7 @@ const shouldPlay = (pathname) => {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false
   if (navigator.connection?.saveData) return false
   if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2) return false
-  try {
-    return !sessionStorage.getItem(KEY)
-  } catch {
-    return true
-  }
+  try { return !sessionStorage.getItem(KEY) } catch { return true }
 }
 
 function WorldMap() {
@@ -51,15 +47,21 @@ export default function Intro() {
   const { pathname } = useLocation()
   const [phase, setPhase] = useState(() => (shouldPlay(pathname) ? 'map' : 'done'))
   const timers = useRef([])
+  const audioUnlocked = useRef(false)
 
   useEffect(() => {
     if (phase === 'done') return
     document.documentElement.classList.add('intro-playing')
     document.body.style.overflow = 'hidden'
+    return () => {
+      document.documentElement.classList.remove('intro-playing')
+      document.body.style.overflow = ''
+    }
+  }, [phase])
 
-    // Start automatically: map -> Egypt zoom -> title -> site.
+  useEffect(() => {
+    if (phase === 'done') return
     timers.current.push(setTimeout(() => {
-      playSoundEffect('intro-start')
       setPhase('zoom')
       playSoundEffect('intro-zoom')
     }, 650))
@@ -72,18 +74,22 @@ export default function Intro() {
       try { sessionStorage.setItem(KEY, '1') } catch { /* ignore */ }
       setPhase('done')
     }, 3350))
-
-    return () => {
-      timers.current.forEach(clearTimeout)
-      document.documentElement.classList.remove('intro-playing')
-      document.body.style.overflow = ''
-    }
+    return () => timers.current.forEach(clearTimeout)
   }, [])
 
   if (phase === 'done') return null
 
   return (
-    <div className={`intro intro-streetwear intro-phase-${phase}`} aria-label="NOBI intro">
+    <div
+      className={`intro intro-streetwear intro-phase-${phase}`}
+      aria-label="NOBI intro"
+      onPointerDown={() => {
+        if (!audioUnlocked.current) {
+          audioUnlocked.current = true
+          playSoundEffect('intro-start')
+        }
+      }}
+    >
       <div className="intro-noise" />
       <div className="intro-mini-brand">NOBI®</div>
       <WorldMap />
