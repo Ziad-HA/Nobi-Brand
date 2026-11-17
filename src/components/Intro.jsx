@@ -77,17 +77,18 @@ export default function Intro() {
       window.setTimeout(() => {
         setPhase('lift')
         playSoundEffect('intro-zoom')
-      }, 900),
-      window.setTimeout(() => setPhase('clouds'), 1800),
+      }, 650),
+      window.setTimeout(() => setPhase('clouds'), 1500),
+      window.setTimeout(() => setPhase('wide'), 2550),
       window.setTimeout(() => {
-        setPhase('wide')
+        setPhase('cairo')
         playSoundEffect('intro-arrive')
-      }, 2900),
-      window.setTimeout(() => setPhase('statement'), 3900),
+      }, 3600),
+      window.setTimeout(() => setPhase('statement'), 4550),
       window.setTimeout(() => {
         setPhase('exit')
         playSoundEffect('intro-reveal')
-      }, 5500),
+      }, 5550),
       window.setTimeout(() => {
         try {
           sessionStorage.setItem(STORAGE_KEY, '1')
@@ -95,7 +96,7 @@ export default function Intro() {
           // Storage can be unavailable in private browsing.
         }
         setPhase('done')
-      }, 6750),
+      }, 6400),
     ]
 
     return () => timers.current.forEach(window.clearTimeout)
@@ -141,7 +142,7 @@ export default function Intro() {
             <div className="nobi-intro-atmosphere" />
             <div className="nobi-intro-country-reveal">
               <span className="nobi-intro-country-kicker">NORTH AFRICA · 001</span>
-              <svg viewBox="0 0 620 700" role="img" aria-label="Stylized outline of Egypt">
+              <svg viewBox="0 0 620 700" role="img" aria-label="Stylized map of Egypt with Cairo highlighted">
                 <defs>
                   <linearGradient id="egypt-fill" x1="0" y1="0" x2="1" y2="1">
                     <stop offset="0" stopColor="#d9f77a" stopOpacity=".22" />
@@ -152,14 +153,21 @@ export default function Intro() {
                 <path className="nobi-intro-egypt-border" d="M112 82 L425 82 L425 154 L500 175 L465 224 L434 241 L420 292 L397 336 L379 397 L353 464 L325 535 L300 600 L267 577 L244 526 L215 470 L188 413 L162 354 L145 294 L126 230 L112 168 Z" />
                 <path className="nobi-intro-egypt-nile" d="M277 575 C286 510 278 455 292 399 C300 360 287 318 304 276 C313 247 324 220 330 190" />
                 <path className="nobi-intro-egypt-delta" d="M330 190 L286 150 M330 190 L350 145 M330 190 L385 162" />
+                <g className="nobi-intro-cairo-marker">
+                  <circle className="nobi-intro-cairo-pulse" cx="330" cy="218" r="18" />
+                  <circle className="nobi-intro-cairo-dot" cx="330" cy="218" r="4.5" />
+                  <path className="nobi-intro-cairo-leader" d="M338 212 L365 190 L435 190" />
+                  <text className="nobi-intro-cairo-label" x="444" y="187">CAIRO</text>
+                  <text className="nobi-intro-cairo-coordinates" x="444" y="204">30.0444° N / 31.2357° E</text>
+                </g>
               </svg>
               <span className="nobi-intro-country-name">EGYPT</span>
               <span className="nobi-intro-country-coordinates">26° 49′ N&nbsp; / &nbsp;30° 48′ E</span>
             </div>
           </div>
           <div className="nobi-intro-camera-vignette" />
-          <span className="nobi-intro-camera-caption">CAIRO → EGYPT</span>
-          <span className="nobi-intro-camera-altitude">ALTITUDE <b>↑</b> 00,000 FT</span>
+          <span className="nobi-intro-camera-caption">EGYPT → CAIRO</span>
+          <span className="nobi-intro-camera-altitude">LOCATION <b>LOCKED</b></span>
         </div>
         
         <div className="nobi-intro-stage-bottom">

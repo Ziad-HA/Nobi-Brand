@@ -30,3 +30,8 @@ Never commit your real `.env` file or service-role key. Only use a browser-safe 
 Home, shop, product details, lookbook, about, bag, login, and checkout.
 
 Checkout is a UI demo only: it does not process payments or submit real orders.
+
+
+## Cinematic intro
+
+The home intro is a lightweight, stylized camera sequence that reveals Egypt and then Cairo before handing off to the storefront. It is not Google Earth footage. The native Earth Studio camera setup notes, timing, coordinates, and export guidance are in [`docs/nobi-earth-studio-shot-plan.md`](docs/nobi-earth-studio-shot-plan.md).
