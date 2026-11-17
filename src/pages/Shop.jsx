@@ -44,7 +44,7 @@ export default function Shop() {
           <h1>Shop the drop<span>.</span></h1>
           <p className="shop-intro">Pieces made to be worn on repeat. Find your next uniform.</p>
         </div>
-        <p className="shop-count">{list.length} {list.length === 1 ? 'piece' : 'pieces'} found</p>
+        <p className="shop-count" aria-live="polite" aria-atomic="true">{list.length} {list.length === 1 ? 'piece' : 'pieces'} found</p>
       </div>
 
       <div className="shop-toolbar">
@@ -96,7 +96,7 @@ export default function Shop() {
           <p className="eyebrow">No match</p>
           <h2>Nothing in this edit.</h2>
           <p>Try another search or clear your filters.</p>
-          <button type="button" className="btn btn-ghost" onClick={() => { setQuery(''); setFilter('All'); setAvailability('all') }}>
+          <button type="button" className="btn btn-ghost" onClick={() => { setQuery(''); setFilter('All'); setAvailability('all'); setSort('featured') }}>
             Clear filters
           </button>
         </div>
