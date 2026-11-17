@@ -22,7 +22,10 @@ export default function Navbar() {
   useEffect(() => {
     if (!open) return undefined
     const closeOnEscape = (event) => {
-      if (event.key === 'Escape') setOpen(false)
+      if (event.key === 'Escape') {
+        setOpen(false)
+        document.querySelector('.nav-toggle')?.focus()
+      }
     }
     window.addEventListener('keydown', closeOnEscape)
     return () => window.removeEventListener('keydown', closeOnEscape)
@@ -54,8 +57,8 @@ export default function Navbar() {
           ))}
         </nav>
         <div className="nav-right">
-          <Link to="/cart" className="nav-cart">
-            Bag <span>{String(count).padStart(2, '0')}</span>
+          <Link to="/cart" className="nav-cart" aria-label={`Shopping bag, ${count} ${count === 1 ? "item" : "items"}`}>
+            Bag <span aria-hidden="true">{String(count).padStart(2, '0')}</span>
           </Link>
         </div>
       </div>
