@@ -5270,3 +5270,39 @@ html.nobi-intro-active body {
 @media (prefers-reduced-motion: reduce) {
   .nobi-intro-v2 { display: none !important; }
 }
+
+
+/* Keep the Egypt marker and label locked to the map during camera zoom */
+.nobi-intro-map-scene {
+  position: absolute;
+  inset: 0;
+  transform-origin: 63.5% 43%;
+  transition: transform 1.05s cubic-bezier(.2,.78,.18,1);
+  will-change: transform;
+}
+.nobi-intro-map-scene .nobi-intro-map {
+  transform: none !important;
+  transform-origin: initial;
+  transition: none;
+}
+.nobi-intro-v2.phase-search-left .nobi-intro-map-scene {
+  transform: translate3d(-3.2%,0,0) scale(1.015);
+}
+.nobi-intro-v2.phase-search-right .nobi-intro-map-scene {
+  transform: translate3d(3.2%,0,0) scale(1.02);
+}
+.nobi-intro-v2.phase-zoom .nobi-intro-map-scene,
+.nobi-intro-v2.phase-egypt .nobi-intro-map-scene,
+.nobi-intro-v2.phase-statement .nobi-intro-map-scene,
+.nobi-intro-v2.phase-exit .nobi-intro-map-scene {
+  transform: scale(3.2);
+}
+@media (max-width:700px) {
+  .nobi-intro-map-scene { width:145%; left:-22.5%; }
+  .nobi-intro-v2.phase-search-left .nobi-intro-map-scene { transform:translate3d(-2%,0,0) scale(1.01); }
+  .nobi-intro-v2.phase-search-right .nobi-intro-map-scene { transform:translate3d(2%,0,0) scale(1.015); }
+  .nobi-intro-v2.phase-zoom .nobi-intro-map-scene,
+  .nobi-intro-v2.phase-egypt .nobi-intro-map-scene,
+  .nobi-intro-v2.phase-statement .nobi-intro-map-scene,
+  .nobi-intro-v2.phase-exit .nobi-intro-map-scene { transform:scale(2.65); }
+}
