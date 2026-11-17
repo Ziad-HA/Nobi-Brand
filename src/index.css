@@ -5320,3 +5320,57 @@ html.nobi-intro-active body {
   .nobi-intro-egypt-label { left:69.6%; }
   .nobi-intro-map-scene { transform-origin:69.6% 43%; }
 }
+
+
+/* Cinematic hand-off: the intro opens like a camera iris */
+.nobi-intro-v2.phase-exit {
+  animation: nobi-iris-open 1.08s cubic-bezier(.72,0,.2,1) forwards;
+  clip-path: circle(150% at 50% 50%);
+  pointer-events: none;
+}
+@keyframes nobi-iris-open {
+  0% {
+    clip-path: circle(150% at 50% 50%);
+    opacity: 1;
+  }
+  72% {
+    opacity: 1;
+  }
+  100% {
+    clip-path: circle(0% at 50% 50%);
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+body.nobi-site-reveal .nav,
+body.nobi-site-reveal .luxury-page,
+body.nobi-site-reveal .footer {
+  animation: nobi-site-arrive .85s cubic-bezier(.16,1,.3,1) both;
+}
+body.nobi-site-reveal .nav { animation-delay: .08s; }
+body.nobi-site-reveal .luxury-page { animation-delay: .16s; }
+body.nobi-site-reveal .footer { animation-delay: .22s; }
+
+body.nobi-site-reveal .hero img {
+  animation: nobi-hero-settle 1.25s cubic-bezier(.16,1,.3,1) both;
+}
+
+@keyframes nobi-site-arrive {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes nobi-hero-settle {
+  from { transform: scale(1.055); }
+  to { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nobi-intro-v2.phase-exit,
+  body.nobi-site-reveal .nav,
+  body.nobi-site-reveal .luxury-page,
+  body.nobi-site-reveal .footer,
+  body.nobi-site-reveal .hero img {
+    animation: none !important;
+  }
+}
