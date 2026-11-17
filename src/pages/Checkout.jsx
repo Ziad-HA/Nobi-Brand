@@ -66,7 +66,7 @@ export default function Checkout() {
           </div>
 
           <p className="checkout-demo-note">Demo only — this form does not process payments or send orders.</p>
-          <button className="btn btn-primary checkout-submit" type="submit">Confirm demo order · ${subtotal.toFixed(2)}</button>
+          <button className="btn btn-primary checkout-submit" type="submit" data-sound="confirm">Confirm demo order · ${subtotal.toFixed(2)}</button>
         </form>
 
         <aside className="checkout-order-summary">
