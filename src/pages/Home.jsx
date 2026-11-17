@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { motion, useReducedMotion } from "framer-motion";
 import ProductCard from "../components/ProductCard";
 import Hero3DLayer from "../components/Hero3DLayer";
 import OrbitGallery from "../components/OrbitGallery";
@@ -7,6 +8,10 @@ import { lookbook, products } from "../data/products";
 import usePageMeta from "../lib/usePageMeta";
 
 export default function Home() {
+  const reduceMotion = useReducedMotion();
+  const reveal = reduceMotion
+    ? {}
+    : { initial: { opacity: 0, y: 34 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, amount: 0.16 }, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } };
   const featured = products.slice(0, 4);
   usePageMeta('', undefined, `${import.meta.env.BASE_URL}images/TRAP.jpg`);
 
@@ -42,7 +47,7 @@ export default function Home() {
         <span className="hero-bottom-label">UNIFORM FOR THE AFTER HOURS</span>
       </section>
 
-      <section className="section home-products">
+      <motion.section className="section home-products" {...reveal}>
         <div className="section-head">
           <div>
             <p className="eyebrow">The latest selection</p>
@@ -55,9 +60,9 @@ export default function Home() {
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
-      </section>
+      </motion.section>
 
-      <section className="split split-bg home-story">
+      <motion.section className="split split-bg home-story" {...reveal}>
         <div className="split-media">
           <img
             src={`${import.meta.env.BASE_URL}images/download.jpg`}
@@ -81,7 +86,7 @@ export default function Home() {
           </p>
           <Link to="/about" className="btn btn-primary">Discover Nobi</Link>
         </div>
-      </section>
+      </motion.section>
 
       <OrbitGallery
         className="section home-lookbook"
@@ -112,11 +117,11 @@ export default function Home() {
         ))}
       />
 
-      <section className="home-final">
+      <motion.section className="home-final" {...reveal}>
         <p className="eyebrow">NOBI / AFTER HOURS</p>
         <h2>OWN THE NIGHT<span>.</span></h2>
         <Link to="/shop" className="btn btn-primary">Shop the collection</Link>
-      </section>
+      </motion.section>
     </>
   );
 }
