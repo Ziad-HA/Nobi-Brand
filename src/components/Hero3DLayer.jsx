@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 
 const Hero3D = lazy(() => import('./Hero3D'))
 
@@ -19,7 +19,26 @@ function canUseWebGL() {
 
 export default function Hero3DLayer() {
   const [ok] = useState(canUseWebGL)
-  if (!ok) return null
+  const [nearViewport, setNearViewport] = useState(false)
+
+  useEffect(() => {
+    if (!ok) return undefined
+    const hero = document.querySelector('.home-hero')
+    if (!hero || typeof IntersectionObserver === 'undefined') {
+      setNearViewport(true)
+      return undefined
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setNearViewport(true)
+        observer.disconnect()
+      }
+    }, { rootMargin: '240px 0px' })
+    observer.observe(hero)
+    return () => observer.disconnect()
+  }, [ok])
+
+  if (!ok || !nearViewport) return null
   return (
     <Suspense fallback={null}>
       <Hero3D />
