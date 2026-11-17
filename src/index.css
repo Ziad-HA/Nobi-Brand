@@ -5855,3 +5855,85 @@ body.nobi-site-reveal .home-hero > img {
 @media (prefers-reduced-motion: reduce) {
   .home-hero > img { animation: none !important; }
 }
+
+/* NOBI intro refinement — short, restrained lime-green brand reveal */
+.nobi-intro-v2 {
+  --intro-accent: #d6ff3a;
+  background: #070907;
+}
+
+.nobi-intro-v2 .nobi-intro-drone-scene {
+  background:
+    radial-gradient(ellipse at 50% 52%, rgba(91, 124, 62, .22), transparent 46%),
+    linear-gradient(145deg, #172018 0%, #101712 48%, #070b09 100%);
+}
+
+.nobi-intro-v2 .nobi-intro-egypt-border {
+  stroke: #d6ff3a;
+  stroke-width: 2.5;
+}
+
+.nobi-intro-v2 .nobi-intro-egypt-nile,
+.nobi-intro-v2 .nobi-intro-egypt-delta {
+  stroke: rgba(214, 255, 58, .58);
+}
+
+.nobi-intro-v2 .nobi-intro-statement {
+  justify-content: center;
+  gap: 0;
+  padding: 2rem 1.5rem;
+  background: radial-gradient(ellipse at center, rgba(10, 15, 8, .76), rgba(5, 7, 5, .28) 72%);
+  backdrop-filter: blur(1px);
+  text-align: center;
+}
+
+.nobi-intro-v2 .nobi-intro-statement-index {
+  margin-bottom: 1.15rem;
+  color: rgba(214, 255, 58, .82);
+  font-size: .55rem;
+  letter-spacing: .3em;
+}
+
+.nobi-intro-v2 .nobi-intro-statement h1 {
+  color: #f5f5ef;
+  font-size: clamp(4rem, 10.8vw, 9.5rem);
+  line-height: .82;
+  letter-spacing: .005em;
+  text-shadow: 0 12px 48px rgba(0, 0, 0, .42);
+}
+
+.nobi-intro-v2 .nobi-intro-statement h1 em {
+  color: #d6ff3a;
+  font-style: normal;
+  text-shadow: 0 0 28px rgba(214, 255, 58, .12);
+}
+
+.nobi-intro-v2 .nobi-intro-statement-rule {
+  width: 34px;
+  height: 2px;
+  margin-top: 1.35rem;
+  background: #d6ff3a;
+  box-shadow: 0 0 14px rgba(214, 255, 58, .28);
+}
+
+.nobi-intro-v2 .nobi-intro-header,
+.nobi-intro-v2 .nobi-intro-footer {
+  color: rgba(245, 245, 239, .58);
+}
+
+.nobi-intro-v2 .nobi-intro-wordmark span,
+.nobi-intro-v2 .nobi-intro-camera-altitude b {
+  color: #d6ff3a;
+}
+
+@media (max-width: 700px) {
+  .nobi-intro-v2 .nobi-intro-statement h1 {
+    font-size: clamp(3.5rem, 14vw, 6.2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nobi-intro-v2 .nobi-intro-statement h1 {
+    animation: none !important;
+  }
+}
