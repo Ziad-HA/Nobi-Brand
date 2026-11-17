@@ -6,6 +6,7 @@ const Hero3D = lazy(() => import('./Hero3D'))
 // so the photo hero always works on its own.
 function canUseWebGL() {
   if (typeof window === 'undefined') return false
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return false
   if (navigator.connection?.saveData) return false
   if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2) return false
   try {
