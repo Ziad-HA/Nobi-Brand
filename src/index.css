@@ -4769,3 +4769,162 @@ select {
   .intro-location-hit { font-size:clamp(3.4rem,16vw,6rem); }
   .intro-phase-title .intro-world-title { font-size:clamp(2.6rem,12vw,5rem); }
 }
+
+
+/* Refined intro: searching camera movement, precise Egypt callout, lighter rendering */
+.intro-streetwear {
+  --intro-acid: #c8f04a;
+  background: #080a09;
+  color: #f3f1e9;
+}
+.intro-streetwear::before {
+  opacity: .12;
+  background-size: 68px 68px;
+}
+.intro-noise { display: none; }
+.intro-mini-brand { color:#f3f1e9; letter-spacing:.28em; }
+.intro-map-wrap {
+  width:min(88vw,980px);
+  top:49%;
+  will-change:transform;
+  transition:transform .72s cubic-bezier(.2,.75,.25,1);
+}
+.intro-map-orbit {
+  border-color:rgba(200,240,74,.16);
+  will-change:transform;
+}
+.intro-map-orbit-two { border-color:rgba(243,241,233,.1); }
+.intro-globe {
+  background:radial-gradient(ellipse at 48% 42%,#202a20 0,#101713 58%,#080a09 100%);
+  border-color:rgba(200,240,74,.2);
+  box-shadow:0 0 48px rgba(200,240,74,.055),inset 0 0 45px rgba(0,0,0,.85);
+  transition:border-color .35s ease,box-shadow .35s ease;
+}
+.intro-globe-grid {
+  opacity:.2;
+  background:repeating-linear-gradient(0deg,transparent 0 42px,rgba(200,240,74,.14) 43px 44px),repeating-linear-gradient(90deg,transparent 0 56px,rgba(200,240,74,.1) 57px 58px);
+}
+.intro-world-svg {
+  color:#b7c2a3;
+  filter:none;
+}
+.intro-egypt-highlight {
+  fill:#c8f04a;
+  stroke:#efffc0;
+  stroke-width:1.5;
+  filter:none;
+}
+.intro-egypt-pin {
+  left:62%;
+  top:41%;
+  width:12px;
+  height:12px;
+  border:2px solid #101713;
+  border-radius:50%;
+  background:#c8f04a;
+  box-shadow:0 0 0 5px rgba(200,240,74,.14);
+  transform:scale(.5);
+}
+.intro-egypt-pin span { display:none; }
+.intro-location-hit {
+  position:absolute;
+  z-index:6;
+  left:62%;
+  top:41%;
+  transform:translate(-8%,-145%);
+  color:#d8f78a;
+  font:400 clamp(1.5rem,3.5vw,3rem)/.9 var(--display);
+  letter-spacing:.055em;
+  text-shadow:0 2px 12px rgba(0,0,0,.95);
+  white-space:nowrap;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+.intro-phase-search-left .intro-map-wrap {
+  transform:translate(calc(-50% - 7vw),-50%) scale(1.02) rotate(-1.4deg);
+}
+.intro-phase-search-right .intro-map-wrap {
+  transform:translate(calc(-50% + 7vw),-50%) scale(1.035) rotate(1.4deg);
+}
+.intro-phase-search-left .intro-map-orbit-one,
+.intro-phase-search-left .intro-map-orbit-two {
+  transform:rotate(-9deg) scale(1.025);
+}
+.intro-phase-search-right .intro-map-orbit-one,
+.intro-phase-search-right .intro-map-orbit-two {
+  transform:rotate(9deg) scale(.99);
+}
+.intro-phase-lock .intro-map-wrap,
+.intro-phase-location .intro-map-wrap,
+.intro-phase-title .intro-map-wrap,
+.intro-phase-leave .intro-map-wrap {
+  transform:translate(calc(-50% - 10vw),calc(-50% + 5vh)) scale(4.15);
+  transition:transform 1s cubic-bezier(.16,.82,.22,1);
+}
+.intro-phase-lock .intro-globe,
+.intro-phase-location .intro-globe,
+.intro-phase-title .intro-globe {
+  border-color:#c8f04a;
+  box-shadow:0 0 70px rgba(200,240,74,.13),inset 0 0 45px rgba(0,0,0,.9);
+}
+.intro-phase-lock .intro-egypt-pin,
+.intro-phase-location .intro-egypt-pin,
+.intro-phase-title .intro-egypt-pin {
+  opacity:1;
+  transform:scale(1);
+}
+.intro-phase-location .intro-location-hit {
+  opacity:1;
+  visibility:visible;
+  animation:intro-egypt-label .45s cubic-bezier(.16,1,.3,1) both;
+}
+.intro-phase-location .intro-map-wrap { filter:brightness(.82); }
+.intro-phase-title .intro-location-hit { opacity:0; visibility:hidden; }
+.intro-phase-title .intro-world-title {
+  position:absolute;
+  z-index:14;
+  left:50%;
+  top:50%;
+  width:100%;
+  transform:translate(-50%,-50%);
+  padding:0 1rem;
+  color:#f3f1e9;
+  text-align:center;
+  font:400 clamp(3rem,10vw,8.5rem)/.82 var(--display);
+  letter-spacing:.018em;
+  text-shadow:0 5px 30px rgba(0,0,0,.95);
+  animation:intro-statement-hit .55s cubic-bezier(.16,1,.3,1) both;
+}
+.intro-phase-title .intro-map-wrap { filter:brightness(.42); }
+.intro-phase-leave { animation:intro-curtain-out .45s ease forwards; }
+@keyframes intro-egypt-label {
+  from { opacity:0; transform:translate(-8%,-110%) scale(.82); }
+  to { opacity:1; transform:translate(-8%,-145%) scale(1); }
+}
+@keyframes intro-statement-hit {
+  from { opacity:0; transform:translate(-50%,-46%) scale(.94); }
+  to { opacity:1; transform:translate(-50%,-50%) scale(1); }
+}
+@keyframes intro-curtain-out {
+  to { opacity:0; visibility:hidden; }
+}
+@media (max-width:700px) {
+  .intro-map-wrap { width:124vw; top:48%; }
+  .intro-phase-search-left .intro-map-wrap { transform:translate(calc(-50% - 5vw),-50%) scale(1.02) rotate(-1deg); }
+  .intro-phase-search-right .intro-map-wrap { transform:translate(calc(-50% + 5vw),-50%) scale(1.025) rotate(1deg); }
+  .intro-phase-lock .intro-map-wrap,
+  .intro-phase-location .intro-map-wrap,
+  .intro-phase-title .intro-map-wrap,
+  .intro-phase-leave .intro-map-wrap {
+    transform:translate(calc(-50% - 8vw),calc(-50% + 3vh)) scale(3.25);
+  }
+  .intro-location-hit {
+    font-size:clamp(1.2rem,5vw,2rem);
+    transform:translate(-8%,-145%);
+  }
+  .intro-phase-title .intro-world-title { font-size:clamp(2.5rem,12vw,5rem); }
+}
+@media (prefers-reduced-motion:reduce) {
+  .intro-streetwear { display:none !important; }
+}
