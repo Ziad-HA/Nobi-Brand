@@ -1,9 +1,11 @@
 import { lookbook } from "../data/products";
 import OrbitGallery from "../components/OrbitGallery";
 import TiltLink, { Glare } from "../components/TiltLink";
+import usePageMeta from "../lib/usePageMeta";
 
 export default function Lookbook() {
   const shots = lookbook.slice(0, 4);
+  usePageMeta('Lookbook', 'Captured after dark: the Nobi lookbook, season by season.', shots[0]?.image);
 
   return (
     <OrbitGallery

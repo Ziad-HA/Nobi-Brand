@@ -6,9 +6,11 @@ import Hero3DLayer from "../components/Hero3DLayer";
 import OrbitGallery from "../components/OrbitGallery";
 import TiltLink, { Glare } from "../components/TiltLink";
 import { lookbook, products } from "../data/products";
+import usePageMeta from "../lib/usePageMeta";
 
 export default function Home() {
   const featured = products.slice(0, 4);
+  usePageMeta('', undefined, `${import.meta.env.BASE_URL}images/TRAP.jpg`);
   const [showImages, setShowImages] = useState(false);
 
   return (
