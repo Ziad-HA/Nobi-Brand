@@ -4151,3 +4151,31 @@ select {
     transition-duration: .01ms !important;
   }
 }
+
+
+/* ---------- Season archive polish ---------- */
+.season-empty {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.season-empty h2 {
+  max-width: 36rem;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+}
+
+.product-main-image:focus-visible {
+  outline: 2px solid var(--volt);
+  outline-offset: 4px;
+}
+
+@media (max-width: 640px) {
+  .season-empty {
+    min-height: 240px;
+  }
+}
