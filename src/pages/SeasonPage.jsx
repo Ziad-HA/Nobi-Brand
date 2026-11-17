@@ -29,23 +29,27 @@ export default function SeasonPage() {
       <h1>{season.label} Collection</h1>
       <p className="season-desc">{season.description}</p>
 
-      <div className="product-grid">
-        {items.map((p) => (
-          <Link key={p.id} to={`/product/${p.id}`} className="product-card">
-            <div className="product-media">
-              <img src={p.images[0]} alt={p.name} loading="lazy" decoding="async" />
-              <span className="chip">{season.label}</span>
-            </div>
-            <div className="product-meta">
-              <div>
-                <h3>{p.name}</h3>
-                <p>{p.category}</p>
-              </div>
-              <strong>${p.price}</strong>
-            </div>
-          </Link>
-        ))}
-      </div>
+      {items.length > 0 ? (
+        <div className="product-grid">
+          {items.map((product, index) => (
+            <motion.div
+              key={product.id}
+              initial={reduceMotion ? false : { opacity: 0, y: 22 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.5, delay: (index % 4) * 0.05 }}
+            >
+              <ProductCard product={product} />
+            </motion.div>
+          ))}
+        </div>
+      ) : (
+        <div className="season-empty">
+          <p className="eyebrow">Archive / {season.label}</p>
+          <h2>No pieces in this archive yet.</h2>
+          <Link to="/shop" className="btn btn-primary">Explore current pieces</Link>
+        </div>
+      )}
     </section>
   );
 }
