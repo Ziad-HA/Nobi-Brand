@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { products } from '../data/products'
 import { useCart } from '../context/CartContext'
@@ -14,6 +15,7 @@ export default function Product() {
   const [color, setColor] = useState(product?.colors?.[0] ?? '')
   const [shot, setShot] = useState(0)
   const [added, setAdded] = useState(false)
+  const reduceMotion = useReducedMotion()
   usePageMeta(product?.name ?? 'Not found', product?.description, product?.images?.[0])
 
   if (!product) {
@@ -28,6 +30,13 @@ export default function Product() {
 
   const related = products.filter((item) => item.id !== product.id && item.category === product.category).slice(0, 4)
   const images = product.images?.length ? product.images : []
+  const showPreviousImage = () => setShot((current) => (current - 1 + images.length) % images.length)
+  const showNextImage = () => setShot((current) => (current + 1) % images.length)
+  const onGalleryKeyDown = (event) => {
+    if (images.length < 2) return
+    if (event.key === 'ArrowLeft') showPreviousImage()
+    if (event.key === 'ArrowRight') showNextImage()
+  }
   const onAdd = () => {
     if (product.soldOut || !size || !color) return
     addItem(product, { size, color })
@@ -75,7 +84,7 @@ export default function Product() {
                 <button
                   key={item}
                   type="button"
-                  onClick={() => setColor(item)}
+                  onClick={() => { setColor(item); setAdded(false) }}
                   className={color === item ? 'active' : ''}
                   aria-pressed={color === item}
                 >
@@ -92,7 +101,7 @@ export default function Product() {
                 <button
                   key={item}
                   type="button"
-                  onClick={() => setSize(item)}
+                  onClick={() => { setSize(item); setAdded(false) }}
                   className={size === item ? 'active' : ''}
                   aria-pressed={size === item}
                 >
@@ -103,7 +112,7 @@ export default function Product() {
           </div>
 
           <div className="product-actions">
-            <button disabled={product.soldOut} onClick={onAdd} className="product-add-btn" type="button">
+            <button disabled={product.soldOut} onClick={onAdd} className="product-add-btn" type="button" aria-live="polite">
               {product.soldOut ? 'Sold out' : added ? 'Added to bag ✓' : 'Add to bag — ' + '$' + product.price}
             </button>
             {added && (
