@@ -64,6 +64,13 @@ export default function Intro() {
   }, [phase])
 
   useEffect(() => {
+    if (phase !== 'exit') return undefined
+
+    document.body.classList.add('nobi-site-reveal')
+    return () => document.body.classList.remove('nobi-site-reveal')
+  }, [phase])
+
+  useEffect(() => {
     if (phase === 'done') return undefined
 
     timers.current = [
@@ -86,7 +93,7 @@ export default function Intro() {
           // Storage can be unavailable in private browsing.
         }
         setPhase('done')
-      }, 5100),
+      }, 5750),
     ]
 
     return () => timers.current.forEach(window.clearTimeout)
