@@ -37,11 +37,11 @@ export default function Cart() {
                 <p className="cart-item-variant">Size: {item.size}</p>
                 <div className="cart-item-controls">
                   <div className="qty" aria-label={`Quantity for ${item.name}`}>
-                    <button type="button" onClick={() => updateQty(item.key, item.qty - 1)} aria-label="Decrease quantity">−</button>
+                    <button type="button" onClick={() => updateQty(item.key, item.qty - 1)} aria-label={`Decrease quantity of ${item.name}`}>−</button>
                     <span>{item.qty}</span>
-                    <button type="button" onClick={() => updateQty(item.key, item.qty + 1)} aria-label="Increase quantity" disabled={item.qty >= 99}>+</button>
+                    <button type="button" onClick={() => updateQty(item.key, item.qty + 1)} aria-label={`Increase quantity of ${item.name}`} disabled={item.qty >= 99}>+</button>
                   </div>
-                  <button className="remove-btn" type="button" onClick={() => removeItem(item.key)}>Remove</button>
+                  <button className="remove-btn" type="button" onClick={() => removeItem(item.key)} aria-label={`Remove ${item.name} from your bag`}>Remove</button>
                 </div>
               </div>
               <strong className="cart-item-price">${(item.price * item.qty).toFixed(2)}</strong>
@@ -52,9 +52,9 @@ export default function Cart() {
         <aside className="cart-summary cart-summary-upgraded">
           <p className="eyebrow">Order summary</p>
           <div className="cart-summary-line"><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div>
-          <div className="cart-summary-line muted"><span>Shipping</span><span>Calculated next</span></div>
-          <div className="cart-summary-line muted"><span>Taxes</span><span>Calculated if applicable</span></div>
-          <div className="cart-summary-total"><span>Estimated total</span><strong>${subtotal.toFixed(2)}</strong></div>
+          <div className="cart-summary-line muted"><span>Shipping</span><span>Not included</span></div>
+          <div className="cart-summary-line muted"><span>Taxes</span><span>Not included</span></div>
+          <div className="cart-summary-total"><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div>
           <Link to="/checkout" className="btn btn-primary cart-checkout-btn">Continue to checkout <span>↗</span></Link>
           <Link to="/shop" className="cart-continue-link">Continue shopping</Link>
           <p className="cart-note">Your bag is saved on this device while you browse.</p>
