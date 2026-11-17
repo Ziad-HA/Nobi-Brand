@@ -56,8 +56,8 @@ export default function Home() {
           <Link to="/shop" className="text-link">View all products ↗</Link>
         </div>
         <div className="product-grid">
-          {featured.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          {featured.map((product, index) => (
+            <ProductCard key={product.id} product={product} priority={index === 0} />
           ))}
         </div>
       </motion.section>
