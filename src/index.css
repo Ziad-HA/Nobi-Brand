@@ -4330,11 +4330,11 @@ select {
 }
 
 /* NOBI experience upgrade: cart drawer, saved pieces and quick view */
-.product-card-shell { position: relative; min-width: 0; }
+.product-card-shell { position: relative; isolation: isolate; min-width: 0; }
 .product-card-shell .product-card { display: block; }
-.product-wishlist-btn { position:absolute; z-index:5; top:.75rem; right:.75rem; width:42px; height:42px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.24); background:rgba(8,8,8,.72); color:white; font-size:1.45rem; backdrop-filter:blur(12px); transition:color .2s,border-color .2s,background .2s; }
+.product-wishlist-btn { position:absolute; z-index:8; top:.75rem; right:.75rem; width:42px; height:42px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.24); background:rgba(8,8,8,.72); color:white; font-size:1.45rem; backdrop-filter:blur(12px); transition:color .2s,border-color .2s,background .2s; }
 .product-wishlist-btn:hover,.product-wishlist-btn.is-saved { color:var(--volt); border-color:var(--volt); }
-.product-quick-view-btn { position:absolute; z-index:4; left:.7rem; bottom:4.8rem; padding:.65rem .85rem; color:white; background:rgba(8,8,8,.82); border:1px solid rgba(255,255,255,.2); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; opacity:0; transform:translateY(6px); transition:opacity .2s,transform .2s,color .2s,border-color .2s; }
+.product-quick-view-btn { position:absolute; z-index:7; left:.7rem; bottom:4.8rem; padding:.65rem .85rem; color:white; background:rgba(8,8,8,.82); border:1px solid rgba(255,255,255,.2); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; opacity:0; transform:translateY(6px); transition:opacity .2s,transform .2s,color .2s,border-color .2s; }
 .product-card-shell:hover .product-quick-view-btn,.product-card-shell:focus-within .product-quick-view-btn { opacity:1; transform:translateY(0); }
 .product-quick-view-btn:hover { color:var(--volt); border-color:var(--volt); }
 .cart-drawer-layer,.quick-view-layer,.lookbook-lightbox { position:fixed; inset:0; z-index:300; }
