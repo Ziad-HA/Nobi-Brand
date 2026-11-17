@@ -74,21 +74,20 @@ export default function Intro() {
     if (phase === 'done') return undefined
 
     timers.current = [
-      window.setTimeout(() => setPhase('search-left'), 350),
-      window.setTimeout(() => setPhase('search-right'), 950),
       window.setTimeout(() => {
-        setPhase('zoom')
+        setPhase('lift')
         playSoundEffect('intro-zoom')
-      }, 1550),
+      }, 1250),
+      window.setTimeout(() => setPhase('clouds'), 2450),
       window.setTimeout(() => {
-        setPhase('egypt')
+        setPhase('wide')
         playSoundEffect('intro-arrive')
-      }, 2600),
-      window.setTimeout(() => setPhase('statement'), 3500),
+      }, 3550),
+      window.setTimeout(() => setPhase('statement'), 4650),
       window.setTimeout(() => {
         setPhase('exit')
         playSoundEffect('intro-reveal')
-      }, 5200),
+      }, 6250),
       window.setTimeout(() => {
         try {
           sessionStorage.setItem(STORAGE_KEY, '1')
@@ -96,7 +95,7 @@ export default function Intro() {
           // Storage can be unavailable in private browsing.
         }
         setPhase('done')
-      }, 6500),
+      }, 7100),
     ]
 
     return () => timers.current.forEach(window.clearTimeout)
@@ -126,24 +125,43 @@ export default function Intro() {
           <span className="nobi-intro-live"><i /> SCANNING THE WORLD</span>
         </div>
 
-        <div className="nobi-intro-map-frame">
-          <div className="nobi-intro-map-grid" />
-          <div className="nobi-intro-map-crosshair crosshair-one" />
-          <div className="nobi-intro-map-crosshair crosshair-two" />
-          <div className="nobi-intro-map-viewport">
-            <div className="nobi-intro-map-scene">
-              <WorldMap />
-              <div className="nobi-intro-target">
-                <span className="nobi-intro-target-ring" />
-                <span className="nobi-intro-target-dot" />
-              </div>
-              <div className="nobi-intro-egypt-label">EGYPT <span>31° 14′ N</span></div>
+        <div className="nobi-intro-map-frame nobi-intro-camera-frame">
+          <div className="nobi-intro-drone-scene">
+            <div className="nobi-intro-city-grid" />
+            <svg className="nobi-intro-city-roads" viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <g fill="none" stroke="currentColor" strokeWidth="3">
+                <path d="M-80 600 260 260 520 40M40 820 430 400 760 40M360 820 710 450 1110 30M720 820 1020 510 1280 260M-50 300 330 500 680 720M350 -40 620 230 900 420 1240 560" />
+                <path d="M-20 180 260 350 510 520 850 760M180 -40 400 180 650 390 930 620 1200 760M-80 720 250 520 540 330 850 130 1220 -40" strokeWidth="8" />
+              </g>
+            </svg>
+            <div className="nobi-intro-city-blocks" />
+            <div className="nobi-intro-city-lights" />
+            <div className="nobi-intro-cloud-layer cloud-one" />
+            <div className="nobi-intro-cloud-layer cloud-two" />
+            <div className="nobi-intro-atmosphere" />
+            <div className="nobi-intro-country-reveal">
+              <span className="nobi-intro-country-kicker">NORTH AFRICA · 001</span>
+              <svg viewBox="0 0 620 700" role="img" aria-label="Stylized outline of Egypt">
+                <defs>
+                  <linearGradient id="egypt-fill" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stopColor="#d9f77a" stopOpacity=".22" />
+                    <stop offset="1" stopColor="#d9f77a" stopOpacity=".04" />
+                  </linearGradient>
+                </defs>
+                <path className="nobi-intro-egypt-country" d="M112 82 L425 82 L425 154 L500 175 L465 224 L434 241 L420 292 L397 336 L379 397 L353 464 L325 535 L300 600 L267 577 L244 526 L215 470 L188 413 L162 354 L145 294 L126 230 L112 168 Z" />
+                <path className="nobi-intro-egypt-border" d="M112 82 L425 82 L425 154 L500 175 L465 224 L434 241 L420 292 L397 336 L379 397 L353 464 L325 535 L300 600 L267 577 L244 526 L215 470 L188 413 L162 354 L145 294 L126 230 L112 168 Z" />
+                <path className="nobi-intro-egypt-nile" d="M277 575 C286 510 278 455 292 399 C300 360 287 318 304 276 C313 247 324 220 330 190" />
+                <path className="nobi-intro-egypt-delta" d="M330 190 L286 150 M330 190 L350 145 M330 190 L385 162" />
+              </svg>
+              <span className="nobi-intro-country-name">EGYPT</span>
+              <span className="nobi-intro-country-coordinates">26° 49′ N&nbsp; / &nbsp;30° 48′ E</span>
             </div>
           </div>
-          <span className="nobi-intro-map-coordinate coordinate-left">30° 02′ E</span>
-          <span className="nobi-intro-map-coordinate coordinate-right">N / 001</span>
+          <div className="nobi-intro-camera-vignette" />
+          <span className="nobi-intro-camera-caption">CAIRO → EGYPT</span>
+          <span className="nobi-intro-camera-altitude">ALTITUDE <b>↑</b> 00,000 FT</span>
         </div>
-
+        
         <div className="nobi-intro-stage-bottom">
           <span>FROM EVERYWHERE</span>
           <span>TO SOMEWHERE</span>
