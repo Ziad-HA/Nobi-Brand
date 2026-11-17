@@ -77,17 +77,17 @@ export default function Intro() {
       window.setTimeout(() => {
         setPhase('lift')
         playSoundEffect('intro-zoom')
-      }, 1250),
-      window.setTimeout(() => setPhase('clouds'), 2450),
+      }, 900),
+      window.setTimeout(() => setPhase('clouds'), 1800),
       window.setTimeout(() => {
         setPhase('wide')
         playSoundEffect('intro-arrive')
-      }, 3550),
-      window.setTimeout(() => setPhase('statement'), 4650),
+      }, 2900),
+      window.setTimeout(() => setPhase('statement'), 3900),
       window.setTimeout(() => {
         setPhase('exit')
         playSoundEffect('intro-reveal')
-      }, 6250),
+      }, 5500),
       window.setTimeout(() => {
         try {
           sessionStorage.setItem(STORAGE_KEY, '1')
@@ -95,7 +95,7 @@ export default function Intro() {
           // Storage can be unavailable in private browsing.
         }
         setPhase('done')
-      }, 7100),
+      }, 6750),
     ]
 
     return () => timers.current.forEach(window.clearTimeout)
@@ -170,7 +170,7 @@ export default function Intro() {
 
       <div className="nobi-intro-statement">
         <span className="nobi-intro-statement-index">NOBI® — ORIGIN / 001</span>
-        <h1>THE WORLD<br /><em>IS YOURS.</em></h1>
+        <h1>THE WORLD<br /><em>IS YOURS</em></h1>
         <span className="nobi-intro-statement-rule" />
       </div>
 
