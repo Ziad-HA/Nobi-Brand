@@ -2,11 +2,13 @@ import { useEffect, useLayoutEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
 const KEY = 'nobi-intro'
-const DURATION = 2200
+const DURATION = 1500
 
 const shouldPlay = (pathname) => {
   if (pathname !== '/') return false
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false
+  if (navigator.connection?.saveData) return false
+  if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2) return false
   try {
     return !sessionStorage.getItem(KEY)
   } catch {
@@ -50,7 +52,7 @@ export default function Intro() {
     } catch {
       /* ignore */
     }
-    const id = setTimeout(() => setPhase('done'), 1000)
+    const id = setTimeout(() => setPhase('done'), 650)
     return () => clearTimeout(id)
   }, [phase])
 
