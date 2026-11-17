@@ -24,9 +24,9 @@ export default function Navbar() {
         <Link to="/" className="logo" onClick={() => setOpen(false)}>NOBI</Link>
         <nav id="site-nav" aria-label="Main" className={`nav-links ${open ? 'is-open' : ''}`}>
           {links.map((link) => <NavLink key={link.to} to={link.to} onClick={() => setOpen(false)}>{link.label}</NavLink>)}
-          <NavLink to="/wishlist" onClick={() => setOpen(false)} className="nav-wishlist">Saved <span>{String(savedCount).padStart(2, '0')}</span></NavLink>
         </nav>
         <div className="nav-right">
+          <NavLink to="/wishlist" className="nav-wishlist" aria-label={`Open wishlist, ${savedCount} saved items`}>Saved <span>{String(savedCount).padStart(2, '0')}</span></NavLink>
           <button type="button" className="nav-cart" onClick={openCart} aria-label={`Open shopping bag, ${count} items`}>Bag <span aria-hidden="true">{String(count).padStart(2, '0')}</span></button>
         </div>
       </div>
