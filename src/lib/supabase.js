@@ -1,14 +1,13 @@
-
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabasePublishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
+const supabaseKey =
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  import.meta.env.VITE_SUPABASE_ANON_KEY
 
-if (!supabaseUrl || !supabasePublishableKey) {
-  throw new Error('Supabase environment variables are missing. Check your .env file.')
-}
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseKey)
 
-export const supabase = createClient(
-  supabaseUrl,
-  supabasePublishableKey
-)
+// Keep the storefront usable when optional account credentials are not configured.
+export const supabase = isSupabaseConfigured
+  ? createClient(supabaseUrl, supabaseKey)
+  : null
