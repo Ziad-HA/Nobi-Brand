@@ -81,8 +81,9 @@ export default function Checkout() {
             ))}
           </div>
           <div className="cart-summary-line"><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div>
-          <div className="cart-summary-line muted"><span>Shipping</span><span>Calculated later</span></div>
-          <div className="cart-summary-total"><span>Total</span><strong>${subtotal.toFixed(2)}</strong></div>
+          <div className="cart-summary-line muted"><span>Shipping</span><span>Not included</span></div>
+          <div className="cart-summary-total"><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div>
+          <p className="checkout-summary-note">Shipping and taxes are not included. This is a demo checkout only.</p>
           <Link to="/cart" className="cart-continue-link">← Edit your bag</Link>
         </aside>
       </div>
