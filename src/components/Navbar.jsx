@@ -48,8 +48,7 @@ export default function Navbar() {
         <Link to="/" className="logo" onClick={() => setOpen(false)}>
           NOBI
         </Link>
-        <nav id="site-nav" aria-label="Main" className={`nav-links ${open ? 'is-open' : ''}`}
-          aria-hidden={!open && undefined}>
+        <nav id="site-nav" aria-label="Main" className={`nav-links ${open ? 'is-open' : ''}`}>
           {links.map((link) => (
             <NavLink key={link.to} to={link.to} onClick={() => setOpen(false)}>
               {link.label}
@@ -57,7 +56,7 @@ export default function Navbar() {
           ))}
         </nav>
         <div className="nav-right">
-          <Link to="/cart" className="nav-cart" aria-label={`Shopping bag, ${count} ${count === 1 ? "item" : "items"}`}>
+          <Link to="/cart" className="nav-cart" aria-label={`Shopping bag, ${count} ${count === 1 ? 'item' : 'items'}`}>
             Bag <span aria-hidden="true">{String(count).padStart(2, '0')}</span>
           </Link>
         </div>
