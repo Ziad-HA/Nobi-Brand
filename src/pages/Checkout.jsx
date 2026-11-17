@@ -44,24 +44,24 @@ export default function Checkout() {
       <form className="checkout-form" onSubmit={onSubmit}>
         <label>
           Full name
-          <input required placeholder="Name" />
+          <input required name="name" autoComplete="name" placeholder="Name" />
         </label>
         <label>
           Email
-          <input type="email" required placeholder="you@night.city" />
+          <input type="email" required name="email" autoComplete="email" inputMode="email" placeholder="you@night.city" />
         </label>
         <label>
           Address
-          <input required placeholder="Street" />
+          <input required name="address" autoComplete="street-address" placeholder="Street" />
         </label>
         <div className="form-row">
           <label>
             City
-            <input required />
+            <input required name="city" autoComplete="address-level2" />
           </label>
           <label>
             Postal
-            <input required />
+            <input required name="postal" autoComplete="postal-code" inputMode="numeric" />
           </label>
         </div>
         <p className="muted">Demo only. Card details are not collected.</p>

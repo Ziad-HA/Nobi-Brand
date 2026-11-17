@@ -26,6 +26,8 @@ body,
 html,
 body {
   overflow-x: hidden;
+  /* `clip` does not turn body into a scroll container, which sticky pinning needs. */
+  overflow-x: clip;
 }
 
 body {
@@ -2158,12 +2160,12 @@ h3 {
 @keyframes nobi-luxury-reveal {
   from {
     opacity: 0;
-    transform: translateY(26px);
+    translate: 0 26px;
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    translate: 0 0;
   }
 }
 
@@ -2215,12 +2217,12 @@ h3 {
 @keyframes nobi-luxury-reveal {
   from {
     opacity: 0;
-    transform: translateY(26px);
+    translate: 0 26px;
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    translate: 0 0;
   }
 }
 
@@ -2699,4 +2701,346 @@ button,
 .home-products {
   margin-top: 0 !important;
   padding-top: 35px !important;
+}
+
+/* =========================================
+   NOBI - 3D LAYER, ACCESSIBILITY, TOUCH
+========================================= */
+
+/* Hero WebGL knot sits between the photo/overlay and the copy. It never takes pointer events. */
+.hero-3d {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-3d canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Cards that tip in 3D. framer-motion drives transform, so CSS must not transition it as well. */
+.tilt3d {
+  display: block;
+  transition: none;
+  will-change: transform;
+  touch-action: manipulation;
+}
+
+.scroll3d {
+  will-change: transform;
+}
+
+main {
+  overflow-x: clip;
+}
+
+/* Keyboard users: always see where focus is, and jump past the nav. */
+:focus-visible {
+  outline: 2px solid var(--volt);
+  outline-offset: 3px;
+}
+
+main:focus {
+  outline: none;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.6rem;
+  left: 0.6rem;
+  z-index: 1000;
+  padding: 0.7rem 1rem;
+  background: var(--volt);
+  color: var(--volt-ink);
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* 44px touch target for the mobile menu button: invisible hit area, the icon keeps its size. */
+.nav-toggle::after {
+  content: '';
+  position: absolute;
+  inset: -14px -10px;
+}
+
+button,
+.btn,
+.filters button,
+.chips button {
+  touch-action: manipulation;
+}
+
+/* Reduced motion: no WebGL spin, no 3D, no reveal animation. Content shows in its final state. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* =========================================
+   NOBI - STRONGER HOVER (cards + lookbook)
+========================================= */
+
+.tilt3d {
+  position: relative;
+}
+
+.tilt3d:is(:hover, [data-pressed]) {
+  z-index: 6;
+}
+
+/* Cursor-following highlight; sits inside the photo box. */
+.tilt-glare {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  background: radial-gradient(
+    circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.42),
+    rgba(214, 255, 58, 0.14) 28%,
+    transparent 58%
+  );
+  mix-blend-mode: overlay;
+}
+
+.tilt3d:is(:hover, [data-pressed]) .tilt-glare {
+  opacity: 1;
+}
+
+/* Drop 26 cards: photo zooms and slides against the tilt, volt ring and glow, tag lights up. */
+.product-media {
+  transition: box-shadow 0.3s ease;
+}
+
+.product-card .product-media img {
+  transition: transform 0.28s ease-out;
+}
+
+.product-card:is(:hover, [data-pressed]) .product-media img {
+  transform: translate(calc(var(--px, 0) * -18px), calc(var(--py, 0) * -18px)) scale(1.18);
+}
+
+.product-card:is(:hover, [data-pressed]) .product-media {
+  box-shadow:
+    0 0 0 1px rgba(214, 255, 58, 0.7),
+    0 30px 70px -20px rgba(214, 255, 58, 0.35),
+    0 18px 40px rgba(0, 0, 0, 0.6);
+}
+
+.product-card .chip {
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.product-card:is(:hover, [data-pressed]) .chip {
+  background: var(--volt);
+  color: var(--volt-ink);
+}
+
+.product-meta h3 {
+  transition: color 0.25s ease;
+}
+
+.product-card:is(:hover, [data-pressed]) .product-meta h3 {
+  color: var(--volt);
+}
+
+/* Lookbook photos get the same treatment. */
+.home-lookbook .look-tile img,
+.look-masonry .tilt3d img {
+  transition: transform 0.28s ease-out;
+}
+
+.home-lookbook .look-tile:is(:hover, [data-pressed]) img,
+.look-masonry .tilt3d:is(:hover, [data-pressed]) img {
+  transform: translate(calc(var(--px, 0) * -16px), calc(var(--py, 0) * -16px)) scale(1.15);
+}
+
+.look-masonry .tilt3d {
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.home-lookbook .look-tile:is(:hover, [data-pressed]),
+.look-masonry .tilt3d:is(:hover, [data-pressed]) {
+  box-shadow:
+    0 0 0 1px rgba(214, 255, 58, 0.7),
+    0 30px 70px -20px rgba(214, 255, 58, 0.35),
+    0 18px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* =========================================
+   NOBI - ORBIT GALLERY (pinned scroll story)
+========================================= */
+
+.orbit.section {
+  padding: 0;
+}
+
+/* Pin length: --orbit-pin screens tall (set by the component). Phones need less scrolling. */
+.orbit:not(.orbit--flat) {
+  height: calc(var(--orbit-pin, 3) * 100vh);
+  height: calc(var(--orbit-pin, 3) * 100svh);
+}
+
+@media (max-width: 640px) {
+  .orbit:not(.orbit--flat) {
+    height: calc(var(--orbit-pin, 3) * 82vh);
+    height: calc(var(--orbit-pin, 3) * 82svh);
+  }
+}
+
+.orbit-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5.5rem 6vw 2.5rem;
+}
+
+/* The grid is the perspective stage; tiles are flown around it from script. */
+.orbit-grid {
+  position: relative;
+  perspective: 1500px;
+  perspective-origin: 50% 50%;
+}
+
+.orbit-tile {
+  will-change: transform, opacity;
+}
+
+/* Reduced motion: plain grid, no pin. */
+.orbit--flat .orbit-stage {
+  position: static;
+  height: auto;
+  padding: 5rem 6vw;
+}
+
+@media (max-width: 640px) {
+  .orbit-stage {
+    padding: 5rem 5vw 1.5rem;
+  }
+}
+
+@media (max-height: 760px) {
+  .orbit-stage {
+    padding-top: 4.5rem;
+  }
+
+  .orbit .section-head {
+    margin-bottom: 1rem;
+  }
+
+  .orbit .section-head .muted {
+    display: none;
+  }
+
+  .orbit .section-head h2,
+  .lookbook-page h1 {
+    font-size: 2.8rem;
+  }
+}
+
+/* =========================================
+   NOBI - SOUND TOGGLE
+========================================= */
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.nav-right .nav-cart {
+  margin-left: 0;
+}
+
+.nav-sound {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0 0.2rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 0.25s ease;
+}
+
+.nav-sound:hover {
+  color: var(--text);
+}
+
+.nav-sound b {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.nav-sound[aria-pressed='true'] b {
+  color: var(--volt);
+}
+
+.nav-sound-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+}
+
+.nav-sound[aria-pressed='true'] .nav-sound-dot {
+  background: var(--volt);
+  border-color: var(--volt);
+  box-shadow: 0 0 8px var(--volt);
+}
+
+.nav-sound--menu {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  /* Phones: the bar is too tight next to the logo, so Sound lives in the menu. */
+  .nav-sound--bar {
+    display: none;
+  }
+
+  .nav-sound--menu {
+    display: inline-flex;
+    align-self: flex-start;
+    font-size: 0.9rem;
+    padding: 0.6rem 0;
+  }
+}
+
+/* Touch targets: quantity, remove and footer links are at least ~44px to tap on phones. */
+.qty-btn { min-width: 44px; min-height: 44px; padding: 0 12px; }
+.remove-btn { min-height: 44px; padding: 0 8px; }
+@media (pointer: coarse) {
+  .footer-cols a { padding-block: 10px; margin-top: 0; }
+}
+@media (pointer: coarse) {
+  .nav-cart, .back-to-top { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; }
+  .shop-filters button, button.px-5.py-2\.5 { min-height: 44px; }
 }

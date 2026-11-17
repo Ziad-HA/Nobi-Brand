@@ -57,7 +57,7 @@ export default function Product() {
                 onClick={() => setShot(i)}
                 className={`product-thumbnail ${shot === i ? 'active' : ''}`}
               >
-                <img src={src} alt="" />
+                <img src={src} alt="" loading="lazy" decoding="async" />
               </button>
             ))}
           </div>

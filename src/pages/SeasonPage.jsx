@@ -28,7 +28,7 @@ export default function SeasonPage() {
         {items.map((p) => (
           <Link key={p.id} to={`/product/${p.id}`} className="product-card">
             <div className="product-media">
-              <img src={p.images[0]} alt={p.name} />
+              <img src={p.images[0]} alt={p.name} loading="lazy" decoding="async" />
               <span className="chip">{season.label}</span>
             </div>
             <div className="product-meta">

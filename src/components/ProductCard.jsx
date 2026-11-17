@@ -1,10 +1,11 @@
-import { Link } from 'react-router-dom'
+import TiltLink, { Glare } from './TiltLink'
 
 export default function ProductCard({ product }) {
   return (
-    <Link to={`/product/${product.id}`} className="product-card">
+    <TiltLink to={`/product/${product.id}`} className="product-card" max={13} hoverScale={1.06}>
       <div className="product-media">
-        <img src={product.images[0]} alt={product.name} />
+        <img src={product.images[0]} alt={product.name} loading="lazy" decoding="async" />
+        <Glare />
         <span className="chip">{product.soldOut ? 'Sold out' : product.tag}</span>
       </div>
       <div className="product-meta">
@@ -14,6 +15,6 @@ export default function ProductCard({ product }) {
         </div>
         <strong>${product.price}</strong>
       </div>
-    </Link>
+    </TiltLink>
   )
 }

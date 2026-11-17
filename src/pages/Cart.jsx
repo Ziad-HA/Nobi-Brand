@@ -65,7 +65,8 @@ export default function Cart() {
                   <div className="qty flex items-center border border-neutral-700 rounded-lg overflow-hidden bg-black/40">
                     <button 
                       onClick={() => updateQty(item.key, item.qty - 1)}
-                      className="px-3 py-1 hover:bg-neutral-800 transition-colors text-lg"
+                      aria-label={`Decrease quantity of ${item.name}`}
+                      className="qty-btn hover:bg-neutral-800 transition-colors text-lg"
                     >
                       -
                     </button>
@@ -74,14 +75,16 @@ export default function Cart() {
                     </span>
                     <button 
                       onClick={() => updateQty(item.key, item.qty + 1)}
-                      className="px-3 py-1 hover:bg-neutral-800 transition-colors text-lg"
+                      aria-label={`Increase quantity of ${item.name}`}
+                      className="qty-btn hover:bg-neutral-800 transition-colors text-lg"
                     >
                       +
                     </button>
                   </div>
 
                   <button 
-                    className="text-link text-xs text-neutral-500 hover:text-red-400 transition-colors underline underline-offset-4 ml-2" 
+                    className="text-link remove-btn text-xs text-neutral-500 hover:text-red-400 transition-colors underline underline-offset-4 ml-2" 
+                    aria-label={`Remove ${item.name} from bag`}
                     onClick={() => removeItem(item.key)}
                   >
                     Remove

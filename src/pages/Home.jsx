@@ -2,6 +2,9 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import ProductCard from "../components/ProductCard";
+import Hero3DLayer from "../components/Hero3DLayer";
+import OrbitGallery from "../components/OrbitGallery";
+import TiltLink, { Glare } from "../components/TiltLink";
 import { lookbook, products } from "../data/products";
 
 export default function Home() {
@@ -19,6 +22,7 @@ export default function Home() {
         />
 
         <div className="hero-overlay" />
+        <Hero3DLayer />
 
         <div className="hero-copy home-hero-copy">
           <p className="eyebrow">Season 04 · Night Shift</p>
@@ -82,6 +86,8 @@ export default function Home() {
             <img
               src={`${import.meta.env.BASE_URL}images/download.jpg`}
               alt="Nobi editorial campaign"
+              loading="lazy"
+              decoding="async"
             />
           )}
 
@@ -111,33 +117,44 @@ export default function Home() {
         </div>
       </section>
 
-      {/* LOOKBOOK */}
-      <section className="section home-lookbook">
-        <div className="section-head">
-          <div>
-            <p className="eyebrow">Captured after dark</p>
-            <h2>
-              LOOKBOOK<span>.</span>
-            </h2>
-          </div>
+      {/* LOOKBOOK: photos orbit, land in the grid, then spin away as you scroll on */}
+      <OrbitGallery
+        className="section home-lookbook"
+        gridClassName="look-strip"
+        head={
+          <div className="section-head">
+            <div>
+              <p className="eyebrow">Captured after dark</p>
+              <h2>
+                LOOKBOOK<span>.</span>
+              </h2>
+            </div>
 
-          <Link to="/lookbook" className="text-link">
-            View full edit ↗
-          </Link>
-        </div>
-
-        {showImages && (
-          <div className="look-strip">
-            {lookbook.slice(0, 4).map((shot, index) => (
-              <Link to="/lookbook" key={shot.id} className="look-tile">
-                <img src={shot.image} alt={shot.city} />
-                <span className="look-number">0{index + 1}</span>
-                <span className="look-city">{shot.city}</span>
-              </Link>
-            ))}
+            <Link to="/lookbook" className="text-link">
+              View full edit ↗
+            </Link>
           </div>
-        )}
-      </section>
+        }
+        items={
+          showImages
+            ? lookbook.slice(0, 4).map((shot, index) => (
+                <TiltLink
+                  key={shot.id}
+                  to="/lookbook"
+                  className="look-tile"
+                  max={11}
+                  hoverScale={1.05}
+                  aria-label={`Season ${shot.city} lookbook`}
+                >
+                  <img src={shot.image} alt="" loading="lazy" decoding="async" />
+                  <Glare />
+                  <span className="look-number" aria-hidden="true">0{index + 1}</span>
+                  <span className="look-city">{shot.city}</span>
+                </TiltLink>
+              ))
+            : []
+        }
+      />
 
       {/* FINAL SECTION */}
       <section className="home-final">
