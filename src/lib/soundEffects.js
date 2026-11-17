@@ -10,17 +10,59 @@ function getAudioContext() {
 
 function playTone(context, { frequency, endFrequency, startAt, duration, volume, type = 'sine' }) {
   const oscillator = context.createOscillator()
+  const filter = context.createBiquadFilter()
   const gain = context.createGain()
+
   oscillator.type = type
   oscillator.frequency.setValueAtTime(frequency, startAt)
   if (endFrequency) oscillator.frequency.exponentialRampToValueAtTime(endFrequency, startAt + duration)
+
+  filter.type = 'lowpass'
+  filter.frequency.setValueAtTime(520, startAt)
+  filter.frequency.exponentialRampToValueAtTime(1500, startAt + duration * 0.55)
+  filter.frequency.exponentialRampToValueAtTime(420, startAt + duration)
+
   gain.gain.setValueAtTime(0.0001, startAt)
-  gain.gain.exponentialRampToValueAtTime(volume, startAt + 0.008)
+  gain.gain.exponentialRampToValueAtTime(volume, startAt + Math.min(0.12, duration * 0.25))
   gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration)
-  oscillator.connect(gain)
+
+  oscillator.connect(filter)
+  filter.connect(gain)
   gain.connect(context.destination)
   oscillator.start(startAt)
-  oscillator.stop(startAt + duration + 0.015)
+  oscillator.stop(startAt + duration + 0.02)
+}
+
+function playAirSweep(context, { startAt, duration, volume, lowpass = 1800 }) {
+  const frameCount = Math.ceil(context.sampleRate * duration)
+  const buffer = context.createBuffer(1, frameCount, context.sampleRate)
+  const channel = buffer.getChannelData(0)
+
+  for (let i = 0; i < frameCount; i += 1) {
+    const fadeIn = Math.min(1, i / (context.sampleRate * 0.18))
+    const fadeOut = Math.min(1, (frameCount - i) / (context.sampleRate * 0.3))
+    channel[i] = (Math.random() * 2 - 1) * fadeIn * fadeOut
+  }
+
+  const source = context.createBufferSource()
+  const filter = context.createBiquadFilter()
+  const gain = context.createGain()
+
+  source.buffer = buffer
+  filter.type = 'lowpass'
+  filter.frequency.setValueAtTime(260, startAt)
+  filter.frequency.exponentialRampToValueAtTime(lowpass, startAt + duration * 0.58)
+  filter.frequency.exponentialRampToValueAtTime(240, startAt + duration)
+
+  gain.gain.setValueAtTime(0.0001, startAt)
+  gain.gain.linearRampToValueAtTime(volume, startAt + duration * 0.42)
+  gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration)
+
+  source.connect(filter)
+  filter.connect(gain)
+  gain.connect(context.destination)
+  source.start(startAt)
+  source.stop(startAt + duration + 0.02)
 }
 
 export function playSoundEffect(kind = 'tap') {
@@ -29,32 +71,29 @@ export function playSoundEffect(kind = 'tap') {
   if (!context) return
   const now = context.currentTime
 
+  // The intro uses restrained, filtered sweeps instead of loud synthetic beeps.
   if (kind === 'intro-start') {
-    playTone(context, { frequency: 95, endFrequency: 520, startAt: now, duration: 1.05, volume: 0.09, type: 'sawtooth' })
-    playTone(context, { frequency: 680, endFrequency: 190, startAt: now + 0.12, duration: 0.75, volume: 0.035, type: 'triangle' })
-    playTone(context, { frequency: 42, endFrequency: 85, startAt: now, duration: 1.15, volume: 0.12, type: 'sine' })
-    return
-  }
-
-  if (kind === 'intro-arrive') {
-    playTone(context, { frequency: 160, endFrequency: 58, startAt: now, duration: 0.42, volume: 0.12, type: 'sine' })
-    playTone(context, { frequency: 440, endFrequency: 880, startAt: now + 0.04, duration: 0.32, volume: 0.055, type: 'triangle' })
-    playTone(context, { frequency: 1040, endFrequency: 720, startAt: now + 0.16, duration: 0.22, volume: 0.025, type: 'sine' })
+    playAirSweep(context, { startAt: now, duration: 1.55, volume: 0.035, lowpass: 1250 })
+    playTone(context, { frequency: 54, endFrequency: 39, startAt: now + 0.05, duration: 1.35, volume: 0.045 })
     return
   }
 
   if (kind === 'intro-zoom') {
-    playTone(context, { frequency: 75, endFrequency: 740, startAt: now, duration: 0.85, volume: 0.105, type: 'sawtooth' })
-    playTone(context, { frequency: 330, endFrequency: 990, startAt: now + 0.2, duration: 0.58, volume: 0.045, type: 'triangle' })
-    playTone(context, { frequency: 48, endFrequency: 34, startAt: now + 0.55, duration: 0.55, volume: 0.08, type: 'sine' })
+    playAirSweep(context, { startAt: now, duration: 1.05, volume: 0.052, lowpass: 2100 })
+    playTone(context, { frequency: 68, endFrequency: 43, startAt: now + 0.08, duration: 0.92, volume: 0.052 })
+    return
+  }
+
+  if (kind === 'intro-arrive') {
+    playTone(context, { frequency: 88, endFrequency: 48, startAt: now, duration: 0.62, volume: 0.075 })
+    playAirSweep(context, { startAt: now + 0.04, duration: 0.48, volume: 0.018, lowpass: 900 })
+    playTone(context, { frequency: 392, endFrequency: 440, startAt: now + 0.12, duration: 0.38, volume: 0.012 })
     return
   }
 
   if (kind === 'intro-reveal') {
-    // Wide, soft transition whoosh as the intro gives way to the storefront.
-    playTone(context, { frequency: 62, endFrequency: 210, startAt: now, duration: 0.95, volume: 0.105, type: 'sine' })
-    playTone(context, { frequency: 180, endFrequency: 720, startAt: now + 0.08, duration: 0.72, volume: 0.045, type: 'triangle' })
-    playTone(context, { frequency: 920, endFrequency: 420, startAt: now + 0.28, duration: 0.52, volume: 0.022, type: 'sine' })
+    playAirSweep(context, { startAt: now, duration: 1.05, volume: 0.045, lowpass: 1600 })
+    playTone(context, { frequency: 58, endFrequency: 82, startAt: now + 0.06, duration: 0.95, volume: 0.04 })
     return
   }
 
