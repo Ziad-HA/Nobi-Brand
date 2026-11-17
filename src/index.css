@@ -3221,10 +3221,10 @@ button,
   z-index: 0;
   opacity: 0;
 }
-.product-card:hover .product-media .product-image-primary {
+.product-card.has-secondary-image:hover .product-media .product-image-primary {
   opacity: 0;
 }
-.product-card:hover .product-media .product-image-secondary {
+.product-card.has-secondary-image:hover .product-media .product-image-secondary {
   opacity: 1;
   transform: scale(1.045);
 }
