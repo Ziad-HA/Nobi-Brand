@@ -129,7 +129,7 @@ export default function Product() {
           </div>
 
           <div className="product-actions">
-            <button disabled={product.soldOut} onClick={onAdd} className="product-add-btn" type="button" aria-live="polite">
+            <button disabled={product.soldOut} onClick={onAdd} className="product-add-btn" type="button" aria-live="polite" data-sound="add">
               {product.soldOut ? 'Sold out' : added ? 'Added to bag ✓' : 'Add to bag — ' + '$' + product.price}
             </button>
             {added && (
