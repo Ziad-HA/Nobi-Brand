@@ -85,7 +85,10 @@ export default function Intro() {
         playSoundEffect('intro-arrive')
       }, 2600),
       window.setTimeout(() => setPhase('statement'), 3500),
-      window.setTimeout(() => setPhase('exit'), 5200),
+      window.setTimeout(() => {
+        setPhase('exit')
+        playSoundEffect('intro-reveal')
+      }, 5200),
       window.setTimeout(() => {
         try {
           sessionStorage.setItem(STORAGE_KEY, '1')
