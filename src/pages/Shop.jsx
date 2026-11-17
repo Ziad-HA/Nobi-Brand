@@ -110,7 +110,7 @@ export default function Shop() {
               viewport={{ once: true, amount: 0.12 }}
               transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1], delay: (index % 4) * 0.045 }}
             >
-              <ProductCard product={product} />
+              <ProductCard product={product} priority={index < 4} />
             </motion.div>
           ))}
         </div>
