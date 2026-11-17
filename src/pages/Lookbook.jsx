@@ -28,7 +28,7 @@ export default function Lookbook() {
             hoverScale={1.04}
             aria-label={`Open season ${shot.city}`}
           >
-            <img src={shot.image} alt={`Season ${shot.city} look`} />
+            <img src={shot.image} alt={`Season ${shot.city} look`} loading="lazy" decoding="async" />
             <Glare />
           </TiltLink>
           <figcaption>

@@ -86,6 +86,8 @@ export default function Home() {
             <img
               src={`${import.meta.env.BASE_URL}images/download.jpg`}
               alt="Nobi editorial campaign"
+              loading="lazy"
+              decoding="async"
             />
           )}
 
@@ -144,7 +146,7 @@ export default function Home() {
                   hoverScale={1.05}
                   aria-label={`Season ${shot.city} lookbook`}
                 >
-                  <img src={shot.image} alt="" />
+                  <img src={shot.image} alt="" loading="lazy" decoding="async" />
                   <Glare />
                   <span className="look-number" aria-hidden="true">0{index + 1}</span>
                   <span className="look-city">{shot.city}</span>

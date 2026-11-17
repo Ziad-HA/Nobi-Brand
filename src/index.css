@@ -3033,3 +3033,14 @@ button,
     padding: 0.6rem 0;
   }
 }
+
+/* Touch targets: quantity, remove and footer links are at least ~44px to tap on phones. */
+.qty-btn { min-width: 44px; min-height: 44px; padding: 0 12px; }
+.remove-btn { min-height: 44px; padding: 0 8px; }
+@media (pointer: coarse) {
+  .footer-cols a { padding-block: 10px; margin-top: 0; }
+}
+@media (pointer: coarse) {
+  .nav-cart, .back-to-top { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; }
+  .shop-filters button, button.px-5.py-2\.5 { min-height: 44px; }
+}
