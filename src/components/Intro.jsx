@@ -3,9 +3,6 @@ import { useLocation } from 'react-router-dom'
 import { playSoundEffect } from '../lib/soundEffects'
 
 const KEY = 'nobi-intro'
-const SPIN_TIME = 850
-const ARRIVAL_TIME = 450
-const ZOOM_TIME = 700
 
 const shouldPlay = (pathname) => {
   if (pathname !== '/') return false
@@ -52,42 +49,36 @@ function WorldMap() {
 
 export default function Intro() {
   const { pathname } = useLocation()
-  const [phase, setPhase] = useState(() => (shouldPlay(pathname) ? 'ready' : 'done'))
+  const [phase, setPhase] = useState(() => (shouldPlay(pathname) ? 'map' : 'done'))
   const timers = useRef([])
-
-  useEffect(() => () => timers.current.forEach(clearTimeout), [])
 
   useEffect(() => {
     if (phase === 'done') return
     document.documentElement.classList.add('intro-playing')
     document.body.style.overflow = 'hidden'
+
+    // Start automatically: map -> Egypt zoom -> title -> site.
+    timers.current.push(setTimeout(() => {
+      playSoundEffect('intro-start')
+      setPhase('zoom')
+      playSoundEffect('intro-zoom')
+    }, 650))
+    timers.current.push(setTimeout(() => {
+      setPhase('title')
+      playSoundEffect('intro-arrive')
+    }, 1850))
+    timers.current.push(setTimeout(() => setPhase('leave'), 2850))
+    timers.current.push(setTimeout(() => {
+      try { sessionStorage.setItem(KEY, '1') } catch { /* ignore */ }
+      setPhase('done')
+    }, 3350))
+
     return () => {
+      timers.current.forEach(clearTimeout)
       document.documentElement.classList.remove('intro-playing')
       document.body.style.overflow = ''
     }
-  }, [phase])
-
-  const finish = () => {
-    timers.current.forEach(clearTimeout)
-    try { sessionStorage.setItem(KEY, '1') } catch { /* ignore */ }
-    setPhase('leave')
-    timers.current.push(setTimeout(() => setPhase('done'), 380))
-  }
-
-  const start = () => {
-    if (phase !== 'ready') return
-    playSoundEffect('intro-start')
-    setPhase('spin')
-    timers.current.push(setTimeout(() => {
-      setPhase('arrival')
-      playSoundEffect('intro-arrive')
-    }, SPIN_TIME))
-    timers.current.push(setTimeout(() => {
-      setPhase('zoom')
-      playSoundEffect('intro-zoom')
-    }, SPIN_TIME + ARRIVAL_TIME))
-    timers.current.push(setTimeout(finish, SPIN_TIME + ARRIVAL_TIME + ZOOM_TIME))
-  }
+  }, [])
 
   if (phase === 'done') return null
 
@@ -96,11 +87,7 @@ export default function Intro() {
       <div className="intro-noise" />
       <div className="intro-mini-brand">NOBI®</div>
       <WorldMap />
-      {phase === 'arrival' && <div className="intro-arrival-text">WE’RE HERE.</div>}
-      {phase === 'ready' && (
-        <button type="button" className="intro-enter" onClick={start}>ENTER <span>↗</span></button>
-      )}
-      {phase !== 'ready' && <button type="button" className="intro-skip" onClick={finish}>SKIP</button>}
+      {phase === 'title' && <h1 className="intro-world-title">THE WORLD IS YOURS</h1>}
     </div>
   )
 }
