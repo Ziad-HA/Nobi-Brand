@@ -39,6 +39,7 @@ export default function TiltLink({ max = 8, hoverScale = 1, className = '', chil
     ry.set(0)
     scale.set(1)
     const el = e.currentTarget
+    delete el.dataset.pressed
     el.style.setProperty('--px', '0')
     el.style.setProperty('--py', '0')
     el.style.setProperty('--mx', '50%')
@@ -57,8 +58,12 @@ export default function TiltLink({ max = 8, hoverScale = 1, className = '', chil
       }}
       onPointerMove={(e) => e.pointerType === 'mouse' && aim(e)}
       onPointerDown={(e) => {
+        if (e.pointerType === 'mouse') return
+        // Touch has no hover, so pressing is the hover: the card rises toward the finger and
+        // data-pressed switches on the same ring, glow, highlight and photo zoom the mouse gets.
+        e.currentTarget.dataset.pressed = ''
         aim(e)
-        if (e.pointerType !== 'mouse' && !reduce) scale.set(0.97)
+        if (!reduce) scale.set(Math.max(1.04, hoverScale * 0.98))
       }}
       onPointerUp={(e) => e.pointerType !== 'mouse' && rest(e)}
       onPointerCancel={rest}

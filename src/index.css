@@ -2798,7 +2798,7 @@ button,
   position: relative;
 }
 
-.tilt3d:hover {
+.tilt3d:is(:hover, [data-pressed]) {
   z-index: 6;
 }
 
@@ -2819,7 +2819,7 @@ button,
   mix-blend-mode: overlay;
 }
 
-.tilt3d:hover .tilt-glare {
+.tilt3d:is(:hover, [data-pressed]) .tilt-glare {
   opacity: 1;
 }
 
@@ -2832,11 +2832,11 @@ button,
   transition: transform 0.28s ease-out;
 }
 
-.product-card:hover .product-media img {
+.product-card:is(:hover, [data-pressed]) .product-media img {
   transform: translate(calc(var(--px, 0) * -18px), calc(var(--py, 0) * -18px)) scale(1.18);
 }
 
-.product-card:hover .product-media {
+.product-card:is(:hover, [data-pressed]) .product-media {
   box-shadow:
     0 0 0 1px rgba(214, 255, 58, 0.7),
     0 30px 70px -20px rgba(214, 255, 58, 0.35),
@@ -2847,7 +2847,7 @@ button,
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-.product-card:hover .chip {
+.product-card:is(:hover, [data-pressed]) .chip {
   background: var(--volt);
   color: var(--volt-ink);
 }
@@ -2856,7 +2856,7 @@ button,
   transition: color 0.25s ease;
 }
 
-.product-card:hover .product-meta h3 {
+.product-card:is(:hover, [data-pressed]) .product-meta h3 {
   color: var(--volt);
 }
 
@@ -2866,8 +2866,8 @@ button,
   transition: transform 0.28s ease-out;
 }
 
-.home-lookbook .look-tile:hover img,
-.look-masonry .tilt3d:hover img {
+.home-lookbook .look-tile:is(:hover, [data-pressed]) img,
+.look-masonry .tilt3d:is(:hover, [data-pressed]) img {
   transform: translate(calc(var(--px, 0) * -16px), calc(var(--py, 0) * -16px)) scale(1.15);
 }
 
@@ -2876,8 +2876,8 @@ button,
   transition: box-shadow 0.3s ease;
 }
 
-.home-lookbook .look-tile:hover,
-.look-masonry .tilt3d:hover {
+.home-lookbook .look-tile:is(:hover, [data-pressed]),
+.look-masonry .tilt3d:is(:hover, [data-pressed]) {
   box-shadow:
     0 0 0 1px rgba(214, 255, 58, 0.7),
     0 30px 70px -20px rgba(214, 255, 58, 0.35),
@@ -2890,6 +2890,19 @@ button,
 
 .orbit.section {
   padding: 0;
+}
+
+/* Pin length: --orbit-pin screens tall (set by the component). Phones need less scrolling. */
+.orbit:not(.orbit--flat) {
+  height: calc(var(--orbit-pin, 3) * 100vh);
+  height: calc(var(--orbit-pin, 3) * 100svh);
+}
+
+@media (max-width: 640px) {
+  .orbit:not(.orbit--flat) {
+    height: calc(var(--orbit-pin, 3) * 82vh);
+    height: calc(var(--orbit-pin, 3) * 82svh);
+  }
 }
 
 .orbit-stage {

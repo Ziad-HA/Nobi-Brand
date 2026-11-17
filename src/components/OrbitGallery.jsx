@@ -48,8 +48,11 @@ export default function OrbitGallery({ items, head, className = '', gridClassNam
       tw = el.offsetWidth
     })
     const n = els.length
-    const R = Math.min(w * 0.62, Math.max(w * 0.3, (n * tw * 1.12) / (2 * Math.PI)))
-    metrics.current = { dx, dy, R, n, els }
+    // Phones: the grid is 2 wide, so full-size photos would pile on top of each other. Shrink them
+    // on the ring, give the ring a taller ellipse, and keep it inside the screen width.
+    const small = w < 560
+    const R = small ? w * 0.36 : Math.min(w * 0.62, Math.max(w * 0.3, (n * tw * 1.12) / (2 * Math.PI)))
+    metrics.current = { dx, dy, R, n, els, ringScale: small ? 0.62 : 1, tilt: small ? 0.34 : 0.16 }
   }, [])
 
   const apply = useCallback((p) => {
@@ -67,10 +70,11 @@ export default function OrbitGallery({ items, head, className = '', gridClassNam
       const sin = Math.sin(ang)
       const cos = Math.cos(ang)
       const x = k * (m.dx[i] + m.R * sin)
-      const y = k * (m.dy[i] + m.R * 0.16 * cos) // far side rides higher, so the ring reads as seen from above
+      const y = k * (m.dy[i] + m.R * m.tilt * cos) // far side rides higher, so the ring reads as seen from above
       const z = k * m.R * (cos - 1)
       const rot = -k * 0.85 * sin // side photos angle in toward the centre; every photo stays visible
-      el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, ${z.toFixed(1)}px) rotateY(${rot.toFixed(3)}rad)`
+      const sc = 1 - k * (1 - m.ringScale)
+      el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, ${z.toFixed(1)}px) rotateY(${rot.toFixed(3)}rad) scale(${sc.toFixed(3)})`
       el.style.opacity = (s + k * (0.4 + 0.6 * ((cos + 1) / 2))).toFixed(2)
       el.style.zIndex = Math.round(cos * 10 + 10) // nearer photos paint over farther ones
       el.style.pointerEvents = k > 0.3 ? 'none' : ''
@@ -124,7 +128,7 @@ export default function OrbitGallery({ items, head, className = '', gridClassNam
     <section
       ref={sectionRef}
       className={`orbit ${reduce ? 'orbit--flat' : ''} ${className}`.replace(/\s+/g, ' ').trim()}
-      style={reduce ? undefined : { height: `calc(${pin} * 100svh)` }}
+      style={reduce ? undefined : { '--orbit-pin': pin }}
     >
       <div className="orbit-stage">
         {head}
