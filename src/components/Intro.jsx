@@ -61,19 +61,23 @@ export default function Intro() {
 
   useEffect(() => {
     if (phase === 'done') return
-    timers.current.push(setTimeout(() => {
-      setPhase('zoom')
-      playSoundEffect('intro-zoom')
-    }, 650))
-    timers.current.push(setTimeout(() => {
-      setPhase('title')
-      playSoundEffect('intro-arrive')
-    }, 1850))
-    timers.current.push(setTimeout(() => setPhase('leave'), 2850))
-    timers.current.push(setTimeout(() => {
-      try { sessionStorage.setItem(KEY, '1') } catch { /* ignore */ }
-      setPhase('done')
-    }, 3350))
+    timers.current = [
+      setTimeout(() => setPhase('orbit'), 250),
+      setTimeout(() => {
+        setPhase('focus')
+        playSoundEffect('intro-zoom')
+      }, 2050),
+      setTimeout(() => {
+        setPhase('location')
+        playSoundEffect('intro-arrive')
+      }, 3300),
+      setTimeout(() => setPhase('title'), 4150),
+      setTimeout(() => setPhase('leave'), 5450),
+      setTimeout(() => {
+        try { sessionStorage.setItem(KEY, '1') } catch { /* ignore */ }
+        setPhase('done')
+      }, 5950),
+    ]
     return () => timers.current.forEach(clearTimeout)
   }, [])
 
@@ -93,6 +97,7 @@ export default function Intro() {
       <div className="intro-noise" />
       <div className="intro-mini-brand">NOBI®</div>
       <WorldMap />
+      {phase === 'location' && <div className="intro-location-hit">EGYPT ?</div>}
       {phase === 'title' && <h1 className="intro-world-title">THE WORLD IS YOURS</h1>}
     </div>
   )
