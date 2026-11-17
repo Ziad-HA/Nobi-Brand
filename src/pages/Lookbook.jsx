@@ -25,7 +25,13 @@ export default function Lookbook() {
         </div>
       }
       items={shots.map((shot, i) => (
-        <figure key={shot.id}>
+        <motion.figure
+          key={shot.id}
+          initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.55, delay: i * 0.06 }}
+        >
           <TiltLink
             to={`/lookbook/${shot.city.toLowerCase()}`}
             max={10}
@@ -38,7 +44,7 @@ export default function Lookbook() {
           <figcaption>
             {String(i + 1).padStart(2, "0")} / {shot.city}
           </figcaption>
-        </figure>
+        </motion.figure>
       ))}
     />
   );
