@@ -285,3 +285,20 @@
   .nobi-intro-v2 *::before,
   .nobi-intro-v2 *::after { animation: none !important; transition: none !important; }
 }
+
+/* Subtle lens treatment: keeps the map readable while giving the camera frame a
+   restrained cinematic finish. */
+.nobi-intro-v2 .nobi-intro-camera-frame::after {
+  content: '';
+  position: absolute;
+  z-index: 7;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.16), transparent 20%, transparent 76%, rgba(0,0,0,.28)),
+    radial-gradient(ellipse at center, transparent 48%, rgba(0,0,0,.34) 100%);
+  opacity: .72;
+}
+.nobi-intro-v2 .nobi-intro-statement h1 {
+  text-wrap: balance;
+}
