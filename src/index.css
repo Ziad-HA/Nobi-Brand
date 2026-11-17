@@ -26,6 +26,8 @@ body,
 html,
 body {
   overflow-x: hidden;
+  /* `clip` does not turn body into a scroll container, which sticky pinning needs. */
+  overflow-x: clip;
 }
 
 body {
@@ -2215,12 +2217,12 @@ h3 {
 @keyframes nobi-luxury-reveal {
   from {
     opacity: 0;
-    transform: translateY(26px);
+    translate: 0 26px;
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    translate: 0 0;
   }
 }
 
@@ -2784,5 +2786,237 @@ button,
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+
+/* =========================================
+   NOBI - STRONGER HOVER (cards + lookbook)
+========================================= */
+
+.tilt3d {
+  position: relative;
+}
+
+.tilt3d:hover {
+  z-index: 6;
+}
+
+/* Cursor-following highlight; sits inside the photo box. */
+.tilt-glare {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  background: radial-gradient(
+    circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.42),
+    rgba(214, 255, 58, 0.14) 28%,
+    transparent 58%
+  );
+  mix-blend-mode: overlay;
+}
+
+.tilt3d:hover .tilt-glare {
+  opacity: 1;
+}
+
+/* Drop 26 cards: photo zooms and slides against the tilt, volt ring and glow, tag lights up. */
+.product-media {
+  transition: box-shadow 0.3s ease;
+}
+
+.product-card .product-media img {
+  transition: transform 0.28s ease-out;
+}
+
+.product-card:hover .product-media img {
+  transform: translate(calc(var(--px, 0) * -18px), calc(var(--py, 0) * -18px)) scale(1.18);
+}
+
+.product-card:hover .product-media {
+  box-shadow:
+    0 0 0 1px rgba(214, 255, 58, 0.7),
+    0 30px 70px -20px rgba(214, 255, 58, 0.35),
+    0 18px 40px rgba(0, 0, 0, 0.6);
+}
+
+.product-card .chip {
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.product-card:hover .chip {
+  background: var(--volt);
+  color: var(--volt-ink);
+}
+
+.product-meta h3 {
+  transition: color 0.25s ease;
+}
+
+.product-card:hover .product-meta h3 {
+  color: var(--volt);
+}
+
+/* Lookbook photos get the same treatment. */
+.home-lookbook .look-tile img,
+.look-masonry .tilt3d img {
+  transition: transform 0.28s ease-out;
+}
+
+.home-lookbook .look-tile:hover img,
+.look-masonry .tilt3d:hover img {
+  transform: translate(calc(var(--px, 0) * -16px), calc(var(--py, 0) * -16px)) scale(1.15);
+}
+
+.look-masonry .tilt3d {
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.home-lookbook .look-tile:hover,
+.look-masonry .tilt3d:hover {
+  box-shadow:
+    0 0 0 1px rgba(214, 255, 58, 0.7),
+    0 30px 70px -20px rgba(214, 255, 58, 0.35),
+    0 18px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* =========================================
+   NOBI - ORBIT GALLERY (pinned scroll story)
+========================================= */
+
+.orbit.section {
+  padding: 0;
+}
+
+.orbit-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5.5rem 6vw 2.5rem;
+}
+
+/* The grid is the perspective stage; tiles are flown around it from script. */
+.orbit-grid {
+  position: relative;
+  perspective: 1500px;
+  perspective-origin: 50% 50%;
+}
+
+.orbit-tile {
+  will-change: transform, opacity;
+}
+
+/* Reduced motion: plain grid, no pin. */
+.orbit--flat .orbit-stage {
+  position: static;
+  height: auto;
+  padding: 5rem 6vw;
+}
+
+@media (max-width: 640px) {
+  .orbit-stage {
+    padding: 5rem 5vw 1.5rem;
+  }
+}
+
+@media (max-height: 760px) {
+  .orbit-stage {
+    padding-top: 4.5rem;
+  }
+
+  .orbit .section-head {
+    margin-bottom: 1rem;
+  }
+
+  .orbit .section-head .muted {
+    display: none;
+  }
+
+  .orbit .section-head h2,
+  .lookbook-page h1 {
+    font-size: 2.8rem;
+  }
+}
+
+/* =========================================
+   NOBI - SOUND TOGGLE
+========================================= */
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.nav-right .nav-cart {
+  margin-left: 0;
+}
+
+.nav-sound {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0 0.2rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 0.25s ease;
+}
+
+.nav-sound:hover {
+  color: var(--text);
+}
+
+.nav-sound b {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.nav-sound[aria-pressed='true'] b {
+  color: var(--volt);
+}
+
+.nav-sound-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+}
+
+.nav-sound[aria-pressed='true'] .nav-sound-dot {
+  background: var(--volt);
+  border-color: var(--volt);
+  box-shadow: 0 0 8px var(--volt);
+}
+
+.nav-sound--menu {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  /* Phones: the bar is too tight next to the logo, so Sound lives in the menu. */
+  .nav-sound--bar {
+    display: none;
+  }
+
+  .nav-sound--menu {
+    display: inline-flex;
+    align-self: flex-start;
+    font-size: 0.9rem;
+    padding: 0.6rem 0;
   }
 }

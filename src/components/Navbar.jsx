@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+import { sfx, useSoundEnabled } from '../lib/sfx'
 
 const links = [
   { to: '/shop', label: 'Shop' },
@@ -12,6 +13,20 @@ const links = [
 export default function Navbar() {
   const { count } = useCart()
   const [open, setOpen] = useState(false)
+  const soundOn = useSoundEnabled()
+
+  const soundButton = (extra) => (
+    <button
+      type="button"
+      className={`nav-sound ${extra}`}
+      aria-pressed={soundOn}
+      aria-label="Sound effects"
+      onClick={() => sfx.toggle()}
+    >
+      <i className="nav-sound-dot" aria-hidden="true" />
+      <span>Sound</span> <b>{soundOn ? 'On' : 'Off'}</b>
+    </button>
+  )
 
   return (
     <header className="nav">
@@ -36,10 +51,14 @@ export default function Navbar() {
               {link.label}
             </NavLink>
           ))}
+          {soundButton('nav-sound--menu')}
         </nav>
-        <Link to="/cart" className="nav-cart">
-          Bag <span>{String(count).padStart(2, '0')}</span>
-        </Link>
+        <div className="nav-right">
+          {soundButton('nav-sound--bar')}
+          <Link to="/cart" className="nav-cart">
+            Bag <span>{String(count).padStart(2, '0')}</span>
+          </Link>
+        </div>
       </div>
     </header>
   )
