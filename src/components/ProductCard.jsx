@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import TiltLink, { Glare } from './TiltLink'
 import ProductQuickView from './ProductQuickView'
 import { useWishlist } from '../context/WishlistContext'
