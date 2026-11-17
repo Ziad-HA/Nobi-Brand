@@ -22,7 +22,7 @@ function WorldMap() {
         <svg className="intro-world-svg" viewBox="0 0 720 420" role="img" aria-label="World map with Egypt highlighted">
           <defs>
             <pattern id="intro-map-dots" width="8" height="8" patternUnits="userSpaceOnUse">
-              <circle cx="1.5" cy="1.5" r="1" fill="currentColor" opacity=".22" />
+              <circle cx="1.5" cy="1.5" r="1" fill="currentColor" opacity=".2" />
             </pattern>
           </defs>
           <g className="intro-land" fill="url(#intro-map-dots)" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round">
@@ -37,7 +37,8 @@ function WorldMap() {
           <path className="intro-egypt-highlight" d="m430 158 24-5 13 9-4 20-19 7-17-12Z" />
           <path className="intro-egypt-highlight" d="m451 191 17-3 9 13-6 17-15-2-8-13Z" opacity=".45" />
         </svg>
-        <div className="intro-egypt-pin"><span /><b>EGYPT</b></div>
+        <div className="intro-egypt-pin"><span /></div>
+        <div className="intro-location-hit">EGYPT ?</div>
       </div>
     </div>
   )
@@ -62,21 +63,22 @@ export default function Intro() {
   useEffect(() => {
     if (phase === 'done') return
     timers.current = [
-      setTimeout(() => setPhase('orbit'), 250),
+      setTimeout(() => setPhase('search-left'), 300),
+      setTimeout(() => setPhase('search-right'), 1050),
       setTimeout(() => {
-        setPhase('focus')
+        setPhase('lock')
         playSoundEffect('intro-zoom')
-      }, 2050),
+      }, 1800),
       setTimeout(() => {
         setPhase('location')
         playSoundEffect('intro-arrive')
-      }, 3300),
-      setTimeout(() => setPhase('title'), 4150),
-      setTimeout(() => setPhase('leave'), 5450),
+      }, 2850),
+      setTimeout(() => setPhase('title'), 3850),
+      setTimeout(() => setPhase('leave'), 5100),
       setTimeout(() => {
         try { sessionStorage.setItem(KEY, '1') } catch { /* ignore */ }
         setPhase('done')
-      }, 5950),
+      }, 5600),
     ]
     return () => timers.current.forEach(clearTimeout)
   }, [])
@@ -97,7 +99,6 @@ export default function Intro() {
       <div className="intro-noise" />
       <div className="intro-mini-brand">NOBI®</div>
       <WorldMap />
-      {phase === 'location' && <div className="intro-location-hit">EGYPT ?</div>}
       {phase === 'title' && <h1 className="intro-world-title">THE WORLD IS YOURS</h1>}
     </div>
   )
