@@ -4,7 +4,7 @@ export default function ProductCard({ product }) {
   const secondaryImage = product.images?.[1]
 
   return (
-    <TiltLink to={`/product/${product.id}`} className="product-card" max={13} hoverScale={1.035}>
+    <TiltLink to={`/product/${product.id}`} className={secondaryImage ? 'product-card has-secondary-image' : 'product-card'} max={13} hoverScale={1.035}>
       <div className="product-media">
         <img
           className="product-image-primary"
