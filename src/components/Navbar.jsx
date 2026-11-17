@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Link, NavLink } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 
@@ -12,13 +13,27 @@ const links = [
 export default function Navbar() {
   const { count } = useCart()
   const [open, setOpen] = useState(false)
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    setOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    if (!open) return undefined
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setOpen(false)
+    }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [open])
 
   return (
     <header className="nav">
       <div className="nav-inner">
         <button
           type="button"
-          className="nav-toggle"
+          className={`nav-toggle ${open ? 'is-open' : ''}`}
           onClick={() => setOpen((v) => !v)}
           aria-label={open ? 'Close menu' : 'Open menu'}
           aria-expanded={open}
@@ -30,7 +45,8 @@ export default function Navbar() {
         <Link to="/" className="logo" onClick={() => setOpen(false)}>
           NOBI
         </Link>
-        <nav id="site-nav" aria-label="Main" className={`nav-links ${open ? 'is-open' : ''}`}>
+        <nav id="site-nav" aria-label="Main" className={`nav-links ${open ? 'is-open' : ''}`}
+          aria-hidden={!open && undefined}>
           {links.map((link) => (
             <NavLink key={link.to} to={link.to} onClick={() => setOpen(false)}>
               {link.label}
