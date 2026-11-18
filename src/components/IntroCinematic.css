@@ -1,304 +1,159 @@
-/* NOBI cinematic globe-to-Cairo intro */
-.nobi-intro-v2 {
-  --intro-accent: #d6ff3a;
-  background: #050706;
-  color: #f5f5ef;
-  isolation: isolate;
-}
-.nobi-intro-v2 .nobi-intro-camera-frame {
-  background: #050706;
-  perspective: 1100px;
-}
-.nobi-intro-v2 .nobi-intro-globe-scene {
-  position: absolute;
-  z-index: 2;
+/* NOBI intro — real Earth footage, black + Volt identity, no separator screen */
+.nobi-intro {
+  --volt: hsl(72, 100%, 61%);
+  position: fixed;
   inset: 0;
-  display: grid;
-  place-items: center;
+  z-index: 9999;
   overflow: hidden;
+  background: #090909;
+  color: #f4f4f0;
   opacity: 1;
-  transform: scale(1);
-  transition: opacity .72s ease, transform 1.5s cubic-bezier(.16,1,.3,1), filter .8s ease;
-  background:
-    radial-gradient(ellipse at 50% 48%, rgba(35,57,42,.36), transparent 38%),
-    radial-gradient(ellipse at 50% 100%, rgba(0,0,0,.9), transparent 55%),
-    #050706;
+  will-change: opacity;
+  transition: opacity 1.05s cubic-bezier(.4, 0, .2, 1);
 }
-.nobi-intro-v2 .nobi-intro-globe-halo {
+.nobi-intro.phase-exit { opacity: 0; pointer-events: none; }
+
+.nobi-intro-video {
   position: absolute;
-  width: min(78vw, 780px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(214,255,58,.12), rgba(214,255,58,.025) 48%, transparent 70%);
-  filter: blur(16px);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(.72) contrast(1.12) brightness(.82);
+  transform: scale(1.02);
+  transition: transform 6.4s cubic-bezier(.2, .6, .2, 1), filter 1.1s ease;
 }
-.nobi-intro-v2 .nobi-intro-globe {
-  position: relative;
-  width: min(57vw, 550px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 1px solid rgba(214,255,58,.18);
-  box-shadow:
-    inset -42px -18px 75px rgba(0,0,0,.95),
-    inset 15px 8px 45px rgba(151,190,117,.13),
-    0 0 85px rgba(67,100,59,.16),
-    0 0 0 1px rgba(255,255,255,.025);
-  background:
-    radial-gradient(ellipse at 33% 27%, rgba(139,161,126,.22), transparent 34%),
-    radial-gradient(ellipse at 60% 62%, rgba(27,52,38,.2), transparent 58%),
-    linear-gradient(115deg, #18241d, #0a100d 68%, #030504);
-  transform: rotate(-12deg);
-  transition: transform 1.55s cubic-bezier(.16,1,.3,1), filter 1s ease;
-}
-.nobi-intro-v2 .nobi-intro-globe::before,
-.nobi-intro-v2 .nobi-intro-globe::after {
-  content: '';
+.nobi-intro.phase-text .nobi-intro-video,
+.nobi-intro.phase-exit .nobi-intro-video { transform: scale(1.07); filter: saturate(.55) contrast(1.15) brightness(.55); }
+.nobi-intro.phase-exit .nobi-intro-video { transform: scale(1.16); filter: saturate(.4) contrast(1.15) brightness(.3); transition-duration: 1.15s; }
+
+/* Black / Volt grade over the footage */
+.nobi-intro-grade {
   position: absolute;
-  inset: -2%;
-  border-radius: 50%;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(9,9,9,.55) 0%, rgba(9,9,9,0) 26%, rgba(9,9,9,0) 80%, rgba(9,9,9,.18) 100%),
+    radial-gradient(60% 50% at 50% 50%, rgba(9,9,9,.55), rgba(9,9,9,0) 75%);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  opacity: .9;
+  transition: opacity 1s ease;
+}
+.nobi-intro.phase-text .nobi-intro-grade { opacity: 1; }
+.nobi-intro-vignette {
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 18vmax 4vmax rgba(0,0,0,.78);
   pointer-events: none;
 }
-.nobi-intro-v2 .nobi-intro-globe::before {
+
+/* Cinematic bars (kept thin so the Google Earth attribution stays visible) */
+.nobi-intro-bar {
+  position: absolute;
+  left: 0; right: 0;
+  height: 5vh;
+  background: #090909;
+  transition: transform 1.05s cubic-bezier(.76, 0, .24, 1);
   z-index: 2;
-  background:
-    linear-gradient(90deg, transparent 48%, rgba(214,255,58,.1) 49.7%, rgba(214,255,58,.1) 50.3%, transparent 52%),
-    linear-gradient(0deg, transparent 48%, rgba(214,255,58,.08) 49.7%, rgba(214,255,58,.08) 50.3%, transparent 52%),
-    repeating-linear-gradient(90deg, transparent 0 12.2%, rgba(214,255,58,.07) 12.35%, transparent 12.55%),
-    repeating-linear-gradient(0deg, transparent 0 12.2%, rgba(214,255,58,.06) 12.35%, transparent 12.55%);
-  opacity: .55;
-  mask-image: radial-gradient(circle, #000 0 64%, transparent 72%);
 }
-.nobi-intro-v2 .nobi-intro-globe::after {
+.nobi-intro-bar.top { top: 0; }
+.nobi-intro-bar.bottom { bottom: 0; }
+.nobi-intro.phase-exit .nobi-intro-bar.top { transform: translateY(-100%); }
+.nobi-intro.phase-exit .nobi-intro-bar.bottom { transform: translateY(100%); }
+
+.nobi-intro-header {
+  position: absolute;
+  top: calc(5vh + 20px);
+  left: clamp(18px, 4vw, 56px);
+  right: clamp(18px, 4vw, 56px);
   z-index: 3;
-  background: radial-gradient(ellipse at 35% 28%, rgba(255,255,255,.13), transparent 30%), linear-gradient(90deg, rgba(0,0,0,.66), transparent 45%, rgba(0,0,0,.18));
-}
-.nobi-intro-v2 .nobi-intro-globe-map {
-  position: absolute;
-  z-index: 1;
-  inset: 7% 3%;
-  width: 94%;
-  height: 86%;
-  color: #a7b99b;
-  opacity: .58;
-  filter: drop-shadow(0 0 5px rgba(178,207,152,.12));
-}
-.nobi-intro-v2 .nobi-intro-globe-map path {
-  fill: currentColor;
-  stroke: rgba(214,255,58,.18);
-  stroke-width: 1.2;
-  stroke-linejoin: round;
-}
-.nobi-intro-v2 .nobi-intro-globe-scan {
-  position: absolute;
-  z-index: 4;
-  top: 50%;
-  left: -15%;
-  width: 130%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(214,255,58,.7), transparent);
-  box-shadow: 0 0 18px rgba(214,255,58,.24);
-  transform: rotate(-13deg);
-  opacity: .7;
-}
-.nobi-intro-v2 .nobi-intro-globe-caption {
-  position: absolute;
-  z-index: 5;
-  left: 50%;
-  bottom: 13%;
-  transform: translateX(-50%);
-  color: rgba(245,245,239,.58);
-  font-size: .55rem;
-  letter-spacing: .32em;
-  white-space: nowrap;
-}
-.nobi-intro-v2 .nobi-intro-globe-target {
-  position: absolute;
-  z-index: 5;
-  left: 60%;
-  top: 47%;
-  width: 9px;
-  height: 9px;
-  border: 1px solid var(--intro-accent);
-  border-radius: 50%;
-  box-shadow: 0 0 0 5px rgba(214,255,58,.08), 0 0 18px rgba(214,255,58,.55);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--display, 'Bebas Neue', 'Arial Narrow', sans-serif);
+  letter-spacing: .18em;
   opacity: 0;
-  transition: opacity .3s ease;
+  animation: nobi-intro-fade .8s .25s ease forwards;
 }
-.nobi-intro-v2 .nobi-intro-drone-scene {
-  z-index: 1;
+.nobi-intro-wordmark { font-size: clamp(22px, 2.6vw, 34px); letter-spacing: .24em; }
+.nobi-intro-wordmark span { color: var(--volt); font-size: .5em; vertical-align: super; margin-left: 2px; }
+.nobi-intro-live { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: #f4f4f0; opacity: .85; }
+.nobi-intro-live i { width: 7px; height: 7px; border-radius: 50%; background: var(--volt); box-shadow: 0 0 12px var(--volt); animation: nobi-intro-pulse 1.4s ease-in-out infinite; }
+
+/* THE WORLD / IS YOURS */
+.nobi-intro-statement {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  text-align: center;
+  font-family: var(--display, 'Bebas Neue', 'Arial Narrow', sans-serif);
+  font-size: clamp(54px, 13vw, 210px);
+  line-height: .9;
+  letter-spacing: .04em;
+  text-shadow: 0 6px 60px rgba(0,0,0,.7);
+  pointer-events: none;
+  transition: opacity .8s ease, transform 1.1s cubic-bezier(.4, 0, .2, 1), filter .8s ease;
+}
+.nobi-intro-line { display: block; white-space: nowrap; }
+.nobi-intro-line.volt { color: var(--volt); text-shadow: 0 0 46px rgba(200,255,40,.35), 0 6px 60px rgba(0,0,0,.6); }
+.nobi-intro-char {
+  display: inline-block;
   opacity: 0;
-  transform: scale(1.5) translate3d(0,10%,0);
-  transition: opacity .7s ease, transform 1.4s cubic-bezier(.16,1,.3,1), filter 1.1s ease;
-  background:
-    radial-gradient(ellipse at 50% 48%, rgba(78,103,65,.2), transparent 45%),
-    linear-gradient(145deg, #111a14, #090e0b 58%, #050706);
+  transform: translateY(.22em) scale(1.35);
+  filter: blur(14px);
 }
-.nobi-intro-v2 .nobi-intro-city-grid { opacity: .42; }
-.nobi-intro-v2 .nobi-intro-city-roads { opacity: .42; }
-.nobi-intro-v2 .nobi-intro-city-blocks { opacity: .28; }
-.nobi-intro-v2 .nobi-intro-city-lights { opacity: .3; }
-.nobi-intro-v2 .nobi-intro-country-reveal {
-  z-index: 6;
-  transition: opacity .55s ease, transform 1.1s cubic-bezier(.16,1,.3,1);
+.nobi-intro.phase-text .nobi-intro-char,
+.nobi-intro.phase-exit .nobi-intro-char {
+  animation: nobi-intro-char .95s var(--d, 0s) cubic-bezier(.16, 1, .3, 1) forwards;
 }
-.nobi-intro-v2 .nobi-intro-egypt-border {
-  stroke: var(--intro-accent);
-  stroke-width: 2.4;
-}
-.nobi-intro-v2 .nobi-intro-egypt-nile,
-.nobi-intro-v2 .nobi-intro-egypt-delta { stroke: rgba(214,255,58,.52); }
-.nobi-intro-v2 .nobi-intro-cairo-marker { opacity: 0; transition: opacity .3s ease; }
-.nobi-intro-v2 .nobi-intro-cairo-dot {
-  fill: var(--intro-accent);
-  stroke: #f5f5ef;
-  stroke-width: 1.5;
-  filter: drop-shadow(0 0 8px rgba(214,255,58,.75));
-}
-.nobi-intro-v2 .nobi-intro-cairo-pulse {
-  fill: none;
-  stroke: var(--intro-accent);
-  stroke-width: 1.5;
-}
-.nobi-intro-v2 .nobi-intro-cairo-leader { fill: none; stroke: var(--intro-accent); stroke-width: 1.4; }
-.nobi-intro-v2 .nobi-intro-cairo-label { fill: #f5f5ef; font: 700 14px Arial,sans-serif; letter-spacing: 3px; }
-.nobi-intro-v2 .nobi-intro-cairo-coordinates { fill: rgba(245,245,239,.7); font: 500 8px Arial,sans-serif; letter-spacing: 1px; }
-.nobi-intro-v2 .nobi-intro-statement {
-  z-index: 9;
-  background: radial-gradient(ellipse at center, rgba(5,7,6,.78), rgba(5,7,6,.16) 75%);
-  backdrop-filter: blur(3px);
-}
-.nobi-intro-v2 .nobi-intro-statement-index { color: rgba(214,255,58,.82); }
-.nobi-intro-v2 .nobi-intro-statement h1 {
-  color: #f5f5ef;
-  font-size: clamp(4rem, 10.8vw, 9.5rem);
-  line-height: .82;
-  letter-spacing: .005em;
-  text-shadow: 0 12px 48px rgba(0,0,0,.55);
-}
-.nobi-intro-v2 .nobi-intro-statement h1 em {
-  color: var(--intro-accent);
-  font-style: normal;
-  text-shadow: 0 0 24px rgba(214,255,58,.13);
-}
-.nobi-intro-v2 .nobi-intro-statement-rule {
-  width: 34px;
+.nobi-intro.phase-exit .nobi-intro-statement { opacity: 0; transform: scale(1.12); filter: blur(6px); }
+
+.nobi-intro-rule {
+  display: block;
   height: 2px;
-  margin-top: 1.25rem;
-  background: var(--intro-accent);
-  box-shadow: 0 0 14px rgba(214,255,58,.28);
+  width: 0;
+  margin-top: clamp(14px, 2.4vw, 30px);
+  background: var(--volt);
+  box-shadow: 0 0 18px var(--volt);
 }
-.nobi-intro-v2 .nobi-intro-header,
-.nobi-intro-v2 .nobi-intro-footer { color: rgba(245,245,239,.55); }
-.nobi-intro-v2 .nobi-intro-wordmark span,
-.nobi-intro-v2 .nobi-intro-camera-altitude b { color: var(--intro-accent); }
+.nobi-intro.phase-text .nobi-intro-rule { animation: nobi-intro-rule 1s .9s cubic-bezier(.16, 1, .3, 1) forwards; }
 
-/* Opening: a restrained globe scan, then a committed push toward North Africa. */
-.nobi-intro-v2.phase-intro .nobi-intro-globe { animation: nobi-globe-drift 1.35s ease-in-out both; }
-.nobi-intro-v2.phase-lift .nobi-intro-globe-scene {
-  transform: scale(1.32) translate3d(0,2%,0);
-  filter: brightness(1.12);
-}
-.nobi-intro-v2.phase-lift .nobi-intro-globe {
-  transform: rotate(-4deg) scale(1.22);
-  filter: saturate(1.18) brightness(1.12);
-}
-.nobi-intro-v2.phase-lift .nobi-intro-globe-target { opacity: 1; }
-.nobi-intro-v2.phase-clouds .nobi-intro-globe-scene,
-.nobi-intro-v2.phase-wide .nobi-intro-globe-scene,
-.nobi-intro-v2.phase-cairo .nobi-intro-globe-scene,
-.nobi-intro-v2.phase-statement .nobi-intro-globe-scene,
-.nobi-intro-v2.phase-exit .nobi-intro-globe-scene {
-  opacity: 0;
-  transform: scale(2.15) translate3d(0,5%,0);
-  filter: blur(5px);
-}
-.nobi-intro-v2.phase-clouds .nobi-intro-drone-scene,
-.nobi-intro-v2.phase-wide .nobi-intro-drone-scene,
-.nobi-intro-v2.phase-cairo .nobi-intro-drone-scene,
-.nobi-intro-v2.phase-statement .nobi-intro-drone-scene,
-.nobi-intro-v2.phase-exit .nobi-intro-drone-scene {
-  opacity: 1;
-  transform: scale(1.12) translate3d(0,0,0);
-}
-.nobi-intro-v2.phase-clouds .nobi-intro-cloud-layer.cloud-one { opacity: .28; transform: translate3d(0,-8%,0) scale(1); }
-.nobi-intro-v2.phase-clouds .nobi-intro-cloud-layer.cloud-two { opacity: .16; transform: translate3d(0,-12%,0) scale(1.1); }
-.nobi-intro-v2.phase-wide .nobi-intro-drone-scene,
-.nobi-intro-v2.phase-cairo .nobi-intro-drone-scene,
-.nobi-intro-v2.phase-statement .nobi-intro-drone-scene,
-.nobi-intro-v2.phase-exit .nobi-intro-drone-scene {
-  transform: scale(.82) translate3d(0,-3%,0);
-  filter: saturate(.72) brightness(.78);
-}
-.nobi-intro-v2.phase-wide .nobi-intro-country-reveal,
-.nobi-intro-v2.phase-cairo .nobi-intro-country-reveal {
-  opacity: 1;
-  transform: scale(1) translateY(0);
-}
-.nobi-intro-v2.phase-wide .nobi-intro-egypt-border,
-.nobi-intro-v2.phase-cairo .nobi-intro-egypt-border,
-.nobi-intro-v2.phase-statement .nobi-intro-egypt-border { animation: nobi-intro-outline .9s .05s ease forwards; }
-.nobi-intro-v2.phase-cairo .nobi-intro-country-reveal svg {
-  transform: translate3d(-5.4%,32.1%,0) scale(1.7);
-  transition: transform 1.05s cubic-bezier(.16,1,.3,1);
-}
-.nobi-intro-v2.phase-cairo .nobi-intro-cairo-marker { opacity: 1; }
-.nobi-intro-v2.phase-cairo .nobi-intro-cairo-pulse { animation: nobi-cairo-pulse 1.1s ease-out infinite; }
-.nobi-intro-v2.phase-cairo .nobi-intro-country-kicker,
-.nobi-intro-v2.phase-cairo .nobi-intro-country-name,
-.nobi-intro-v2.phase-cairo .nobi-intro-country-coordinates { opacity: 0; transition: opacity .25s ease; }
-.nobi-intro-v2.phase-statement .nobi-intro-country-reveal { opacity: .14; }
-.nobi-intro-v2.phase-statement .nobi-intro-statement { animation: nobi-statement-in .48s cubic-bezier(.16,1,.3,1) both; }
-.nobi-intro-v2.phase-statement .nobi-intro-statement h1 { animation: nobi-title-rise .58s .02s cubic-bezier(.16,1,.3,1) both; }
-.nobi-intro-v2.phase-exit { animation: nobi-intro-final-exit .78s cubic-bezier(.76,0,.24,1) forwards; pointer-events: none; }
-.nobi-intro-v2 .nobi-intro-camera-vignette { z-index: 8; pointer-events: none; }
-.nobi-intro-v2 .nobi-intro-camera-caption,
-.nobi-intro-v2 .nobi-intro-camera-altitude {
-  z-index: 10;
-  bottom: 2.4rem;
-  color: rgba(245,245,239,.56);
-  font-size: .52rem;
+.nobi-intro-skip {
+  position: absolute;
+  left: clamp(18px, 4vw, 56px);
+  bottom: calc(5vh + 20px);
+  z-index: 4;
+  padding: 10px 16px;
+  border: 1px solid rgba(244,244,240,.35);
+  background: rgba(9,9,9,.45);
+  color: #f4f4f0;
+  font-family: var(--display, 'Bebas Neue', 'Arial Narrow', sans-serif);
+  font-size: 15px;
   letter-spacing: .2em;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  animation: nobi-intro-fade .6s 1s ease forwards;
+  transition: border-color .2s, color .2s;
 }
-.nobi-intro-v2 .nobi-intro-camera-altitude b { color: var(--intro-accent); }
-@keyframes nobi-globe-drift {
-  0% { transform: rotate(-12deg) scale(1); }
-  48% { transform: rotate(-8deg) scale(1.035) translateX(1.2%); }
-  100% { transform: rotate(-12deg) scale(1); }
-}
-@keyframes nobi-intro-outline { to { stroke-dashoffset: 0; } }
-@keyframes nobi-cairo-pulse { 0% { r: 12; opacity: .9; } 100% { r: 30; opacity: 0; } }
-@keyframes nobi-statement-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes nobi-title-rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes nobi-intro-final-exit { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-101%); opacity: .98; } }
+.nobi-intro-skip:hover, .nobi-intro-skip:focus-visible { border-color: var(--volt); color: var(--volt); outline: none; }
 
-@media (max-width: 700px) {
-  .nobi-intro-v2 .nobi-intro-globe { width: min(78vw, 440px); }
-  .nobi-intro-v2 .nobi-intro-globe-caption { bottom: 17%; font-size: .45rem; }
-  .nobi-intro-v2 .nobi-intro-country-reveal svg { height: min(56vh,480px); max-width: 90vw; }
-  .nobi-intro-v2 .nobi-intro-statement h1 { font-size: clamp(3.35rem,13.6vw,5.8rem); }
-  .nobi-intro-v2 .nobi-intro-camera-caption,
-  .nobi-intro-v2 .nobi-intro-camera-altitude { bottom: 1.35rem; font-size: .42rem; }
+@keyframes nobi-intro-fade { to { opacity: 1; } }
+@keyframes nobi-intro-pulse { 50% { opacity: .35; } }
+@keyframes nobi-intro-char {
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+@keyframes nobi-intro-rule { to { width: min(46vw, 520px); } }
+
+@media (max-width: 640px) {
+  .nobi-intro-live { display: none; }
+  .nobi-intro-statement { font-size: clamp(48px, 18vw, 120px); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .nobi-intro-v2 *,
-  .nobi-intro-v2 *::before,
-  .nobi-intro-v2 *::after { animation: none !important; transition: none !important; }
-}
-
-/* Subtle lens treatment: keeps the map readable while giving the camera frame a
-   restrained cinematic finish. */
-.nobi-intro-v2 .nobi-intro-camera-frame::after {
-  content: '';
-  position: absolute;
-  z-index: 7;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(0,0,0,.16), transparent 20%, transparent 76%, rgba(0,0,0,.28)),
-    radial-gradient(ellipse at center, transparent 48%, rgba(0,0,0,.34) 100%);
-  opacity: .72;
-}
-.nobi-intro-v2 .nobi-intro-statement h1 {
-  text-wrap: balance;
+  .nobi-intro, .nobi-intro * { animation-duration: .01s !important; transition-duration: .01s !important; }
 }
