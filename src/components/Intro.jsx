@@ -100,7 +100,6 @@ export default function Intro() {
         <span className="nobi-intro-eyebrow" aria-hidden="true">
           <i />
           <span>SEASON 04 · NIGHT SHIFT</span>
-          <b className="nobi-intro-count" />
         </span>
         <span className="nobi-intro-mask" aria-hidden="true">
           <span className="nobi-intro-line">THE WORLD</span>
@@ -108,6 +107,7 @@ export default function Intro() {
         <span className="nobi-intro-mask" aria-hidden="true">
           <span className="nobi-intro-line volt" style={{ '--d': '.2s' }}>IS YOURS</span>
         </span>
+        <b className="nobi-intro-count" aria-hidden="true" />
       </h1>
 
     </section>

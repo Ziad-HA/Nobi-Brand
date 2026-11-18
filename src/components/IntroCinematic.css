@@ -101,12 +101,16 @@
 }
 .nobi-intro.phase-exit .nobi-intro-line.volt { transition-delay: .06s; }
 
-/* 5 — counter 0 → 100 on the right end of the eyebrow row */
+/* 5 — big counter 0 → 100 on the right, level with the second line (the free half of the screen) */
 .nobi-intro-count {
-  margin-left: auto;
+  position: absolute;
+  right: 0;
+  bottom: .02em;
+  font-size: .5em;
   font-weight: 400;
+  line-height: 1;
+  letter-spacing: -.02em;
   color: #f4f4f0;
-  min-width: 4ch;
   text-align: right;
   counter-reset: n var(--n);
   opacity: 0;
@@ -127,6 +131,7 @@ html.nobi-intro-active body:not(.nobi-site-reveal) #root { visibility: hidden; }
 
 @media (max-width: 640px) {
   .nobi-intro-stamp { top: 1.4rem; }
+  .nobi-intro-count { font-size: .4em; }
 }
 @media (prefers-reduced-motion: reduce) {
   .nobi-intro, .nobi-intro * { animation-duration: .01s !important; transition-duration: .01s !important; }
