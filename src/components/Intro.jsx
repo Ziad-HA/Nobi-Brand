@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import './IntroCinematic.css'
 
 const STORAGE_KEY = 'nobi-intro-v4'
-const HOLD_MS = 1900 // total time before the hand-off to the hero starts
+const HOLD_MS = 2400 // total time before the hand-off to the hero starts
 const EXIT_MS = 700
 
 function canShowIntro(pathname) {
@@ -20,6 +20,7 @@ export default function Intro() {
   const { pathname } = useLocation()
   const [phase, setPhase] = useState(() => (canShowIntro(pathname) ? 'play' : 'done'))
   const timers = useRef([])
+  const rootRef = useRef(null)
 
   const finish = useCallback(() => {
     timers.current.forEach(window.clearTimeout)
@@ -39,6 +40,24 @@ export default function Intro() {
       return 'exit'
     })
   }, [finish])
+
+  // Align the intro to the hero's real left edge so the type hands off in the same place.
+  useLayoutEffect(() => {
+    if (phase !== 'play') return undefined
+    let tries = 0
+    let raf = 0
+    const measure = () => {
+      const copy = document.querySelector('.home-hero-copy')
+      if (copy && rootRef.current) {
+        const left = copy.offsetLeft + (parseFloat(getComputedStyle(copy).paddingLeft) || 0)
+        rootRef.current.style.setProperty('--hx', `${Math.max(left, 18)}px`)
+        return
+      }
+      if (tries++ < 30) raf = window.requestAnimationFrame(measure)
+    }
+    measure()
+    return () => window.cancelAnimationFrame(raf)
+  }, [phase])
 
   useEffect(() => {
     if (phase !== 'play') return undefined
@@ -68,15 +87,32 @@ export default function Intro() {
 
   return (
     <section
+      ref={rootRef}
       className={`nobi-intro phase-${phase}`}
       aria-label="NOBI introduction"
       onClick={startExit}
     >
+      <i className="nobi-intro-grain" aria-hidden="true" />
+
+      <p className="nobi-intro-stamp" aria-hidden="true">NOBI / 09</p>
+
       <h1 className="nobi-intro-statement" aria-label="The world is yours">
-        <span className="nobi-intro-line" aria-hidden="true">THE WORLD</span>
-        <span className="nobi-intro-line volt" style={{ '--d': '.18s' }} aria-hidden="true">IS YOURS</span>
-        <span className="nobi-intro-rule" aria-hidden="true" />
+        <span className="nobi-intro-eyebrow" aria-hidden="true">
+          <i />
+          <span>SEASON 04 · NIGHT SHIFT</span>
+        </span>
+        <span className="nobi-intro-mask" aria-hidden="true">
+          <span className="nobi-intro-line">THE WORLD</span>
+        </span>
+        <span className="nobi-intro-mask" aria-hidden="true">
+          <span className="nobi-intro-line volt" style={{ '--d': '.2s' }}>IS YOURS</span>
+        </span>
       </h1>
+
+      <div className="nobi-intro-foot" aria-hidden="true">
+        <span className="nobi-intro-count" />
+        <span>S26</span>
+      </div>
     </section>
   )
 }

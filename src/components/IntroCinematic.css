@@ -1,57 +1,141 @@
-/* NOBI intro — short, black + Volt, text only (no video) */
+/* NOBI intro — short, black + Volt, text only. Aligned to the hero so the hand-off reads as one move. */
+@property --n { syntax: '<integer>'; initial-value: 0; inherits: false; }
+
 .nobi-intro {
   --volt: hsl(72, 100%, 61%);
+  --hx: clamp(20px, 6vw, 77px);
   position: fixed;
   inset: 0;
   z-index: 9999;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--hx);
   background: #090909;
   color: #f4f4f0;
   cursor: pointer;
   opacity: 1;
-  transition: opacity .7s cubic-bezier(.4, 0, .2, 1);
+  transition: opacity .75s cubic-bezier(.4, 0, .2, 1);
 }
 .nobi-intro.phase-exit { opacity: 0; pointer-events: none; }
 
-.nobi-intro-statement {
+/* 3 — static film grain (tiny SVG tile, rasterised once) */
+.nobi-intro-grain {
+  position: absolute;
+  inset: 0;
+  opacity: .07;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* 1 — same corner + same vertical stamp as the hero, so it hands off in place */
+.nobi-intro-stamp {
+  position: absolute;
+  right: 6%;
+  top: 3rem;
   margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+  z-index: 2;
+  writing-mode: vertical-rl;
+  font-family: var(--body, Outfit, system-ui, sans-serif);
+  font-size: .7rem;
+  letter-spacing: .2em;
+  color: #f4f4f0;
+  opacity: 0;
+  animation: nobi-intro-fade .6s .35s ease forwards;
+}
+
+.nobi-intro-statement {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  width: 100%;
   font-family: var(--display, 'Bebas Neue', 'Arial Narrow', sans-serif);
   font-weight: 400;
-  font-size: clamp(56px, 14.4vw, 340px);
+  /* fills the width between the hero's left edge and the same edge on the right */
+  font-size: min(calc((100vw - 2 * var(--hx)) / 5.9), 340px);
   line-height: .9;
-  letter-spacing: .04em;
+  letter-spacing: -.025em;
+  text-align: left;
+}
+
+/* 2 — eyebrow line draws out, then the label reveals (same style as the hero's) */
+.nobi-intro-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  margin-bottom: clamp(10px, 2vw, 22px);
+  font-family: var(--body, Outfit, system-ui, sans-serif);
+  font-size: clamp(.62rem, 1vw, .78rem);
+  letter-spacing: .28em;
+  color: var(--volt);
+}
+.nobi-intro-eyebrow i {
+  display: block;
+  height: 1px;
+  width: 0;
+  background: var(--volt);
+  animation: nobi-intro-eyebrow-line .7s .1s cubic-bezier(.16, 1, .3, 1) forwards;
+}
+.nobi-intro-eyebrow span {
+  opacity: 0;
+  animation: nobi-intro-fade .5s .5s ease forwards;
+}
+
+/* 4 — each line rises out of a mask */
+.nobi-intro-mask {
+  display: block;
+  overflow: hidden;
+  padding: .06em 0 .02em;
+  margin: -.06em 0 -.02em;
 }
 .nobi-intro-line {
   display: block;
   white-space: nowrap;
-  opacity: 0;
-  transform: translateY(.14em) scale(1.08);
-  animation: nobi-intro-in .8s var(--d, 0s) cubic-bezier(.16, 1, .3, 1) forwards;
+  transform: translateY(108%);
+  animation: nobi-intro-rise .9s calc(.25s + var(--d, 0s)) cubic-bezier(.16, 1, .3, 1) forwards;
 }
 .nobi-intro-line.volt { color: var(--volt); }
-.nobi-intro.phase-exit .nobi-intro-statement { transform: scale(1.05); transition: transform .7s ease; }
-
-.nobi-intro-rule {
-  display: block;
-  height: 2px;
-  width: 0;
-  margin-top: clamp(14px, 2.4vw, 30px);
-  background: var(--volt);
-  animation: nobi-intro-rule .8s .5s cubic-bezier(.16, 1, .3, 1) forwards;
+.nobi-intro.phase-exit .nobi-intro-line {
+  animation: none;
+  transform: translateY(-108%);
+  transition: transform .7s cubic-bezier(.7, 0, .84, 0);
 }
+.nobi-intro.phase-exit .nobi-intro-line.volt { transition-delay: .06s; }
 
-@keyframes nobi-intro-in { to { opacity: 1; transform: translateY(0) scale(1); } }
-@keyframes nobi-intro-rule { to { width: min(60vw, 760px); } }
+/* 5 — corner counter 0 → 100 */
+.nobi-intro-foot {
+  position: absolute;
+  left: var(--hx);
+  right: var(--hx);
+  bottom: clamp(20px, 5vh, 44px);
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--body, Outfit, system-ui, sans-serif);
+  font-size: .72rem;
+  letter-spacing: .28em;
+  color: rgba(244, 244, 240, .75);
+  opacity: 0;
+  animation: nobi-intro-fade .5s .2s ease forwards;
+}
+.nobi-intro-count {
+  counter-reset: n var(--n);
+  animation: nobi-intro-count 2.1s .2s cubic-bezier(.3, .6, .2, 1) forwards;
+  min-width: 4ch;
+}
+.nobi-intro-count::after { content: counter(n) '%'; }
+
+@keyframes nobi-intro-fade { to { opacity: 1; } }
+@keyframes nobi-intro-rise { to { transform: translateY(0); } }
+@keyframes nobi-intro-eyebrow-line { to { width: clamp(28px, 4vw, 54px); } }
+@keyframes nobi-intro-count { to { --n: 100; } }
 
 /* Don't paint the storefront under the intro; it appears the moment the hand-off starts. */
 html.nobi-intro-active body:not(.nobi-site-reveal) #root { visibility: hidden; }
 .nobi-intro { visibility: visible; }
 
+@media (max-width: 640px) {
+  .nobi-intro-stamp { top: 1.4rem; }
+}
 @media (prefers-reduced-motion: reduce) {
   .nobi-intro, .nobi-intro * { animation-duration: .01s !important; transition-duration: .01s !important; }
 }
