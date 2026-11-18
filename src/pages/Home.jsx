@@ -8,7 +8,6 @@ import { lookbook, products } from "../data/products";
 import usePageMeta from "../lib/usePageMeta";
 import DropCountdown from "../components/DropCountdown";
 import Reveal from "../components/Reveal";
-import { EASE } from "../lib/motion";
 
 export default function Home() {
   const reduceMotion = useReducedMotion();
@@ -21,15 +20,12 @@ export default function Home() {
   return (
     <>
       <section className="hero home-hero">
-        <motion.img
+        <img
           src={`${import.meta.env.BASE_URL}images/TRAP.jpg`}
           alt="Nobi campaign"
           loading="eager"
           fetchPriority="high"
           decoding="async"
-          initial={reduceMotion ? false : { scale: 1.08 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 2.4, ease: EASE }}
         />
         <div className="hero-overlay" />
         <Hero3DLayer />
