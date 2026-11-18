@@ -1,104 +1,40 @@
-/* NOBI intro — real Earth footage, black + Volt identity, no separator screen */
+/* NOBI intro — short, black + Volt, text only (no video) */
 .nobi-intro {
   --volt: hsl(72, 100%, 61%);
   position: fixed;
   inset: 0;
   z-index: 9999;
-  overflow: hidden;
+  display: grid;
+  place-items: center;
   background: #090909;
   color: #f4f4f0;
+  cursor: pointer;
   opacity: 1;
-  will-change: opacity;
-  transition: opacity 1.05s cubic-bezier(.4, 0, .2, 1);
+  transition: opacity .7s cubic-bezier(.4, 0, .2, 1);
 }
 .nobi-intro.phase-exit { opacity: 0; pointer-events: none; }
 
-.nobi-intro-video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  background: #090909;
-}
-
-/* Black / Volt grade over the footage */
-.nobi-intro-grade {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgba(9,9,9,.5) 0%, rgba(9,9,9,.12) 26%, rgba(9,9,9,.12) 80%, rgba(9,9,9,.22) 100%),
-    radial-gradient(60% 50% at 50% 50%, rgba(9,9,9,.5), rgba(9,9,9,0) 75%);
-  pointer-events: none;
-}
-.nobi-intro.phase-text .nobi-intro-grade { background-color: rgba(9,9,9,.28); }
-.nobi-intro-vignette {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(120% 120% at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,.75) 100%);
-  pointer-events: none;
-}
-
-/* Cinematic bars (kept thin so the Google Earth attribution stays visible) */
-.nobi-intro-bar {
-  position: absolute;
-  left: 0; right: 0;
-  height: 5vh;
-  background: #090909;
-  transition: transform 1.05s cubic-bezier(.76, 0, .24, 1);
-  z-index: 2;
-}
-.nobi-intro-bar.top { top: 0; }
-.nobi-intro-bar.bottom { bottom: 0; }
-.nobi-intro.phase-exit .nobi-intro-bar.top { transform: translateY(-100%); }
-.nobi-intro.phase-exit .nobi-intro-bar.bottom { transform: translateY(100%); }
-
-.nobi-intro-header {
-  position: absolute;
-  top: calc(5vh + 20px);
-  left: clamp(18px, 4vw, 56px);
-  right: clamp(18px, 4vw, 56px);
-  z-index: 3;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: var(--display, 'Bebas Neue', 'Arial Narrow', sans-serif);
-  letter-spacing: .18em;
-  opacity: 0;
-  animation: nobi-intro-fade .8s .25s ease forwards;
-}
-.nobi-intro-wordmark { font-size: clamp(22px, 2.6vw, 34px); letter-spacing: .24em; }
-.nobi-intro-wordmark span { color: var(--volt); font-size: .5em; vertical-align: super; margin-left: 2px; }
-.nobi-intro-live { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: #f4f4f0; opacity: .85; }
-.nobi-intro-live i { width: 7px; height: 7px; border-radius: 50%; background: var(--volt);  }
-
-/* THE WORLD / IS YOURS */
 .nobi-intro-statement {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
+  margin: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0;
   text-align: center;
   font-family: var(--display, 'Bebas Neue', 'Arial Narrow', sans-serif);
+  font-weight: 400;
   font-size: clamp(54px, 13vw, 210px);
   line-height: .9;
   letter-spacing: .04em;
-  text-shadow: 0 2px 24px rgba(0,0,0,.65);
-  pointer-events: none;
-  transition: opacity .8s ease, transform 1.1s cubic-bezier(.4, 0, .2, 1);
 }
-.nobi-intro-line { display: block; white-space: nowrap; }
-.nobi-intro-line.volt { color: var(--volt); text-shadow: 0 2px 24px rgba(0,0,0,.6); }
-.nobi-intro-line { opacity: 0; transform: translateY(.14em) scale(1.12); }
-.nobi-intro.phase-text .nobi-intro-line,
-.nobi-intro.phase-exit .nobi-intro-line {
-  animation: nobi-intro-char .9s var(--d, 0s) cubic-bezier(.16, 1, .3, 1) forwards;
+.nobi-intro-line {
+  display: block;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(.14em) scale(1.08);
+  animation: nobi-intro-in .8s var(--d, 0s) cubic-bezier(.16, 1, .3, 1) forwards;
 }
-.nobi-intro.phase-exit .nobi-intro-statement { opacity: 0; transform: scale(1.08); }
+.nobi-intro-line.volt { color: var(--volt); }
+.nobi-intro.phase-exit .nobi-intro-statement { transform: scale(1.05); transition: transform .7s ease; }
 
 .nobi-intro-rule {
   display: block;
@@ -106,43 +42,16 @@
   width: 0;
   margin-top: clamp(14px, 2.4vw, 30px);
   background: var(--volt);
+  animation: nobi-intro-rule .8s .5s cubic-bezier(.16, 1, .3, 1) forwards;
 }
-.nobi-intro.phase-text .nobi-intro-rule { animation: nobi-intro-rule 1s .9s cubic-bezier(.16, 1, .3, 1) forwards; }
 
-.nobi-intro-skip {
-  position: absolute;
-  left: clamp(18px, 4vw, 56px);
-  bottom: calc(5vh + 20px);
-  z-index: 4;
-  padding: 10px 16px;
-  border: 1px solid rgba(244,244,240,.35);
-  background: rgba(9,9,9,.45);
-  color: #f4f4f0;
-  font-family: var(--display, 'Bebas Neue', 'Arial Narrow', sans-serif);
-  font-size: 15px;
-  letter-spacing: .2em;
-  cursor: pointer;
-  opacity: 0;
-  animation: nobi-intro-fade .6s 1s ease forwards;
-  transition: border-color .2s, color .2s;
-}
-.nobi-intro-skip:hover, .nobi-intro-skip:focus-visible { border-color: var(--volt); color: var(--volt); outline: none; }
-
-@keyframes nobi-intro-fade { to { opacity: 1; } }
-@keyframes nobi-intro-pulse { 50% { opacity: .35; } }
-@keyframes nobi-intro-char {
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
+@keyframes nobi-intro-in { to { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes nobi-intro-rule { to { width: min(46vw, 520px); } }
-
-@media (max-width: 640px) {
-  .nobi-intro-live { display: none; }
-  .nobi-intro-statement { font-size: clamp(48px, 18vw, 120px); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .nobi-intro, .nobi-intro * { animation-duration: .01s !important; transition-duration: .01s !important; }
-}
 
 /* Don't paint the storefront under the intro; it appears the moment the hand-off starts. */
 html.nobi-intro-active body:not(.nobi-site-reveal) #root { visibility: hidden; }
 .nobi-intro { visibility: visible; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nobi-intro, .nobi-intro * { animation-duration: .01s !important; transition-duration: .01s !important; }
+}

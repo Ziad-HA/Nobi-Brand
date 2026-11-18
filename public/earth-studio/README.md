@@ -13,4 +13,4 @@
 4. Export the render as `nobi-egypt-cairo.mp4`.
 5. Place the MP4 at `public/earth-studio/nobi-egypt-cairo.mp4`. The website should use the rendered MP4, never the `.esp` file directly.
 
-The website intro (`src/components/Intro.jsx`) plays `nobi-egypt-cairo.mp4` (compressed render, poster included) and layers the NOBI typography on top of it. The Google Earth attribution baked into the footage is left uncovered.
+The website intro is now a short text-only reveal (`src/components/Intro.jsx`); the Earth footage is no longer used on the site.
