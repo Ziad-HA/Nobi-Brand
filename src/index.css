@@ -1825,6 +1825,24 @@ h3 {
   color: var(--volt);
 }
 
+/* Soft breathing glow on the hero headline */
+@keyframes nobi-headline-glow {
+  from {
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.08), 0 0 18px rgba(255, 255, 255, 0.06);
+  }
+  to {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.32), 0 0 34px rgba(255, 255, 255, 0.2), 0 0 70px rgba(200, 255, 60, 0.14);
+  }
+}
+
+.home-hero-copy h1 {
+  animation: nobi-headline-glow 3.6s ease-in-out 1.2s infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-copy h1 { animation: none; }
+}
+
 .home-hero-copy .lede {
   max-width: 430px;
   line-height: 1.7;
