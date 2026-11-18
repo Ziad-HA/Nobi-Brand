@@ -16,6 +16,17 @@ const T_EXIT = 6.0 // start crossfade into the hero
 const EXIT_MS = 1150
 const SAFETY_MS = 11000
 
+const LITE_SRC = `${BASE}earth-studio/nobi-egypt-cairo-lite.jpg`
+const LITE_TEXT_MS = 500
+const LITE_EXIT_MS = 2600
+
+// Weak devices get a still frame + the same type reveal instead of decoding video.
+function isLiteDevice() {
+  const cores = navigator.hardwareConcurrency || 8
+  const mem = navigator.deviceMemory || 8
+  return cores <= 4 || mem <= 4
+}
+
 const LINE_ONE = 'THE WORLD'
 const LINE_TWO = 'IS YOURS'
 
@@ -30,18 +41,10 @@ function canShowIntro(pathname) {
   }
 }
 
-function Letters({ text, start, className = '' }) {
+function Line({ text, delay, className = '' }) {
   return (
-    <span className={`nobi-intro-line ${className}`} aria-hidden="true">
-      {text.split('').map((char, i) => (
-        <span
-          key={i}
-          className="nobi-intro-char"
-          style={{ '--d': `${start + i * 0.045}s` }}
-        >
-          {char === ' ' ? ' ' : char}
-        </span>
-      ))}
+    <span className={`nobi-intro-line ${className}`} style={{ '--d': `${delay}s` }} aria-hidden="true">
+      {text}
     </span>
   )
 }
@@ -49,6 +52,7 @@ function Letters({ text, start, className = '' }) {
 export default function Intro() {
   const { pathname } = useLocation()
   const [phase, setPhase] = useState(() => (canShowIntro(pathname) ? 'play' : 'done'))
+  const [lite] = useState(isLiteDevice)
   const videoRef = useRef(null)
   const fired = useRef({ zoom: false, cairo: false, text: false, exit: false })
   const exitTimer = useRef(0)
@@ -93,9 +97,17 @@ export default function Intro() {
     return () => window.clearTimeout(clear)
   }, [phase])
 
+  // Lite mode: no video, just timed beats.
+  useEffect(() => {
+    if (phase === 'done' || !lite) return undefined
+    const a = window.setTimeout(() => setPhase((p) => (p === 'play' ? 'text' : p)), LITE_TEXT_MS)
+    const b = window.setTimeout(startExit, LITE_EXIT_MS)
+    return () => { window.clearTimeout(a); window.clearTimeout(b) }
+  }, [lite]) // eslint-disable-line react-hooks/exhaustive-deps
+
   // Drive every beat from the real video clock so text and footage never drift apart.
   useEffect(() => {
-    if (phase === 'done') return undefined
+    if (phase === 'done' || lite) return undefined
     const video = videoRef.current
     if (!video) return undefined
 
@@ -144,7 +156,7 @@ export default function Intro() {
       window.clearTimeout(safety)
       window.cancelAnimationFrame(rafRef.current)
     }
-  }, [finish, startExit]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [finish, startExit, lite]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => () => window.clearTimeout(exitTimer.current), [])
 
@@ -152,17 +164,21 @@ export default function Intro() {
 
   return (
     <section className={`nobi-intro phase-${phase}`} aria-label="NOBI brand introduction">
-      <video
-        ref={videoRef}
-        className="nobi-intro-video"
-        src={VIDEO_SRC}
-        poster={POSTER_SRC}
-        muted
-        playsInline
-        preload="auto"
-        disablePictureInPicture
-        aria-hidden="true"
-      />
+      {lite ? (
+        <img className="nobi-intro-video" src={LITE_SRC} alt="" decoding="async" aria-hidden="true" />
+      ) : (
+        <video
+          ref={videoRef}
+          className="nobi-intro-video"
+          src={VIDEO_SRC}
+          poster={POSTER_SRC}
+          muted
+          playsInline
+          preload="auto"
+          disablePictureInPicture
+          aria-hidden="true"
+        />
+      )}
       <div className="nobi-intro-grade" aria-hidden="true" />
       <div className="nobi-intro-vignette" aria-hidden="true" />
       <i className="nobi-intro-bar top" aria-hidden="true" />
@@ -174,8 +190,8 @@ export default function Intro() {
       </header>
 
       <div className="nobi-intro-statement" role="heading" aria-level={1} aria-label="The world is yours">
-        <Letters text={LINE_ONE} start={0} />
-        <Letters text={LINE_TWO} start={0.42} className="volt" />
+        <Line text={LINE_ONE} delay={0} />
+        <Line text={LINE_TWO} delay={0.35} className="volt" />
         <span className="nobi-intro-rule" aria-hidden="true" />
       </div>
 

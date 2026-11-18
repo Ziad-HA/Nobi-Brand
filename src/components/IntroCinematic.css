@@ -70,7 +70,7 @@
 .nobi-intro-wordmark { font-size: clamp(22px, 2.6vw, 34px); letter-spacing: .24em; }
 .nobi-intro-wordmark span { color: var(--volt); font-size: .5em; vertical-align: super; margin-left: 2px; }
 .nobi-intro-live { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: #f4f4f0; opacity: .85; }
-.nobi-intro-live i { width: 7px; height: 7px; border-radius: 50%; background: var(--volt); animation: nobi-intro-pulse 1.4s ease-in-out infinite; }
+.nobi-intro-live i { width: 7px; height: 7px; border-radius: 50%; background: var(--volt);  }
 
 /* THE WORLD / IS YOURS */
 .nobi-intro-statement {
@@ -93,15 +93,10 @@
 }
 .nobi-intro-line { display: block; white-space: nowrap; }
 .nobi-intro-line.volt { color: var(--volt); text-shadow: 0 2px 24px rgba(0,0,0,.6); }
-.nobi-intro-char {
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(.22em) scale(1.35);
-  will-change: transform, opacity;
-}
-.nobi-intro.phase-text .nobi-intro-char,
-.nobi-intro.phase-exit .nobi-intro-char {
-  animation: nobi-intro-char .95s var(--d, 0s) cubic-bezier(.16, 1, .3, 1) forwards;
+.nobi-intro-line { opacity: 0; transform: translateY(.14em) scale(1.12); }
+.nobi-intro.phase-text .nobi-intro-line,
+.nobi-intro.phase-exit .nobi-intro-line {
+  animation: nobi-intro-char .9s var(--d, 0s) cubic-bezier(.16, 1, .3, 1) forwards;
 }
 .nobi-intro.phase-exit .nobi-intro-statement { opacity: 0; transform: scale(1.08); }
 
@@ -147,3 +142,7 @@
 @media (prefers-reduced-motion: reduce) {
   .nobi-intro, .nobi-intro * { animation-duration: .01s !important; transition-duration: .01s !important; }
 }
+
+/* Don't paint the storefront under the intro; it appears the moment the hand-off starts. */
+html.nobi-intro-active body:not(.nobi-site-reveal) #root { visibility: hidden; }
+.nobi-intro { visibility: visible; }
