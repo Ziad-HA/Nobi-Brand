@@ -22,7 +22,7 @@
   text-align: center;
   font-family: var(--display, 'Bebas Neue', 'Arial Narrow', sans-serif);
   font-weight: 400;
-  font-size: clamp(54px, 13vw, 210px);
+  font-size: clamp(56px, 14.4vw, 340px);
   line-height: .9;
   letter-spacing: .04em;
 }
@@ -46,7 +46,7 @@
 }
 
 @keyframes nobi-intro-in { to { opacity: 1; transform: translateY(0) scale(1); } }
-@keyframes nobi-intro-rule { to { width: min(46vw, 520px); } }
+@keyframes nobi-intro-rule { to { width: min(60vw, 760px); } }
 
 /* Don't paint the storefront under the intro; it appears the moment the hand-off starts. */
 html.nobi-intro-active body:not(.nobi-site-reveal) #root { visibility: hidden; }
