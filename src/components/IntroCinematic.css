@@ -101,26 +101,18 @@
 }
 .nobi-intro.phase-exit .nobi-intro-line.volt { transition-delay: .06s; }
 
-/* 5 — corner counter 0 → 100 */
-.nobi-intro-foot {
-  position: absolute;
-  left: var(--hx);
-  right: var(--hx);
-  bottom: clamp(20px, 5vh, 44px);
-  z-index: 2;
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--body, Outfit, system-ui, sans-serif);
-  font-size: .72rem;
-  letter-spacing: .28em;
-  color: rgba(244, 244, 240, .75);
-  opacity: 0;
-  animation: nobi-intro-fade .5s .2s ease forwards;
-}
+/* 5 — counter 0 → 100 on the right end of the eyebrow row */
 .nobi-intro-count {
-  counter-reset: n var(--n);
-  animation: nobi-intro-count 2.1s .2s cubic-bezier(.3, .6, .2, 1) forwards;
+  margin-left: auto;
+  font-weight: 400;
+  color: #f4f4f0;
   min-width: 4ch;
+  text-align: right;
+  counter-reset: n var(--n);
+  opacity: 0;
+  animation:
+    nobi-intro-fade .4s .2s ease forwards,
+    nobi-intro-count 2.1s .2s cubic-bezier(.3, .6, .2, 1) forwards;
 }
 .nobi-intro-count::after { content: counter(n) '%'; }
 
