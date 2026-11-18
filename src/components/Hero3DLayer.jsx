@@ -20,9 +20,21 @@ function canUseWebGL() {
 export default function Hero3DLayer() {
   const [ok] = useState(canUseWebGL)
   const [nearViewport, setNearViewport] = useState(false)
+  const [introDone, setIntroDone] = useState(false)
+
+  // Never run WebGL underneath the intro video — it competes for the GPU and makes the intro stutter.
+  useEffect(() => {
+    if (!document.documentElement.classList.contains('nobi-intro-active')) {
+      setIntroDone(true)
+      return undefined
+    }
+    const onEnd = () => setIntroDone(true)
+    window.addEventListener('nobi-intro-end', onEnd, { once: true })
+    return () => window.removeEventListener('nobi-intro-end', onEnd)
+  }, [])
 
   useEffect(() => {
-    if (!ok) return undefined
+    if (!ok || !introDone) return undefined
     const hero = document.querySelector('.home-hero')
     if (!hero || typeof IntersectionObserver === 'undefined') {
       setNearViewport(true)
@@ -36,9 +48,9 @@ export default function Hero3DLayer() {
     }, { rootMargin: '240px 0px' })
     observer.observe(hero)
     return () => observer.disconnect()
-  }, [ok])
+  }, [ok, introDone])
 
-  if (!ok || !nearViewport) return null
+  if (!ok || !introDone || !nearViewport) return null
   return (
     <Suspense fallback={null}>
       <Hero3D />

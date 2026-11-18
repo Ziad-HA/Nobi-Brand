@@ -19,31 +19,23 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: saturate(.72) contrast(1.12) brightness(.82);
-  transform: scale(1.02);
-  transition: transform 6.4s cubic-bezier(.2, .6, .2, 1), filter 1.1s ease;
+  background: #090909;
 }
-.nobi-intro.phase-text .nobi-intro-video,
-.nobi-intro.phase-exit .nobi-intro-video { transform: scale(1.07); filter: saturate(.55) contrast(1.15) brightness(.55); }
-.nobi-intro.phase-exit .nobi-intro-video { transform: scale(1.16); filter: saturate(.4) contrast(1.15) brightness(.3); transition-duration: 1.15s; }
 
 /* Black / Volt grade over the footage */
 .nobi-intro-grade {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(9,9,9,.55) 0%, rgba(9,9,9,0) 26%, rgba(9,9,9,0) 80%, rgba(9,9,9,.18) 100%),
-    radial-gradient(60% 50% at 50% 50%, rgba(9,9,9,.55), rgba(9,9,9,0) 75%);
-  mix-blend-mode: multiply;
+    linear-gradient(180deg, rgba(9,9,9,.5) 0%, rgba(9,9,9,.12) 26%, rgba(9,9,9,.12) 80%, rgba(9,9,9,.22) 100%),
+    radial-gradient(60% 50% at 50% 50%, rgba(9,9,9,.5), rgba(9,9,9,0) 75%);
   pointer-events: none;
-  opacity: .9;
-  transition: opacity 1s ease;
 }
-.nobi-intro.phase-text .nobi-intro-grade { opacity: 1; }
+.nobi-intro.phase-text .nobi-intro-grade { background-color: rgba(9,9,9,.28); }
 .nobi-intro-vignette {
   position: absolute;
   inset: 0;
-  box-shadow: inset 0 0 18vmax 4vmax rgba(0,0,0,.78);
+  background: radial-gradient(120% 120% at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,.75) 100%);
   pointer-events: none;
 }
 
@@ -78,7 +70,7 @@
 .nobi-intro-wordmark { font-size: clamp(22px, 2.6vw, 34px); letter-spacing: .24em; }
 .nobi-intro-wordmark span { color: var(--volt); font-size: .5em; vertical-align: super; margin-left: 2px; }
 .nobi-intro-live { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: #f4f4f0; opacity: .85; }
-.nobi-intro-live i { width: 7px; height: 7px; border-radius: 50%; background: var(--volt); box-shadow: 0 0 12px var(--volt); animation: nobi-intro-pulse 1.4s ease-in-out infinite; }
+.nobi-intro-live i { width: 7px; height: 7px; border-radius: 50%; background: var(--volt); animation: nobi-intro-pulse 1.4s ease-in-out infinite; }
 
 /* THE WORLD / IS YOURS */
 .nobi-intro-statement {
@@ -95,23 +87,23 @@
   font-size: clamp(54px, 13vw, 210px);
   line-height: .9;
   letter-spacing: .04em;
-  text-shadow: 0 6px 60px rgba(0,0,0,.7);
+  text-shadow: 0 2px 24px rgba(0,0,0,.65);
   pointer-events: none;
-  transition: opacity .8s ease, transform 1.1s cubic-bezier(.4, 0, .2, 1), filter .8s ease;
+  transition: opacity .8s ease, transform 1.1s cubic-bezier(.4, 0, .2, 1);
 }
 .nobi-intro-line { display: block; white-space: nowrap; }
-.nobi-intro-line.volt { color: var(--volt); text-shadow: 0 0 46px rgba(200,255,40,.35), 0 6px 60px rgba(0,0,0,.6); }
+.nobi-intro-line.volt { color: var(--volt); text-shadow: 0 2px 24px rgba(0,0,0,.6); }
 .nobi-intro-char {
   display: inline-block;
   opacity: 0;
   transform: translateY(.22em) scale(1.35);
-  filter: blur(14px);
+  will-change: transform, opacity;
 }
 .nobi-intro.phase-text .nobi-intro-char,
 .nobi-intro.phase-exit .nobi-intro-char {
   animation: nobi-intro-char .95s var(--d, 0s) cubic-bezier(.16, 1, .3, 1) forwards;
 }
-.nobi-intro.phase-exit .nobi-intro-statement { opacity: 0; transform: scale(1.12); filter: blur(6px); }
+.nobi-intro.phase-exit .nobi-intro-statement { opacity: 0; transform: scale(1.08); }
 
 .nobi-intro-rule {
   display: block;
@@ -119,7 +111,6 @@
   width: 0;
   margin-top: clamp(14px, 2.4vw, 30px);
   background: var(--volt);
-  box-shadow: 0 0 18px var(--volt);
 }
 .nobi-intro.phase-text .nobi-intro-rule { animation: nobi-intro-rule 1s .9s cubic-bezier(.16, 1, .3, 1) forwards; }
 
@@ -136,7 +127,6 @@
   font-size: 15px;
   letter-spacing: .2em;
   cursor: pointer;
-  backdrop-filter: blur(6px);
   opacity: 0;
   animation: nobi-intro-fade .6s 1s ease forwards;
   transition: border-color .2s, color .2s;
@@ -146,7 +136,7 @@
 @keyframes nobi-intro-fade { to { opacity: 1; } }
 @keyframes nobi-intro-pulse { 50% { opacity: .35; } }
 @keyframes nobi-intro-char {
-  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 @keyframes nobi-intro-rule { to { width: min(46vw, 520px); } }
 

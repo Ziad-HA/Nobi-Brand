@@ -62,6 +62,7 @@ export default function Intro() {
     } catch {
       // Storage can be unavailable in private browsing.
     }
+    window.dispatchEvent(new Event('nobi-intro-end'))
     setPhase('done')
   }, [])
 
