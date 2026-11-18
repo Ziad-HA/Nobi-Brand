@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "motion/react";
 import ProductCard from "../components/ProductCard";
 import Hero3DLayer from "../components/Hero3DLayer";
 import OrbitGallery from "../components/OrbitGallery";
@@ -7,6 +7,8 @@ import TiltLink, { Glare } from "../components/TiltLink";
 import { lookbook, products } from "../data/products";
 import usePageMeta from "../lib/usePageMeta";
 import DropCountdown from "../components/DropCountdown";
+import Reveal from "../components/Reveal";
+import { EASE } from "../lib/motion";
 
 export default function Home() {
   const reduceMotion = useReducedMotion();
@@ -19,12 +21,15 @@ export default function Home() {
   return (
     <>
       <section className="hero home-hero">
-        <img
+        <motion.img
           src={`${import.meta.env.BASE_URL}images/TRAP.jpg`}
           alt="Nobi campaign"
           loading="eager"
           fetchPriority="high"
           decoding="async"
+          initial={reduceMotion ? false : { scale: 1.08 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 2.4, ease: EASE }}
         />
         <div className="hero-overlay" />
         <Hero3DLayer />
@@ -58,7 +63,9 @@ export default function Home() {
         </div>
         <div className="product-grid">
           {featured.map((product, index) => (
-            <ProductCard key={product.id} product={product} priority={index === 0} />
+            <Reveal key={product.id} delay={index * 0.08} y={30}>
+              <ProductCard product={product} priority={index === 0} />
+            </Reveal>
           ))}
         </div>
       </motion.section>

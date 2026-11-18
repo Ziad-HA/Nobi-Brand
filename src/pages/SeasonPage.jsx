@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "motion/react";
 import ProductCard from "../components/ProductCard";
 import { seasons } from "../data/seasons";
 import { products } from "../data/products";

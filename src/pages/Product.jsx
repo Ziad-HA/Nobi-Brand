@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion } from 'motion/react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { products } from '../data/products'
 import { useCart } from '../context/CartContext'

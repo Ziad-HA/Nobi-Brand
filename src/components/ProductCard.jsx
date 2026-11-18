@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import { motion } from 'motion/react'
 import TiltLink, { Glare } from './TiltLink'
 import ProductQuickView from './ProductQuickView'
 import { useWishlist } from '../context/WishlistContext'
@@ -23,7 +24,7 @@ export default function ProductCard({ product, priority = false }) {
           </div>
           <div className="product-meta"><div><h3>{product.name}</h3><p>{product.category}</p></div><strong>${product.price}</strong></div>
         </TiltLink>
-        <button type="button" className={`product-wishlist-btn ${saved ? 'is-saved' : ''}`} aria-label={saved ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`} aria-pressed={saved} onClick={() => toggleWishlist(product.id)}>{saved ? '♥' : '♡'}</button>
+        <button type="button" className={`product-wishlist-btn ${saved ? 'is-saved' : ''}`} aria-label={saved ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`} aria-pressed={saved} onClick={() => toggleWishlist(product.id)}><motion.span key={String(saved)} style={{ display: 'inline-block' }} initial={{ scale: saved ? 0.6 : 1 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 320, damping: 14 }}>{saved ? '♥' : '♡'}</motion.span></button>
         <button type="button" className="product-quick-view-btn" onClick={() => setQuickViewOpen(true)}>Quick view <span>↗</span></button>
       </article>
       <ProductQuickView product={quickViewOpen ? product : null} onClose={closeQuickView} />

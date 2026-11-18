@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { lookbook } from '../data/products'
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion } from 'motion/react'
 import OrbitGallery from '../components/OrbitGallery'
 import usePageMeta from '../lib/usePageMeta'
 

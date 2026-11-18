@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion } from 'motion/react'
 import ProductCard from '../components/ProductCard'
 import { categories, products } from '../data/products'
 import usePageMeta from '../lib/usePageMeta'

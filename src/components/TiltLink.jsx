@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { motion, useMotionValue, useReducedMotion, useSpring } from 'framer-motion'
+import { motion, useMotionValue, useReducedMotion, useSpring } from 'motion/react'
 import { sfx } from '../lib/sfx'
 
 const MotionLink = motion.create(Link)

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
-import { motion, useReducedMotion, useScroll } from 'framer-motion'
+import { motion, useReducedMotion, useScroll } from 'motion/react'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import CartDrawer from './CartDrawer'

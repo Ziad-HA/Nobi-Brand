@@ -1,10 +1,13 @@
 
 import { Link, useLocation } from 'react-router-dom'
 import { useState } from 'react'
+import { motion, useReducedMotion } from 'motion/react'
+import { EASE } from '../lib/motion'
 
 export default function Footer() {
   const [email, setEmail] = useState('')
   const [done, setDone] = useState(false)
+  const reduce = useReducedMotion()
 
   const { pathname } = useLocation()
   const hideNewsletter =
@@ -17,7 +20,13 @@ export default function Footer() {
   }
 
   return (
-    <footer className="footer">
+    <motion.footer
+      className="footer"
+      initial={reduce ? false : { opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{ duration: 0.9, ease: EASE }}
+    >
       <div className={`footer-top ${hideNewsletter ? 'footer-top-single' : ''}`}>
 
         {!hideNewsletter && (
@@ -135,6 +144,6 @@ export default function Footer() {
           BACK TO TOP ↑
         </button>
       </div>
-    </footer>
+    </motion.footer>
   )
 }

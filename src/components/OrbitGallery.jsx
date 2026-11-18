@@ -1,5 +1,5 @@
 import { useCallback, useLayoutEffect, useRef } from 'react'
-import { useMotionValueEvent, useReducedMotion, useScroll } from 'framer-motion'
+import { useMotionValueEvent, useReducedMotion, useScroll } from 'motion/react'
 import { sfx } from '../lib/sfx'
 
 const clamp01 = (v) => Math.min(1, Math.max(0, v))
