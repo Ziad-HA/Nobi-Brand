@@ -5,14 +5,17 @@ import Navbar from './Navbar'
 import Footer from './Footer'
 import CartDrawer from './CartDrawer'
 import { playSoundEffect } from '../lib/soundEffects'
+import { useSoundEnabled } from '../lib/sfx'
 
 export default function Layout() {
   const location = useLocation()
   const [pageKey, setPageKey] = useState(0)
   const reduceMotion = useReducedMotion()
+  const soundEnabled = useSoundEnabled()
   const { scrollYProgress } = useScroll()
   useEffect(() => setPageKey((key) => key + 1), [location.pathname])
   useEffect(() => {
+    if (!soundEnabled) return undefined
     const handleInterfaceSound = (event) => {
       if (!(event.target instanceof Element)) return
       const control = event.target.closest('button, a, [role="button"]')
@@ -21,7 +24,7 @@ export default function Layout() {
     }
     document.addEventListener('click', handleInterfaceSound, true)
     return () => document.removeEventListener('click', handleInterfaceSound, true)
-  }, [])
+  }, [soundEnabled])
   return (
     <>
       {!reduceMotion && <motion.div className="scroll-progress" style={{ scaleX: scrollYProgress, transformOrigin: '0% 50%' }} aria-hidden="true" />}
