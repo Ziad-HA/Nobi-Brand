@@ -135,8 +135,8 @@ export default function AdminDashboard() {
         || (productFilter === 'active' && product.is_active && !product.sold_out)
         || (productFilter === 'sold' && product.sold_out)
         || (productFilter === 'hidden' && !product.is_active)
-        || (productFilter === 'low' && Number(product.stock_quantity) > 0 && Number(product.stock_quantity) <= Number(product.low_stock_threshold ?? 5))
-        || (productFilter === 'out' && Number(product.stock_quantity) === 0)
+        || (productFilter === 'low' && product.stock_quantity != null && Number(product.stock_quantity) > 0 && Number(product.stock_quantity) <= Number(product.low_stock_threshold ?? 5))
+        || (productFilter === 'out' && product.stock_quantity != null && Number(product.stock_quantity) === 0)
       return matchesQuery && matchesFilter
     })
   }, [products, productSearch, productFilter])
@@ -181,7 +181,7 @@ export default function AdminDashboard() {
       description: product.description || '',
       sold_out: Boolean(product.sold_out),
       is_active: product.is_active !== false,
-      stock_quantity: String(product.stock_quantity ?? 0),
+      stock_quantity: String(product.stock_quantity ?? ''),
       low_stock_threshold: String(product.low_stock_threshold ?? 5),
     })
     setProductEditor('edit')
@@ -365,7 +365,7 @@ export default function AdminDashboard() {
               <div className="admin-catalog-grid">
                 {filteredProducts.map((product) => <article className="admin-catalog-card" key={product.id}>
                   <div className="admin-catalog-image">{product.images?.[0] ? <img src={product.images[0]} alt={product.name} loading="lazy" /> : <span>NO IMAGE</span>}<span className={`admin-status-tag ${product.is_active && !product.sold_out ? 'is-live' : 'is-muted'}`}>{!product.is_active ? 'HIDDEN' : product.sold_out ? 'SOLD OUT' : 'LIVE'}</span></div>
-                  <div className="admin-catalog-body"><div className="admin-catalog-heading"><div><h3>{product.name}</h3><small>{product.id}</small></div><strong>{money(product.price)}</strong></div><p className="admin-catalog-category">{product.category || 'Uncategorized'}{product.tag ? ` / ${product.tag}` : ''}</p><div className="admin-stock-line"><span>IN STOCK</span><strong className={Number(product.stock_quantity) === 0 ? 'is-out' : Number(product.stock_quantity) <= Number(product.low_stock_threshold ?? 5) ? 'is-low' : ''}>{Number(product.stock_quantity)} units</strong></div><div className="admin-catalog-options"><span>COLORS <b>{product.colors?.join(', ') || '—'}</b></span><span>SIZES <b>{product.sizes?.join(', ') || '—'}</b></span></div><div className="admin-card-actions"><button onClick={() => openEditProduct(product)}>Edit product</button><button onClick={() => toggleProduct(product, 'is_active')}>{product.is_active ? 'Hide' : 'Publish'}</button><button onClick={() => toggleProduct(product, 'sold_out')}>{product.sold_out ? 'Mark available' : 'Mark sold out'}</button><button className="admin-delete-action" onClick={() => deleteProduct(product)}>Delete</button></div></div>
+                  <div className="admin-catalog-body"><div className="admin-catalog-heading"><div><h3>{product.name}</h3><small>{product.id}</small></div><strong>{money(product.price)}</strong></div><p className="admin-catalog-category">{product.category || 'Uncategorized'}{product.tag ? ` / ${product.tag}` : ''}</p><div className="admin-stock-line"><span>IN STOCK</span><strong className={product.stock_quantity != null && Number(product.stock_quantity) === 0 ? 'is-out' : product.stock_quantity != null && Number(product.stock_quantity) <= Number(product.low_stock_threshold ?? 5) ? 'is-low' : ''}>{product.stock_quantity == null ? 'Not set' : `${Number(product.stock_quantity)} units`}</strong></div><div className="admin-catalog-options"><span>COLORS <b>{product.colors?.join(', ') || '—'}</b></span><span>SIZES <b>{product.sizes?.join(', ') || '—'}</b></span></div><div className="admin-card-actions"><button onClick={() => openEditProduct(product)}>Edit product</button><button onClick={() => toggleProduct(product, 'is_active')}>{product.is_active ? 'Hide' : 'Publish'}</button><button onClick={() => toggleProduct(product, 'sold_out')}>{product.sold_out ? 'Mark available' : 'Mark sold out'}</button><button className="admin-delete-action" onClick={() => deleteProduct(product)}>Delete</button></div></div>
                 </article>)}
               </div>
               {!filteredProducts.length && <div className="admin-blank">{productsLoading ? 'Loading products…' : 'No products found. Add your first product to get started.'}</div>}
@@ -381,7 +381,7 @@ export default function AdminDashboard() {
           <label className="wide">PRODUCT NAME<input value={productForm.name} onChange={(event) => updateProductField('name', event.target.value)} placeholder="Oversized Graphic Tee" required /></label>
           <label>PRODUCT ID<input value={productForm.id} onChange={(event) => updateProductField('id', event.target.value)} readOnly={productEditor === 'edit'} placeholder="oversized-tee" required /></label>
           <label>PRICE (EGP)<input type="number" min="0" step="1" value={productForm.price} onChange={(event) => updateProductField('price', event.target.value)} placeholder="850" required /></label>
-          <label>STOCK QUANTITY<input type="number" min="0" step="1" value={productForm.stock_quantity} onChange={(event) => updateProductField('stock_quantity', event.target.value)} placeholder="0" required /></label>
+          <label>STOCK QUANTITY<input type="number" min="0" step="1" value={productForm.stock_quantity} onChange={(event) => updateProductField('stock_quantity', event.target.value)} placeholder="Enter units" required /></label>
           <label>LOW STOCK ALERT AT<input type="number" min="0" step="1" value={productForm.low_stock_threshold} onChange={(event) => updateProductField('low_stock_threshold', event.target.value)} placeholder="5" required /></label>
           <label>CATEGORY<input value={productForm.category} onChange={(event) => updateProductField('category', event.target.value)} placeholder="T-Shirts" /></label>
           <label>TAG<input value={productForm.tag} onChange={(event) => updateProductField('tag', event.target.value)} placeholder="New / Best Seller" /></label>
