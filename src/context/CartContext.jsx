@@ -44,7 +44,7 @@ export function CartProvider({ children }) {
     }
     supabase.auth.getSession().then(({ data }) => restoreForSession(data?.session ?? null))
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      restoreForSession(session)
+      window.setTimeout(() => restoreForSession(session), 0)
     })
     return () => { active = false; subscription.unsubscribe() }
   }, [])
