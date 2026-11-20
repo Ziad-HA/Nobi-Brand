@@ -19,7 +19,7 @@ export default function Home() {
 
   return (
     <>
-      <section className="hero home-hero">
+      <section className="hero home-hero video-hero">
         {reduceMotion ? (
           <img
             src={`${import.meta.env.BASE_URL}images/TRAP.jpg`}
@@ -45,14 +45,12 @@ export default function Home() {
         <Hero3DLayer />
         <div className="hero-copy home-hero-copy">
           <p className="eyebrow">Season 04 · Night Shift</p>
-          <h1>
-            CUT FOR
-            <br />
-            THE NIGHT<span>.</span>
+          <h1 aria-label="Stay unseen.">
+            <small aria-hidden="true">STAY</small>
+            <strong aria-hidden="true">UNSEEN<i>.</i></strong>
           </h1>
           <p className="lede">
-            Limited streetwear. Oversized silhouettes. Hardware that doesn’t
-            pretend to be quiet.
+            Limited drops. Heavy fabrics. Made for the ones who move after dark.
           </p>
           <div className="hero-actions">
             <Link to="/shop" className="btn btn-primary">Shop drop 26</Link>

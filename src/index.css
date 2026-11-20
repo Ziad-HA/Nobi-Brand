@@ -5245,3 +5245,87 @@ main h2 > span,
   animation: nobi-hero-image-arrive 2.4s cubic-bezier(.16,1,.3,1) both;
   background: #080908;
 }
+
+
+/* =========================================
+   HOME HERO — centered layout built around the video
+========================================= */
+.home-hero.video-hero {
+  height: 100svh;
+  min-height: 560px;
+  align-items: flex-end;
+  justify-content: center;
+  text-align: center;
+  padding: 0 6vw 11vh;
+}
+.home-hero.video-hero .hero-overlay {
+  background:
+    radial-gradient(ellipse at 50% 45%, rgba(4,5,4,0) 35%, rgba(4,5,4,.45) 100%),
+    linear-gradient(0deg, rgba(4,5,4,.85) 0%, rgba(4,5,4,.3) 38%, rgba(4,5,4,0) 62%);
+}
+.home-hero.video-hero > .hero-video {
+  filter: saturate(.85) contrast(1.05) brightness(1.12);
+}
+.home-hero.video-hero .home-hero-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+}
+.home-hero.video-hero .home-hero-copy > .eyebrow {
+  margin-bottom: 1.2rem;
+  justify-content: center;
+}
+.home-hero.video-hero .home-hero-copy > .eyebrow::before { display: none; }
+.home-hero.video-hero .home-hero-copy > h1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .9rem;
+  max-width: none;
+  margin: 0 0 1.6rem;
+  line-height: 1;
+  font-size: 1rem;
+}
+.home-hero.video-hero .home-hero-copy > h1 small {
+  font-size: clamp(.8rem, 2vw, 1.35rem);
+  letter-spacing: .75em;
+  margin-right: -.75em;
+  color: rgba(244,244,240,.85);
+  font-weight: 400;
+}
+.home-hero.video-hero .home-hero-copy > h1 strong {
+  display: block;
+  font-weight: inherit;
+  font-size: min(20vw, 15rem);
+  line-height: .82;
+  letter-spacing: .015em;
+  color: #f4f4f0;
+  text-shadow: 0 0 60px rgba(0,0,0,.5);
+}
+.home-hero.video-hero .home-hero-copy > h1 i {
+  font-style: normal;
+  color: var(--volt, #c6ff3d);
+}
+.home-hero.video-hero .home-hero-copy > .lede {
+  max-width: 36ch;
+  margin: 0 auto 1.8rem;
+  text-align: center;
+}
+.home-hero.video-hero .hero-actions { justify-content: center; }
+@media (max-width: 768px) {
+  .home-hero.video-hero {
+    height: min(88svh, 760px);
+    min-height: 560px;
+    padding: 0 1.25rem 5.5rem;
+  }
+  .home-hero.video-hero .home-hero-copy > h1 strong { font-size: min(20vw, 9rem); }
+  .home-hero.video-hero .home-hero-copy > .lede { max-width: 30ch; }
+}
+@media (max-width: 640px) {
+  .home-hero.video-hero { height: min(88svh, 760px); padding-bottom: 5.5rem; }
+}
