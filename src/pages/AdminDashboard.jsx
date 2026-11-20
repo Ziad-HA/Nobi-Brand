@@ -41,6 +41,9 @@ export default function AdminDashboard() {
   const [coupons, setCoupons] = useState([])
   const [couponsLoading, setCouponsLoading] = useState(false)
   const [couponEditor, setCouponEditor] = useState(null)
+  const [storeSettings, setStoreSettings] = useState({ shipping_fee: '0', free_shipping_threshold: '' })
+  const [settingsLoading, setSettingsLoading] = useState(false)
+  const [settingsSaving, setSettingsSaving] = useState(false)
   const [couponForm, setCouponForm] = useState({
     code: '', discount_type: 'percent', discount_value: '10', min_order_amount: '0',
     max_discount_amount: '', usage_limit: '', starts_at: '', expires_at: '', is_active: true,
@@ -128,13 +131,30 @@ export default function AdminDashboard() {
     setCouponsLoading(false)
   }, [])
 
+  const loadStoreSettings = useCallback(async () => {
+    if (!supabase) return
+    setSettingsLoading(true)
+    const { data, error: queryError } = await supabase
+      .from('store_settings')
+      .select('shipping_fee, free_shipping_threshold')
+      .eq('id', true)
+      .maybeSingle()
+    if (queryError) setError(queryError.message)
+    else if (data) setStoreSettings({
+      shipping_fee: String(data.shipping_fee ?? 0),
+      free_shipping_threshold: data.free_shipping_threshold == null ? '' : String(data.free_shipping_threshold),
+    })
+    setSettingsLoading(false)
+  }, [])
+
   useEffect(() => {
     if (authState === 'admin') {
       loadOrders()
       loadProducts()
       loadCoupons()
+      loadStoreSettings()
     }
-  }, [authState, loadOrders, loadProducts, loadCoupons])
+  }, [authState, loadOrders, loadProducts, loadCoupons, loadStoreSettings])
 
   useEffect(() => {
     if (authState !== 'admin' || !supabase) return undefined
@@ -192,7 +212,7 @@ export default function AdminDashboard() {
 
   async function refreshAll() {
     setError('')
-    await Promise.all([loadOrders(), loadProducts(), loadCoupons()])
+    await Promise.all([loadOrders(), loadProducts(), loadCoupons(), loadStoreSettings()])
   }
 
   async function updateOrderStatus(order, nextStatus) {
@@ -211,6 +231,27 @@ export default function AdminDashboard() {
     setSelectedOrder(updatedOrder)
     setOrders((current) => current.map((item) => item.id === order.id ? updatedOrder : item))
     setNotice(`Order #${order.id.slice(0, 8).toUpperCase()} updated to ${label(nextStatus)}.`)
+  }
+
+  async function saveStoreSettings(event) {
+    event.preventDefault()
+    const fee = Number(storeSettings.shipping_fee)
+    const threshold = storeSettings.free_shipping_threshold === '' ? null : Number(storeSettings.free_shipping_threshold)
+    if (!Number.isFinite(fee) || fee < 0 || (threshold !== null && (!Number.isFinite(threshold) || threshold < 0))) {
+      setError('Enter valid non-negative shipping amounts in EGP.')
+      return
+    }
+    setSettingsSaving(true)
+    setError('')
+    const { error: saveError } = await supabase.from('store_settings').upsert({
+      id: true,
+      shipping_fee: fee,
+      free_shipping_threshold: threshold,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'id' })
+    setSettingsSaving(false)
+    if (saveError) setError(saveError.message)
+    else setNotice('Store shipping settings saved.')
   }
 
   function openNewCoupon() {
@@ -445,6 +486,7 @@ export default function AdminDashboard() {
           <button className={section === 'orders' ? 'is-active' : ''} onClick={() => setSection('orders')}><span>▤</span> Orders <i>{stats.orders}</i></button>
           <button className={section === 'products' ? 'is-active' : ''} onClick={() => setSection('products')}><span>▦</span> Products <i>{stats.products}</i></button>
           <button className={section === 'coupons' ? 'is-active' : ''} onClick={() => setSection('coupons')}><span>%</span> Coupons <i>{coupons.length}</i></button>
+          <button className={section === 'settings' ? 'is-active' : ''} onClick={() => setSection('settings')}><span>⚙</span> Settings</button>
         </nav>
         <div className="admin-rail-bottom">
           <div className="admin-connection"><span /> STORE CONNECTED</div>
@@ -548,6 +590,21 @@ export default function AdminDashboard() {
                 </table>
                 {!coupons.length && <div className="admin-blank">{couponsLoading ? 'Loading coupons…' : 'No coupons yet. Create your first discount code.'}</div>}
               </div>
+            </section>
+          )}
+
+          {section === 'settings' && (
+            <section className="admin-page-section">
+              <div className="admin-section-title"><div><p className="admin-eyebrow">STORE CONFIGURATION</p><h1>SETTINGS<span>.</span></h1><p>Control delivery pricing in Egyptian pounds.</p></div></div>
+              <form className="admin-panel admin-settings-form" onSubmit={saveStoreSettings}>
+                <div className="admin-panel-heading"><div><p className="admin-eyebrow">FULFILLMENT</p><h2>SHIPPING RULES</h2></div><span className="admin-status admin-status--delivered">EGP</span></div>
+                <div className="admin-form-grid">
+                  <label>STANDARD SHIPPING FEE (EGP)<input type="number" min="0" step="1" value={storeSettings.shipping_fee} onChange={(event) => setStoreSettings((current) => ({ ...current, shipping_fee: event.target.value }))} required /></label>
+                  <label>FREE SHIPPING ABOVE (EGP)<small>Leave blank to disable free shipping</small><input type="number" min="0" step="1" value={storeSettings.free_shipping_threshold} onChange={(event) => setStoreSettings((current) => ({ ...current, free_shipping_threshold: event.target.value }))} placeholder="Disabled" /></label>
+                </div>
+                <p className="admin-dialog-subtitle">Shipping is recalculated on the server when an order is placed. Changing these settings affects new orders only.</p>
+                <div className="admin-dialog-actions"><button type="button" className="admin-btn admin-btn--secondary" onClick={loadStoreSettings} disabled={settingsLoading}>↻ {settingsLoading ? 'Loading' : 'Reload settings'}</button><button type="submit" className="admin-btn admin-btn--lime" disabled={settingsSaving}>{settingsSaving ? 'Saving…' : 'Save settings'}</button></div>
+              </form>
             </section>
           )}
 
