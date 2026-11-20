@@ -4,7 +4,11 @@
 -- admin analytics, and realtime order events.
 -- Keep the order of sections unchanged.
 
-\n\n-- ============================================================\n-- SECTION 1: supabase/coupons-system.sql\n-- ============================================================\n\n-- UNSEEN commerce upgrade: coupons
+-- ============================================================
+-- SECTION 1: supabase/coupons-system.sql
+-- ============================================================
+
+-- UNSEEN commerce upgrade: coupons
 -- Run this file once in Supabase SQL Editor after reviewing it.
 -- Coupon discounts are calculated and enforced inside the database transaction.
 
@@ -274,7 +278,12 @@ END;
 $function$;
 
 GRANT EXECUTE ON FUNCTION public.place_order(text, text, text, text, text, text, text, jsonb, text) TO anon, authenticated;
-\n\n\n-- ============================================================\n-- SECTION 2: supabase/customer-accounts.sql\n-- ============================================================\n\n-- UNSEEN customer accounts: link authenticated checkouts to their owner.
+
+-- ============================================================
+-- SECTION 2: supabase/customer-accounts.sql
+-- ============================================================
+
+-- UNSEEN customer accounts: link authenticated checkouts to their owner.
 -- Run after coupons-system.sql in Supabase SQL Editor.
 
 ALTER TABLE public.orders
@@ -324,7 +333,12 @@ USING (
       AND customer_order.user_id = (SELECT auth.uid())
   )
 );
-\n\n\n-- ============================================================\n-- SECTION 3: supabase/store-settings.sql\n-- ============================================================\n\n-- UNSEEN store settings and server-enforced shipping calculation.
+
+-- ============================================================
+-- SECTION 3: supabase/store-settings.sql
+-- ============================================================
+
+-- UNSEEN store settings and server-enforced shipping calculation.
 -- Run after coupons-system.sql in Supabase SQL Editor.
 
 CREATE TABLE IF NOT EXISTS public.store_settings (
@@ -391,7 +405,12 @@ CREATE TRIGGER apply_store_shipping_fee_before_insert
 BEFORE INSERT ON public.orders
 FOR EACH ROW
 EXECUTE FUNCTION public.apply_store_shipping_fee();
-\n\n\n-- ============================================================\n-- SECTION 4: supabase/admin-analytics.sql\n-- ============================================================\n\n-- UNSEEN admin analytics: all-time totals and recent monthly performance.
+
+-- ============================================================
+-- SECTION 4: supabase/admin-analytics.sql
+-- ============================================================
+
+-- UNSEEN admin analytics: all-time totals and recent monthly performance.
 -- Run once in Supabase SQL Editor.
 
 CREATE OR REPLACE FUNCTION public.admin_store_analytics()
@@ -454,7 +473,12 @@ END;
 $function$;
 
 GRANT EXECUTE ON FUNCTION public.admin_store_analytics() TO authenticated;
-\n\n\n-- ============================================================\n-- SECTION 5: supabase/realtime-notifications.sql\n-- ============================================================\n\n-- Enable live order events for the private admin dashboard.
+
+-- ============================================================
+-- SECTION 5: supabase/realtime-notifications.sql
+-- ============================================================
+
+-- Enable live order events for the private admin dashboard.
 -- Run once in Supabase SQL Editor. The dashboard still supports manual refresh.
 
 DO $$
@@ -470,4 +494,3 @@ BEGIN
   END IF;
 END
 $$;
-
