@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from 'motion/react'
 import ProductCard from '../components/ProductCard'
 import { categories } from '../data/products'
 import usePageMeta from '../lib/usePageMeta'
+import RecentlyViewed from '../components/RecentlyViewed'
 
 const sortOptions = [
   { value: 'featured', label: 'Featured' },
@@ -117,6 +118,7 @@ export default function Shop() {
           ))}
         </div>
       )}
+      <RecentlyViewed />
     </section>
   )
 }
