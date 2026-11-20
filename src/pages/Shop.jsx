@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
+import useProducts from '../lib/useProducts'
 import { motion, useReducedMotion } from 'motion/react'
 import ProductCard from '../components/ProductCard'
-import { categories, products } from '../data/products'
+import { categories } from '../data/products'
 import usePageMeta from '../lib/usePageMeta'
 
 const sortOptions = [
@@ -12,6 +13,7 @@ const sortOptions = [
 ]
 
 export default function Shop() {
+  const { products, loading, error } = useProducts()
   const [filter, setFilter] = useState('All')
   const [query, setQuery] = useState('')
   const [sort, setSort] = useState('featured')
@@ -91,7 +93,7 @@ export default function Shop() {
         </label>
       </div>
 
-      {list.length === 0 ? (
+      {loading ? <p className="shop-empty">Loading collection...</p> : error ? <p className="shop-empty">Could not load products: {error}</p> : list.length === 0 ? (
         <div className="shop-empty">
           <p className="eyebrow">No match</p>
           <h2>Nothing in this edit.</h2>
