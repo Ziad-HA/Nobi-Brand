@@ -22,6 +22,9 @@ export default function AdminDashboard() {
   const [authState, setAuthState] = useState('checking')
   const [user, setUser] = useState(null)
   const [orders, setOrders] = useState([])
+  const [products, setProducts] = useState([])
+  const [productsLoading, setProductsLoading] = useState(false)
+  const [productSearch, setProductSearch] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [search, setSearch] = useState('')
@@ -78,6 +81,30 @@ export default function AdminDashboard() {
     }
   }, [checkAccess])
 
+  const loadProducts = useCallback(async () => {
+    if (!supabase) return
+    setProductsLoading(true)
+    const { data, error: queryError } = await supabase
+      .from('products')
+      .select('id, name, price, category, tag, season, colors, sizes, sold_out, images, is_active')
+      .order('created_at', { ascending: false })
+
+    if (queryError) {
+      setError(queryError.message)
+    } else {
+      setProducts(data || [])
+    }
+    setProductsLoading(false)
+  }, [])
+
+  const filteredProducts = useMemo(() => {
+    const query = productSearch.trim().toLowerCase()
+    return products.filter((product) =>
+      !query || [product.name, product.id, product.category, product.tag]
+        .some((value) => String(value || '').toLowerCase().includes(query))
+    )
+  }, [products, productSearch])
+
   const loadOrders = useCallback(async () => {
     if (!supabase) return
     setLoading(true)
@@ -107,8 +134,11 @@ export default function AdminDashboard() {
   }, [])
 
   useEffect(() => {
-    if (authState === 'admin') loadOrders()
-  }, [authState, loadOrders])
+    if (authState === 'admin') {
+      loadOrders()
+      loadProducts()
+    }
+  }, [authState, loadOrders, loadProducts])
 
   const filteredOrders = useMemo(() => {
     const query = search.trim().toLowerCase()
@@ -173,7 +203,7 @@ export default function AdminDashboard() {
         <Link to="/" className="admin-brand">UNSEEN<span>.</span></Link>
         <p className="admin-sidebar-label">WORKSPACE</p>
         <a className="admin-nav-item admin-nav-item--active" href="#overview">Overview</a>
-        <a className="admin-nav-item" href="#orders">Orders <span>{stats.total}</span></a>
+        <a className="admin-nav-item" href="#orders">Orders <span>{stats.total}</span></a>\n        <a className="admin-nav-item" href="#products">Products <span>{products.length}</span></a>
         <div className="admin-sidebar-bottom">
           <span className="admin-live-dot" />
           <span>Store connected</span>
@@ -196,8 +226,8 @@ export default function AdminDashboard() {
             <h1>THE BACK OFFICE<span>.</span></h1>
             <p className="admin-subtitle">A clear view of what’s happening at UNSEEN.</p>
           </div>
-          <button className="admin-button" onClick={loadOrders} disabled={loading}>
-            {loading ? 'Refreshing…' : '↻ Refresh data'}
+          <button className="admin-button" onClick={() => { loadOrders(); loadProducts() }} disabled={loading || productsLoading}>
+            {loading || productsLoading ? 'Refreshing…' : '↻ Refresh data'}
           </button>
         </section>
 
@@ -283,6 +313,59 @@ export default function AdminDashboard() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          )}
+        </section>
+
+        <section id="products" className="admin-products">
+          <div className="admin-section-head">
+            <div>
+              <p className="admin-kicker">CATALOG / INVENTORY</p>
+              <h2>PRODUCTS</h2>
+            </div>
+            <span className="admin-count">{filteredProducts.length} PRODUCTS</span>
+          </div>
+
+          <div className="admin-toolbar">
+            <input
+              value={productSearch}
+              onChange={(event) => setProductSearch(event.target.value)}
+              placeholder="Search product, ID or category…"
+              aria-label="Search products"
+            />
+          </div>
+
+          {productsLoading && products.length === 0 ? (
+            <div className="admin-empty">Loading products…</div>
+          ) : filteredProducts.length === 0 ? (
+            <div className="admin-empty">No products found.</div>
+          ) : (
+            <div className="admin-product-grid">
+              {filteredProducts.map((product) => (
+                <article className="admin-product-card" key={product.id}>
+                  <div className="admin-product-image">
+                    {product.images?.[0] ? (
+                      <img src={product.images[0]} alt={product.name} loading="lazy" />
+                    ) : (
+                      <span>NO IMAGE</span>
+                    )}
+                    <span className={`admin-product-status ${product.is_active && !product.sold_out ? 'is-live' : 'is-off'}`}>
+                      {product.is_active === false ? 'INACTIVE' : product.sold_out ? 'SOLD OUT' : 'ACTIVE'}
+                    </span>
+                  </div>
+                  <div className="admin-product-info">
+                    <div className="admin-product-title">
+                      <div><h3>{product.name}</h3><small>{product.id}</small></div>
+                      <strong>{money(product.price)}</strong>
+                    </div>
+                    <p className="admin-product-category">{product.category || 'Uncategorized'}{product.tag ? ` · ${product.tag}` : ''}</p>
+                    <div className="admin-product-meta">
+                      <span>COLORS <b>{product.colors?.length ? product.colors.join(', ') : '—'}</b></span>
+                      <span>SIZES <b>{product.sizes?.length ? product.sizes.join(', ') : '—'}</b></span>
+                    </div>
+                  </div>
+                </article>
+              ))}
             </div>
           )}
         </section>
