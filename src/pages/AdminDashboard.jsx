@@ -149,8 +149,8 @@ export default function AdminDashboard() {
       .reduce((sum, order) => sum + Number(order.total || 0), 0),
     products: products.length,
     activeProducts: products.filter((product) => product.is_active && !product.sold_out).length,
-    lowStock: products.filter((product) => Number(product.stock_quantity) > 0 && Number(product.stock_quantity) <= Number(product.low_stock_threshold ?? 5)).length,
-    outOfStock: products.filter((product) => Number(product.stock_quantity) === 0).length,
+    lowStock: products.filter((product) => product.stock_quantity != null && Number(product.stock_quantity) > 0 && Number(product.stock_quantity) <= Number(product.low_stock_threshold ?? 5)).length,
+    outOfStock: products.filter((product) => product.stock_quantity != null && Number(product.stock_quantity) === 0).length,
   }), [orders, products])
 
   async function refreshAll() {
@@ -219,7 +219,7 @@ export default function AdminDashboard() {
       sizes: productForm.sizes.split(',').map((item) => item.trim()).filter(Boolean),
       images: productForm.images.split('\n').map((item) => item.trim()).filter(Boolean),
       description: productForm.description.trim() || null,
-      sold_out: productForm.sold_out,
+      sold_out: Number(productForm.stock_quantity) === 0 || productForm.sold_out,
       is_active: productForm.is_active,
       stock_quantity: Math.max(0, Math.floor(Number(productForm.stock_quantity || 0))),
       low_stock_threshold: Math.max(0, Math.floor(Number(productForm.low_stock_threshold || 0))),
