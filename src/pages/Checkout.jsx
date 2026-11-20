@@ -17,10 +17,11 @@ export default function Checkout() {
   const [couponStatus, setCouponStatus] = useState('idle')
   const [couponMessage, setCouponMessage] = useState('')
   const [customerEmail, setCustomerEmail] = useState('')
+  const [customerName, setCustomerName] = useState('')
   const [storeSettings, setStoreSettings] = useState({ shipping_fee: 0, free_shipping_threshold: null })
 
   useEffect(() => {
-    if (!supabase) return
+    if (!supabase) return undefined
     supabase.from('store_settings')
       .select('shipping_fee, free_shipping_threshold')
       .eq('id', true)
@@ -34,10 +35,15 @@ export default function Checkout() {
     if (!supabase) return undefined
     let active = true
     supabase.auth.getSession().then(({ data }) => {
-      if (active) setCustomerEmail(data.session?.user?.email ?? '')
+      if (!active) return
+      const user = data.session?.user
+      setCustomerEmail(user?.email ?? '')
+      setCustomerName(user?.user_metadata?.full_name ?? '')
     })
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (active) setCustomerEmail(session?.user?.email ?? '')
+      const user = session?.user
+      setCustomerEmail(user?.email ?? '')
+      setCustomerName(user?.user_metadata?.full_name ?? '')
     })
     return () => {
       active = false
@@ -151,7 +157,8 @@ export default function Checkout() {
         <h1>You’re on the list<span>.</span></h1>
         <p className="muted">Your order has been saved. Payment is due on delivery.</p>
         <p className="muted" style={{ overflowWrap: 'anywhere' }}>Order reference: {orderId}</p>
-        <button className="btn btn-primary" onClick={() => navigate('/shop')}>Keep exploring ↗</button>
+        <Link className="btn btn-primary" to="/account">View my account ↗</Link>
+        <button className="btn btn-ghost" onClick={() => navigate('/shop')}>Keep exploring ↗</button>
       </section>
     )
   }
@@ -168,7 +175,7 @@ export default function Checkout() {
         <form className="checkout-form" onSubmit={onSubmit}>
           <div className="checkout-form-section">
             <p className="checkout-section-title"><span>01</span> Contact details</p>
-            <label>Full name<input required name="name" autoComplete="name" placeholder="Your full name" /></label>
+            <label>Full name<input required name="name" autoComplete="name" placeholder="Your full name" defaultValue={customerName} key={customerName} /></label>
             <div className="form-row">
               <label>Email<input type="email" required name="email" autoComplete="email" inputMode="email" placeholder="you@example.com" value={customerEmail} onChange={(event) => setCustomerEmail(event.target.value)} /></label>
               <label>Phone<input type="tel" required name="phone" autoComplete="tel" placeholder="+20" /></label>
@@ -194,16 +201,8 @@ export default function Checkout() {
               </div>
             ) : (
               <div className="checkout-coupon-entry">
-                <input
-                  value={couponCode}
-                  onChange={(event) => setCouponCode(event.target.value.toUpperCase())}
-                  placeholder="Enter coupon code"
-                  aria-label="Coupon code"
-                  autoComplete="off"
-                />
-                <button type="button" className="btn btn-ghost" onClick={applyCoupon} disabled={couponStatus === 'loading' || !couponCode.trim()}>
-                  {couponStatus === 'loading' ? 'Checking…' : 'Apply'}
-                </button>
+                <input value={couponCode} onChange={(event) => setCouponCode(event.target.value.toUpperCase())} placeholder="Enter coupon code" aria-label="Coupon code" autoComplete="off" />
+                <button type="button" className="btn btn-ghost" onClick={applyCoupon} disabled={couponStatus === 'loading' || !couponCode.trim()}>{couponStatus === 'loading' ? 'Checking…' : 'Apply'}</button>
               </div>
             )}
             {couponMessage && <p className={couponStatus === 'error' ? 'checkout-coupon-message is-error' : 'checkout-coupon-message'} role="status">{couponMessage}</p>}
@@ -211,9 +210,7 @@ export default function Checkout() {
 
           <p className="checkout-demo-note">Cash on delivery. No online payment is collected.</p>
           {message && <p className="muted" role="alert">{message}</p>}
-          <button className="btn btn-primary checkout-submit" type="submit" disabled={status === 'loading'}>
-            {status === 'loading' ? 'Placing order...' : `Place order · ${money(checkoutTotal)}`}
-          </button>
+          <button className="btn btn-primary checkout-submit" type="submit" disabled={status === 'loading'}>{status === 'loading' ? 'Placing order...' : `Place order · ${money(checkoutTotal)}`}</button>
         </form>
 
         <aside className="checkout-order-summary">
