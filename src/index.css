@@ -5603,3 +5603,20 @@ main h2 > span,
     font-size: 0.66rem;
   }
 }
+
+
+/* UNSEEN checkout coupon controls */
+.checkout-coupon{margin:26px 0;padding:18px;border:1px solid var(--line);background:#101010}
+.checkout-coupon .checkout-section-title{margin-bottom:13px}
+.checkout-coupon-entry{display:flex;gap:9px}
+.checkout-coupon-entry input{flex:1;min-width:0;min-height:46px;padding:0 13px;border:1px solid #333;background:#090909;color:#f4f4f0;text-transform:uppercase;outline:none}
+.checkout-coupon-entry input:focus{border-color:var(--volt)}
+.checkout-coupon-entry .btn{min-width:105px}
+.checkout-coupon-applied{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid #52622d;background:#151a0e}
+.checkout-coupon-applied strong,.checkout-coupon-applied span{display:block}
+.checkout-coupon-applied strong{color:var(--volt);font:14px 'DM Mono',monospace;letter-spacing:.08em}
+.checkout-coupon-applied span{margin-top:4px;color:#aeb79a;font-size:11px}
+.checkout-coupon-message{margin-top:10px;color:var(--volt);font-size:11px}
+.checkout-coupon-message.is-error{color:#e99b91}
+.checkout-discount-line{color:var(--volt)!important}
+@media(max-width:520px){.checkout-coupon{padding:13px}.checkout-coupon-entry{flex-direction:column}.checkout-coupon-entry .btn{width:100%}}
