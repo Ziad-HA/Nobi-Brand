@@ -2,21 +2,41 @@ import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { useWishlist } from '../context/WishlistContext'
+import { supabase } from '../lib/supabase'
 
-const links = [{ to: '/shop', label: 'Shop' }, { to: '/lookbook', label: 'Lookbook' }, { to: '/about', label: 'About' }, { to: '/login', label: 'Login' }]
+const links = [{ to: '/shop', label: 'Shop' }, { to: '/lookbook', label: 'Lookbook' }, { to: '/about', label: 'About' }]
 
 export default function Navbar() {
   const { count, openCart } = useCart()
   const { count: savedCount } = useWishlist()
   const [open, setOpen] = useState(false)
+  const [user, setUser] = useState(null)
   const { pathname } = useLocation()
+
   useEffect(() => setOpen(false), [pathname])
+
+  useEffect(() => {
+    if (!supabase) return undefined
+    let active = true
+    supabase.auth.getSession().then(({ data }) => {
+      if (active) setUser(data.session?.user ?? null)
+    })
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (active) setUser(session?.user ?? null)
+    })
+    return () => {
+      active = false
+      subscription.unsubscribe()
+    }
+  }, [])
+
   useEffect(() => {
     if (!open) return undefined
     const closeOnEscape = (event) => { if (event.key === 'Escape') { setOpen(false); document.querySelector('.nav-toggle')?.focus() } }
     window.addEventListener('keydown', closeOnEscape)
     return () => window.removeEventListener('keydown', closeOnEscape)
   }, [open])
+
   return (
     <header className="nav">
       <div className="nav-inner">
@@ -24,6 +44,7 @@ export default function Navbar() {
         <Link to="/" className="logo" onClick={() => setOpen(false)}>UNSEEN</Link>
         <nav id="site-nav" aria-label="Main" className={`nav-links ${open ? 'is-open' : ''}`}>
           {links.map((link) => <NavLink key={link.to} to={link.to} onClick={() => setOpen(false)}>{link.label}</NavLink>)}
+          <NavLink to={user ? '/account' : '/login'} onClick={() => setOpen(false)}>{user ? 'Account' : 'Login'}</NavLink>
         </nav>
         <div className="nav-right">
           <NavLink to="/wishlist" className="nav-wishlist" aria-label={`Open wishlist, ${savedCount} saved items`} title="Wishlist"><svg className="nav-wishlist-heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.9a5.5 5.5 0 0 0-7.8 0L12 5.9l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.3 1-1a5.5 5.5 0 0 0 0-7.8Z" /></svg><span>{String(savedCount).padStart(2, '0')}</span></NavLink>
