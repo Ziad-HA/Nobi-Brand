@@ -5665,3 +5665,48 @@ main h2 > span,
 .order-tracking-updated{margin:15px 0 0;color:#777;font-size:10px}
 .order-tracking-cancelled{margin:0;color:#e99b91;font-size:12px}
 @media(max-width:420px){.order-tracking{padding:13px 9px}.order-tracking-steps{gap:2px}.order-tracking-step{font-size:9px}.order-tracking-step:not(:last-child)::after{left:calc(50% + 13px);width:calc(100% - 17px)}}
+
+
+/* UNSEEN — add-to-cart toast notification */
+.cart-toast {
+  position: fixed;
+  top: 86px;
+  left: 50%;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(420px, calc(100vw - 28px));
+  padding: 14px 16px;
+  border: 1px solid rgba(214,255,58,.42);
+  background: rgba(15,16,12,.96);
+  box-shadow: 0 16px 48px rgba(0,0,0,.42);
+  backdrop-filter: blur(16px);
+  transform: translateX(-50%);
+  animation: cart-toast-enter .28s cubic-bezier(.2,.8,.2,1) both;
+}
+.cart-toast-check {
+  display: grid;
+  place-items: center;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--volt);
+  color: #090909;
+  font-weight: 800;
+}
+.cart-toast > span:nth-child(2) { display: grid; gap: 2px; min-width: 0; }
+.cart-toast strong { color: var(--volt); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+.cart-toast small { overflow: hidden; color: #d5d5ce; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.cart-toast button { margin-left: auto; padding: 4px 7px; color: #aaa; font-size: 20px; line-height: 1; }
+@keyframes cart-toast-enter {
+  from { opacity: 0; transform: translate(-50%,-12px); }
+  to { opacity: 1; transform: translate(-50%,0); }
+}
+@media (max-width: 640px) {
+  .cart-toast { top: 68px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cart-toast { animation: none; }
+}
