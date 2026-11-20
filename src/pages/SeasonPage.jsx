@@ -2,11 +2,12 @@ import { useParams, Link } from "react-router-dom";
 import { motion, useReducedMotion } from "motion/react";
 import ProductCard from "../components/ProductCard";
 import { seasons } from "../data/seasons";
-import { products } from "../data/products";
+import useProducts from "../lib/useProducts";
 import usePageMeta from "../lib/usePageMeta";
 
 export default function SeasonPage() {
   const { slug } = useParams();
+  const { products } = useProducts();
   const reduceMotion = useReducedMotion();
   const season = seasons.find((s) => s.slug === slug);
   usePageMeta(season ? `Season ${season.label} Lookbook` : "Season not found", season?.description);
