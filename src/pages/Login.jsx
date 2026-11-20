@@ -4,7 +4,7 @@ import { isSupabaseConfigured, supabase } from '../lib/supabase'
 import usePageMeta from '../lib/usePageMeta'
 
 export default function Login() {
-  const [mode, setMode] = useState('login')
+  const [mode, setMode] = useState(() => window.location.hash.includes('type=recovery') ? 'update' : 'login')
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -14,7 +14,7 @@ export default function Login() {
   const [user, setUser] = useState(null)
   const navigate = useNavigate()
   const location = useLocation()
-  usePageMeta(mode === 'signup' ? 'Create account' : mode === 'reset' ? 'Reset password' : 'Login')
+  usePageMeta(mode === 'signup' ? 'Create account' : mode === 'reset' || mode === 'update' ? 'Reset password' : 'Login')
 
   const redirectTo = location.state?.from?.pathname || '/account'
 
@@ -34,7 +34,7 @@ export default function Login() {
       }
       const sessionUser = data?.session?.user ?? null
       setUser(sessionUser)
-      if (sessionUser) navigate(redirectTo, { replace: true })
+      if (sessionUser && mode !== 'update') navigate(redirectTo, { replace: true })
     }).catch(() => {
       if (active) {
         setMessage('Could not connect to the account service. Please try again.')
@@ -46,14 +46,14 @@ export default function Login() {
       if (!active) return
       const sessionUser = session?.user ?? null
       setUser(sessionUser)
-      if (sessionUser) navigate(redirectTo, { replace: true })
+      if (sessionUser && mode !== 'update') navigate(redirectTo, { replace: true })
     })
 
     return () => {
       active = false
       subscription.unsubscribe()
     }
-  }, [navigate, redirectTo])
+  }, [navigate, redirectTo, mode])
 
   function switchMode(nextMode) {
     setMode(nextMode)
@@ -77,6 +77,16 @@ export default function Login() {
     const cleanEmail = email.trim().toLowerCase()
 
     try {
+      if (mode === 'update') {
+        const { error } = await supabase.auth.updateUser({ password })
+        if (error) throw error
+        setStatus('idle')
+        setMessage('Your password has been updated successfully.')
+        setMessageType('success')
+        navigate('/account', { replace: true })
+        return
+      }
+
       if (mode === 'signup') {
         const { data, error } = await supabase.auth.signUp({
           email: cleanEmail,
@@ -163,9 +173,9 @@ export default function Login() {
     <section className="section auth-page">
       <div className="auth-box">
         <p className="eyebrow">UNSEEN / MEMBERS</p>
-        <h1>{mode === 'signup' ? 'JOIN THE COMMUNITY' : mode === 'reset' ? 'RESET PASSWORD' : 'WELCOME BACK'}<span>.</span></h1>
+        <h1>{mode === 'signup' ? 'JOIN THE COMMUNITY' : mode === 'reset' ? 'RESET PASSWORD' : mode === 'update' ? 'CHOOSE A NEW PASSWORD' : 'WELCOME BACK'}<span>.</span></h1>
         <p className="muted" style={{ margin: '0 0 1.5rem' }}>
-          {mode === 'signup' ? 'Create an account to keep track of your orders.' : mode === 'reset' ? 'We’ll send you a secure password reset link.' : 'Sign in to view your account and orders.'}
+          {mode === 'signup' ? 'Create an account to keep track of your orders.' : mode === 'reset' ? 'We’ll send you a secure password reset link.' : mode === 'update' ? 'Choose a new password for your account.' : 'Sign in to view your account and orders.'}
         </p>
 
         <form className="checkout-form" onSubmit={handleSubmit}>
@@ -177,20 +187,20 @@ export default function Login() {
           <label>Email
             <input type="email" required autoComplete="email" inputMode="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" />
           </label>
-          {mode !== 'reset' && (
+          {mode !== 'reset' && mode !== 'update' && (
             <label>Password
-              <input type="password" required minLength={6} autoComplete={mode === 'signup' ? 'new-password' : 'current-password'} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={mode === 'signup' ? 'At least 6 characters' : 'Your password'} />
+              <input type="password" required minLength={6} autoComplete={mode === 'signup' || mode === 'update' ? 'new-password' : 'current-password'} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={mode === 'signup' || mode === 'update' ? 'At least 6 characters' : 'Your password'} />
             </label>
           )}
 
           <button className="btn btn-primary" type="submit" disabled={status === 'loading' || !isSupabaseConfigured}>
-            {status === 'loading' ? 'Please wait…' : mode === 'signup' ? 'Create account' : mode === 'reset' ? 'Send reset link' : 'Log in'}
+            {status === 'loading' ? 'Please wait…' : mode === 'signup' ? 'Create account' : mode === 'reset' ? 'Send reset link' : mode === 'update' ? 'Update password' : 'Log in'}
           </button>
 
           {message && <p className="muted" role="status" aria-live="polite" style={{ color: messageType === 'error' ? '#ff7777' : undefined }}>{message}</p>}
 
           {mode === 'login' && <button type="button" className="text-link" onClick={() => switchMode('reset')}>Forgot your password?</button>}
-          {mode === 'reset' && <button type="button" className="text-link" onClick={() => switchMode('login')}>Back to login</button>}
+          {(mode === 'reset' || mode === 'update') && <button type="button" className="text-link" onClick={() => switchMode('login')}>Back to login</button>}
           {mode !== 'reset' && (
             <button type="button" className="text-link" onClick={() => switchMode(mode === 'login' ? 'signup' : 'login')}>
               {mode === 'login' ? 'New to UNSEEN? Create an account' : 'Already have an account? Log in'}
