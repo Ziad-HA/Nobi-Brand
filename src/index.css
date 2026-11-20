@@ -5530,3 +5530,13 @@ main h2 > span,
     font-size: 0.54rem;
   }
 }
+
+
+/* UNSEEN — mobile video frame: use about 65% of the viewport height */
+@media (max-width: 640px) {
+  .home-hero.video-hero {
+    height: 65svh;
+    min-height: 65svh;
+    max-height: none;
+  }
+}
