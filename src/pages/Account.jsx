@@ -17,6 +17,7 @@ export default function Account() {
   const [user, setUser] = useState(null)
   const [checking, setChecking] = useState(true)
   const [orders, setOrders] = useState([])
+  const [notifications, setNotifications] = useState([])
   const [loadingOrders, setLoadingOrders] = useState(false)
   const [error, setError] = useState('')
   const [signingOut, setSigningOut] = useState(false)
@@ -53,15 +54,30 @@ export default function Account() {
       setLoadingOrders(false)
     }
 
+    const loadNotifications = async (userId) => {
+      const { data, error: notificationError } = await supabase
+        .from('order_notifications')
+        .select('id, order_id, old_status, new_status, message, is_read, created_at')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(20)
+      if (!active || currentUserId !== userId) return
+      if (notificationError) setError(notificationError.message)
+      else setNotifications(data || [])
+    }
+
     const syncSession = (session) => {
       if (!active) return
       const nextUser = session?.user ?? null
       currentUserId = nextUser?.id ?? null
       setUser(nextUser)
       setChecking(false)
-      if (nextUser) loadOrders(nextUser.id)
-      else {
+      if (nextUser) {
+        loadOrders(nextUser.id)
+        loadNotifications(nextUser.id)
+      } else {
         setOrders([])
+        setNotifications([])
         setLoadingOrders(false)
       }
     }
@@ -81,11 +97,28 @@ export default function Account() {
       syncSession(session)
     })
 
+    let notificationChannel = null
+    supabase.auth.getSession().then(({ data }) => {
+      const id = data?.session?.user?.id
+      if (!id || !active) return
+      notificationChannel = supabase.channel(`customer-order-notifications-${id}`)
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'order_notifications', filter: `user_id=eq.${id}` }, (payload) => {
+          setNotifications((current) => [payload.new, ...current].slice(0, 20))
+        }).subscribe()
+    })
+
     return () => {
       active = false
       subscription.unsubscribe()
+      if (notificationChannel) supabase.removeChannel(notificationChannel)
     }
   }, [])
+
+  async function markNotificationRead(notification) {
+    const { error: updateError } = await supabase.from('order_notifications')
+      .update({ is_read: true }).eq('id', notification.id)
+    if (!updateError) setNotifications((current) => current.map((item) => item.id === notification.id ? { ...item, is_read: true } : item))
+  }
 
   async function handleSignOut() {
     if (!supabase) return
@@ -109,6 +142,7 @@ export default function Account() {
         <div><p className="eyebrow">UNSEEN / MEMBERS AREA</p><h1>MY ACCOUNT<span>.</span></h1><p className="muted">{displayName}</p><p className="muted">{user.email}</p></div>
         <button className="btn btn-ghost" type="button" onClick={handleSignOut} disabled={signingOut}>{signingOut ? 'Signing out…' : 'Sign out ↗'}</button>
       </div>
+      {notifications.length > 0 && <section className="account-notifications"><div className="account-notifications-heading"><div><p className="eyebrow">LIVE UPDATES</p><h2>ORDER NOTIFICATIONS</h2></div><span>{notifications.filter((item) => !item.is_read).length} NEW</span></div>{notifications.map((item) => <article className={`account-notification ${item.is_read ? 'is-read' : ''}`} key={item.id}><div><strong>{item.message}</strong><small>Order #{String(item.order_id).slice(0, 8).toUpperCase()} · {dateTime(item.created_at)}</small></div>{!item.is_read && <button type="button" onClick={() => markNotificationRead(item)}>Mark read</button>}</article>)}</section>}
       <div className="account-orders-heading"><div><p className="eyebrow">YOUR ACTIVITY</p><h2>ORDER HISTORY</h2></div><span>{orders.length} ORDERS</span></div>
       {error && <p className="account-message" role="alert">{error}</p>}
       {loadingOrders ? <div className="account-empty">Loading your orders…</div> : orders.length ? (
