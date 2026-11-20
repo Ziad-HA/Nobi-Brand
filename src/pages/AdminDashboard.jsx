@@ -38,6 +38,13 @@ export default function AdminDashboard() {
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [productEditor, setProductEditor] = useState(null)
   const [productForm, setProductForm] = useState(emptyProduct)
+  const [coupons, setCoupons] = useState([])
+  const [couponsLoading, setCouponsLoading] = useState(false)
+  const [couponEditor, setCouponEditor] = useState(null)
+  const [couponForm, setCouponForm] = useState({
+    code: '', discount_type: 'percent', discount_value: '10', min_order_amount: '0',
+    max_discount_amount: '', usage_limit: '', starts_at: '', expires_at: '', is_active: true,
+  })
 
   const checkAccess = useCallback(async (sessionUser) => {
     if (!sessionUser) {
@@ -113,8 +120,9 @@ export default function AdminDashboard() {
     if (authState === 'admin') {
       loadOrders()
       loadProducts()
+      loadCoupons()
     }
-  }, [authState, loadOrders, loadProducts])
+  }, [authState, loadOrders, loadProducts, loadCoupons])
 
   const filteredOrders = useMemo(() => {
     const query = orderSearch.trim().toLowerCase()
@@ -155,8 +163,20 @@ export default function AdminDashboard() {
 
   async function refreshAll() {
     setError('')
-    await Promise.all([loadOrders(), loadProducts()])
+    await Promise.all([loadOrders(), loadProducts(), loadCoupons()])
   }
+
+  const loadCoupons = useCallback(async () => {
+    if (!supabase) return
+    setCouponsLoading(true)
+    const { data, error: queryError } = await supabase
+      .from('coupons')
+      .select('id, code, discount_type, discount_value, min_order_amount, max_discount_amount, usage_limit, usage_count, starts_at, expires_at, is_active, created_at')
+      .order('created_at', { ascending: false })
+    if (queryError) setError(queryError.message)
+    else setCoupons(data || [])
+    setCouponsLoading(false)
+  }, [])
 
   async function updateOrderStatus(order, nextStatus) {
     if (!order || !nextStatus || order.status === nextStatus) return
@@ -174,6 +194,98 @@ export default function AdminDashboard() {
     setSelectedOrder(updatedOrder)
     setOrders((current) => current.map((item) => item.id === order.id ? updatedOrder : item))
     setNotice(`Order #${order.id.slice(0, 8).toUpperCase()} updated to ${label(nextStatus)}.`)
+  }
+
+  function openNewCoupon() {
+    setCouponForm({
+      code: '', discount_type: 'percent', discount_value: '10', min_order_amount: '0',
+      max_discount_amount: '', usage_limit: '', starts_at: '', expires_at: '', is_active: true,
+    })
+    setCouponEditor('new')
+  }
+
+  function openEditCoupon(coupon) {
+    const toLocal = (value) => value ? new Date(value).toISOString().slice(0, 16) : ''
+    setCouponForm({
+      code: coupon.code,
+      discount_type: coupon.discount_type,
+      discount_value: String(coupon.discount_value),
+      min_order_amount: String(coupon.min_order_amount ?? 0),
+      max_discount_amount: coupon.max_discount_amount == null ? '' : String(coupon.max_discount_amount),
+      usage_limit: coupon.usage_limit == null ? '' : String(coupon.usage_limit),
+      starts_at: toLocal(coupon.starts_at),
+      expires_at: toLocal(coupon.expires_at),
+      is_active: Boolean(coupon.is_active),
+    })
+    setCouponEditor(coupon.id)
+  }
+
+  async function saveCoupon(event) {
+    event.preventDefault()
+    const code = couponForm.code.trim().toUpperCase()
+    const value = Number(couponForm.discount_value)
+    const minimum = Number(couponForm.min_order_amount || 0)
+    const maxDiscount = couponForm.max_discount_amount === '' ? null : Number(couponForm.max_discount_amount)
+    const usageLimit = couponForm.usage_limit === '' ? null : Number(couponForm.usage_limit)
+    if (!/^[A-Z0-9_-]{3,30}$/.test(code)) {
+      setError('Coupon code must be 3–30 characters using letters, numbers, _ or -.')
+      return
+    }
+    if (!Number.isFinite(value) || value <= 0 || (couponForm.discount_type === 'percent' && value > 100)) {
+      setError('Enter a valid discount value. Percentage must be 1–100.')
+      return
+    }
+    if (!Number.isFinite(minimum) || minimum < 0 || (maxDiscount !== null && (!Number.isFinite(maxDiscount) || maxDiscount <= 0)) || (usageLimit !== null && (!Number.isInteger(usageLimit) || usageLimit <= 0))) {
+      setError('Check the minimum amount, maximum discount and usage limit.')
+      return
+    }
+    const payload = {
+      code,
+      discount_type: couponForm.discount_type,
+      discount_value: value,
+      min_order_amount: minimum,
+      max_discount_amount: maxDiscount,
+      usage_limit: usageLimit,
+      starts_at: couponForm.starts_at ? new Date(couponForm.starts_at).toISOString() : null,
+      expires_at: couponForm.expires_at ? new Date(couponForm.expires_at).toISOString() : null,
+      is_active: couponForm.is_active,
+      updated_at: new Date().toISOString(),
+    }
+    setSaving(true)
+    setError('')
+    const query = couponEditor === 'new'
+      ? supabase.from('coupons').insert(payload)
+      : supabase.from('coupons').update(payload).eq('id', couponEditor)
+    const { error: saveError } = await query
+    setSaving(false)
+    if (saveError) {
+      setError(saveError.message)
+      return
+    }
+    setCouponEditor(null)
+    setNotice(couponEditor === 'new' ? 'Coupon created.' : 'Coupon updated.')
+    await loadCoupons()
+  }
+
+  async function toggleCoupon(coupon) {
+    const { error: updateError } = await supabase.from('coupons')
+      .update({ is_active: !coupon.is_active, updated_at: new Date().toISOString() })
+      .eq('id', coupon.id)
+    if (updateError) setError(updateError.message)
+    else {
+      setNotice(coupon.is_active ? 'Coupon disabled.' : 'Coupon activated.')
+      await loadCoupons()
+    }
+  }
+
+  async function deleteCoupon(coupon) {
+    if (!window.confirm(`Delete coupon ${coupon.code}?`)) return
+    const { error: deleteError } = await supabase.from('coupons').delete().eq('id', coupon.id)
+    if (deleteError) setError(deleteError.message)
+    else {
+      setNotice('Coupon deleted.')
+      await loadCoupons()
+    }
   }
 
   async function handleSignOut() {
@@ -315,6 +427,7 @@ export default function AdminDashboard() {
           <button className={section === 'overview' ? 'is-active' : ''} onClick={() => setSection('overview')}><span>◫</span> Overview</button>
           <button className={section === 'orders' ? 'is-active' : ''} onClick={() => setSection('orders')}><span>▤</span> Orders <i>{stats.orders}</i></button>
           <button className={section === 'products' ? 'is-active' : ''} onClick={() => setSection('products')}><span>▦</span> Products <i>{stats.products}</i></button>
+          <button className={section === 'coupons' ? 'is-active' : ''} onClick={() => setSection('coupons')}><span>%</span> Coupons <i>{coupons.length}</i></button>
         </nav>
         <div className="admin-rail-bottom">
           <div className="admin-connection"><span /> STORE CONNECTED</div>
@@ -389,10 +502,60 @@ export default function AdminDashboard() {
               {!filteredProducts.length && <div className="admin-blank">{productsLoading ? 'Loading products…' : 'No products found. Add your first product to get started.'}</div>}
             </section>
           )}
+          {section === 'coupons' && (
+            <section className="admin-page-section">
+              <div className="admin-section-title">
+                <div><p className="admin-eyebrow">COMMERCE / PROMOTIONS</p><h1>COUPONS<span>.</span></h1><p>Create discount codes and control their limits.</p></div>
+                <button className="admin-btn admin-btn--lime" onClick={openNewCoupon}>＋ Create coupon</button>
+              </div>
+              <div className="admin-product-summary">
+                <div><strong>{coupons.length}</strong><span>TOTAL CODES</span></div>
+                <div><strong>{coupons.filter((coupon) => coupon.is_active).length}</strong><span>ACTIVE</span></div>
+                <div><strong>{coupons.reduce((sum, coupon) => sum + Number(coupon.usage_count || 0), 0)}</strong><span>REDEMPTIONS</span></div>
+                <button className="admin-btn admin-btn--secondary" onClick={loadCoupons} disabled={couponsLoading}>↻ {couponsLoading ? 'Loading' : 'Refresh codes'}</button>
+              </div>
+              <div className="admin-table-shell">
+                <table className="admin-data-table">
+                  <thead><tr><th>CODE</th><th>DISCOUNT</th><th>MINIMUM</th><th>USAGE</th><th>EXPIRY</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
+                  <tbody>
+                    {coupons.map((coupon) => <tr key={coupon.id}>
+                      <td className="admin-mono">{coupon.code}</td>
+                      <td>{coupon.discount_type === 'percent' ? `${coupon.discount_value}%` : money(coupon.discount_value)}</td>
+                      <td>{money(coupon.min_order_amount)}</td>
+                      <td>{coupon.usage_count}{coupon.usage_limit == null ? ' / ∞' : ` / ${coupon.usage_limit}`}</td>
+                      <td>{coupon.expires_at ? dateTime(coupon.expires_at) : 'No expiry'}</td>
+                      <td><span className={`admin-status ${coupon.is_active ? 'admin-status--delivered' : 'admin-status--cancelled'}`}>{coupon.is_active ? 'Active' : 'Disabled'}</span></td>
+                      <td><button className="admin-row-action" onClick={() => openEditCoupon(coupon)}>Edit</button> <button className="admin-row-action" onClick={() => toggleCoupon(coupon)}>{coupon.is_active ? 'Disable' : 'Enable'}</button> <button className="admin-row-action" onClick={() => deleteCoupon(coupon)}>Delete</button></td>
+                    </tr>)}
+                  </tbody>
+                </table>
+                {!coupons.length && <div className="admin-blank">{couponsLoading ? 'Loading coupons…' : 'No coupons yet. Create your first discount code.'}</div>}
+              </div>
+            </section>
+          )}
+
         </div>
       </main>
 
       {selectedOrder && <div className="admin-overlay" onClick={() => setSelectedOrder(null)}><section className="admin-dialog admin-order-dialog" role="dialog" aria-modal="true" onClick={(event) => event.stopPropagation()}><button className="admin-dialog-close" onClick={() => setSelectedOrder(null)}>×</button><p className="admin-eyebrow">ORDER / {selectedOrder.id.slice(0, 8).toUpperCase()}</p><h2>{selectedOrder.customer_name}</h2><div className="admin-order-details"><div><small>EMAIL</small><strong>{selectedOrder.customer_email}</strong></div><div><small>PHONE</small><strong>{selectedOrder.customer_phone}</strong></div><div><small>ADDRESS</small><strong>{[selectedOrder.address, selectedOrder.city, selectedOrder.postal_code].filter(Boolean).join(', ')}</strong></div><div><small>DATE</small><strong>{dateTime(selectedOrder.created_at)}</strong></div><div><small>ORDER STATUS</small><select className="admin-order-status-select" value={selectedOrder.status} onChange={(event) => updateOrderStatus(selectedOrder, event.target.value)}><option value="pending">Pending</option><option value="processing">Processing</option><option value="shipped">Shipped</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option></select></div><div><small>PAYMENT</small><strong>{label(selectedOrder.payment_method)} / {label(selectedOrder.payment_status)}</strong></div></div>{selectedOrder.delivery_note && <p className="admin-order-note">NOTE: {selectedOrder.delivery_note}</p>}<p className="admin-eyebrow admin-items-label">PURCHASED ITEMS</p>{(selectedOrder.order_items || []).map((item) => <div className="admin-dialog-item" key={item.id}><div><strong>{item.product_name}</strong><small>{[item.selected_color, item.selected_size].filter(Boolean).join(' / ')} · Qty {item.quantity}</small></div><strong>{money(Number(item.unit_price) * Number(item.quantity))}</strong></div>)}<div className="admin-dialog-total"><span>Subtotal</span><strong>{money(selectedOrder.subtotal)}</strong></div><div className="admin-dialog-total"><span>Shipping</span><strong>{money(selectedOrder.shipping_fee)}</strong></div><div className="admin-dialog-total is-final"><span>Total</span><strong>{money(selectedOrder.total)}</strong></div></section></div>}
+
+      {couponEditor && <div className="admin-overlay" onClick={() => !saving && setCouponEditor(null)}><form className="admin-dialog admin-product-dialog" onSubmit={saveCoupon} onClick={(event) => event.stopPropagation()}>
+        <button type="button" className="admin-dialog-close" onClick={() => !saving && setCouponEditor(null)}>×</button>
+        <p className="admin-eyebrow">PROMOTION MANAGEMENT</p><h2>{couponEditor === 'new' ? 'NEW COUPON' : 'EDIT COUPON'}<span>.</span></h2>
+        <p className="admin-dialog-subtitle">Discounts are recalculated and validated by Supabase during checkout.</p>
+        <div className="admin-form-grid">
+          <label>COUPON CODE<input value={couponForm.code} onChange={(event) => setCouponForm((form) => ({ ...form, code: event.target.value.toUpperCase() }))} placeholder="WELCOME10" required /></label>
+          <label>DISCOUNT TYPE<select value={couponForm.discount_type} onChange={(event) => setCouponForm((form) => ({ ...form, discount_type: event.target.value }))}><option value="percent">Percentage</option><option value="fixed">Fixed amount (EGP)</option></select></label>
+          <label>DISCOUNT VALUE<input type="number" min="0.01" max={couponForm.discount_type === 'percent' ? '100' : undefined} step="0.01" value={couponForm.discount_value} onChange={(event) => setCouponForm((form) => ({ ...form, discount_value: event.target.value }))} required /></label>
+          <label>MINIMUM ORDER (EGP)<input type="number" min="0" step="1" value={couponForm.min_order_amount} onChange={(event) => setCouponForm((form) => ({ ...form, min_order_amount: event.target.value }))} /></label>
+          <label>MAX DISCOUNT (EGP)<small>Optional cap for percentage coupons</small><input type="number" min="0.01" step="1" value={couponForm.max_discount_amount} onChange={(event) => setCouponForm((form) => ({ ...form, max_discount_amount: event.target.value }))} placeholder="No cap" /></label>
+          <label>USAGE LIMIT<small>Leave blank for unlimited uses</small><input type="number" min="1" step="1" value={couponForm.usage_limit} onChange={(event) => setCouponForm((form) => ({ ...form, usage_limit: event.target.value }))} placeholder="Unlimited" /></label>
+          <label>STARTS AT<input type="datetime-local" value={couponForm.starts_at} onChange={(event) => setCouponForm((form) => ({ ...form, starts_at: event.target.value }))} /></label>
+          <label>EXPIRES AT<input type="datetime-local" value={couponForm.expires_at} onChange={(event) => setCouponForm((form) => ({ ...form, expires_at: event.target.value }))} /></label>
+          <div className="admin-form-toggles wide"><label><input type="checkbox" checked={couponForm.is_active} onChange={(event) => setCouponForm((form) => ({ ...form, is_active: event.target.checked }))} /> Coupon active</label></div>
+        </div>
+        <div className="admin-dialog-actions"><button type="button" className="admin-btn admin-btn--secondary" onClick={() => setCouponEditor(null)} disabled={saving}>Cancel</button><button type="submit" className="admin-btn admin-btn--lime" disabled={saving}>{saving ? 'Saving…' : 'Save coupon'}</button></div>
+      </form></div>}
 
       {productEditor && <div className="admin-overlay" onClick={() => !saving && setProductEditor(null)}><form className="admin-dialog admin-product-dialog" onSubmit={saveProduct} onClick={(event) => event.stopPropagation()}><button type="button" className="admin-dialog-close" onClick={() => !saving && setProductEditor(null)}>×</button><p className="admin-eyebrow">CATALOG MANAGEMENT</p><h2>{productEditor === 'edit' ? 'EDIT PRODUCT' : 'NEW PRODUCT'}<span>.</span></h2><p className="admin-dialog-subtitle">Product prices are saved in Egyptian pounds (EGP).</p>
         <div className="admin-form-grid">
