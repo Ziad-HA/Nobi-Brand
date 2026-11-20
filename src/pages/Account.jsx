@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import usePageMeta from '../lib/usePageMeta'
 
@@ -19,6 +19,8 @@ export default function Account() {
   const [orders, setOrders] = useState([])
   const [loadingOrders, setLoadingOrders] = useState(false)
   const [error, setError] = useState('')
+  const [signingOut, setSigningOut] = useState(false)
+  const navigate = useNavigate()
   usePageMeta('My Account')
 
   useEffect(() => {
@@ -29,6 +31,8 @@ export default function Account() {
     }
 
     let active = true
+    let currentUserId = null
+
     const loadOrders = async (userId) => {
       setLoadingOrders(true)
       const { data, error: queryError } = await supabase
@@ -40,27 +44,41 @@ export default function Account() {
         `)
         .eq('user_id', userId)
         .order('created_at', { ascending: false })
-      if (!active) return
+      if (!active || currentUserId !== userId) return
       if (queryError) setError(queryError.message)
-      else setOrders(data || [])
+      else {
+        setError('')
+        setOrders(data || [])
+      }
       setLoadingOrders(false)
+    }
+
+    const syncSession = (session) => {
+      if (!active) return
+      const nextUser = session?.user ?? null
+      currentUserId = nextUser?.id ?? null
+      setUser(nextUser)
+      setChecking(false)
+      if (nextUser) loadOrders(nextUser.id)
+      else {
+        setOrders([])
+        setLoadingOrders(false)
+      }
     }
 
     supabase.auth.getSession().then(({ data, error: sessionError }) => {
       if (!active) return
       if (sessionError) setError(sessionError.message)
-      const sessionUser = data?.session?.user ?? null
-      setUser(sessionUser)
-      setChecking(false)
-      if (sessionUser) loadOrders(sessionUser.id)
+      syncSession(data?.session ?? null)
+    }).catch(() => {
+      if (active) {
+        setError('Could not load your account. Please refresh and try again.')
+        setChecking(false)
+      }
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!active) return
-      const sessionUser = session?.user ?? null
-      setUser(sessionUser)
-      if (sessionUser) loadOrders(sessionUser.id)
-      else setOrders([])
+      syncSession(session)
     })
 
     return () => {
@@ -69,16 +87,27 @@ export default function Account() {
     }
   }, [])
 
-  if (checking) {
-    return <section className="section account-page"><p className="eyebrow">UNSEEN / MEMBERS</p><h1>Loading<span>.</span></h1></section>
+  async function handleSignOut() {
+    if (!supabase) return
+    setSigningOut(true)
+    const { error: signOutError } = await supabase.auth.signOut()
+    setSigningOut(false)
+    if (signOutError) setError(signOutError.message)
+    else navigate('/login', { replace: true })
   }
-  if (!user) return <Navigate to="/login" replace />
+
+  if (checking) {
+    return <section className="section account-page"><p className="eyebrow">UNSEEN / MEMBERS</p><h1>LOADING<span>.</span></h1></section>
+  }
+  if (!user) return <Navigate to="/login" replace state={{ from: { pathname: '/account' } }} />
+
+  const displayName = user.user_metadata?.full_name || user.email
 
   return (
     <section className="section account-page">
       <div className="account-heading">
-        <div><p className="eyebrow">UNSEEN / MEMBERS AREA</p><h1>MY ACCOUNT<span>.</span></h1><p className="muted">{user.email}</p></div>
-        <button className="btn btn-ghost" onClick={() => supabase.auth.signOut()}>Sign out ↗</button>
+        <div><p className="eyebrow">UNSEEN / MEMBERS AREA</p><h1>MY ACCOUNT<span>.</span></h1><p className="muted">{displayName}</p><p className="muted">{user.email}</p></div>
+        <button className="btn btn-ghost" type="button" onClick={handleSignOut} disabled={signingOut}>{signingOut ? 'Signing out…' : 'Sign out ↗'}</button>
       </div>
       <div className="account-orders-heading"><div><p className="eyebrow">YOUR ACTIVITY</p><h2>ORDER HISTORY</h2></div><span>{orders.length} ORDERS</span></div>
       {error && <p className="account-message" role="alert">{error}</p>}
