@@ -235,7 +235,7 @@ BEGIN
           date_trunc('month', now()) - interval '11 months',
           date_trunc('month', now()),
           interval '1 month'
-        ) AS month_value
+        ) AS months(month_value)
       ) monthly_rows
     ), '[]'::jsonb),
     'top_products', coalesce((
