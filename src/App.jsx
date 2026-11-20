@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { CartProvider } from './context/CartContext'
+import { CartProvider, useCart } from './context/CartContext'
 import { WishlistProvider } from './context/WishlistContext'
 import Layout from './components/Layout'
 import Intro from './components/Intro'
@@ -18,6 +18,24 @@ import Wishlist from './pages/Wishlist'
 import NotFound from './pages/NotFound'
 import AdminDashboard from './pages/AdminDashboard'
 import Account from './pages/Account'
+
+function CartToast() {
+  const { cartToast, setCartToast } = useCart()
+  useEffect(() => {
+    if (!cartToast) return undefined
+    const timer = window.setTimeout(() => setCartToast(null), 2800)
+    return () => window.clearTimeout(timer)
+  }, [cartToast, setCartToast])
+
+  if (!cartToast) return null
+  return (
+    <div className="cart-toast" role="status" aria-live="polite">
+      <span className="cart-toast-check" aria-hidden="true">✓</span>
+      <span><strong>Added to bag</strong><small>{cartToast.name}</small></span>
+      <button type="button" onClick={() => setCartToast(null)} aria-label="Dismiss notification">×</button>
+    </div>
+  )
+}
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -63,6 +81,7 @@ function AnimatedRoutes() {
 export default function App() {
   return (
     <CartProvider>
+      <CartToast />
       <WishlistProvider>
         <BrowserRouter><Intro /><AnimatedRoutes /></BrowserRouter>
       </WishlistProvider>
