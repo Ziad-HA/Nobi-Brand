@@ -5376,9 +5376,9 @@ main h2 > span,
 
   .home-hero.video-hero {
     width: 100%;
-    height: clamp(350px, 54svh, 430px);
-    min-height: 350px;
-    max-height: 430px;
+    height: clamp(390px, 60svh, 480px);
+    min-height: 390px;
+    max-height: 480px;
     padding: 0 1rem 2.8rem;
   }
 
