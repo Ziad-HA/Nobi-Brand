@@ -158,6 +158,24 @@ export default function AdminDashboard() {
     await Promise.all([loadOrders(), loadProducts()])
   }
 
+  async function updateOrderStatus(order, nextStatus) {
+    if (!order || !nextStatus || order.status === nextStatus) return
+    setError('')
+    setNotice('')
+    const { error: updateError } = await supabase
+      .from('orders')
+      .update({ status: nextStatus, updated_at: new Date().toISOString() })
+      .eq('id', order.id)
+    if (updateError) {
+      setError(updateError.message)
+      return
+    }
+    const updatedOrder = { ...order, status: nextStatus }
+    setSelectedOrder(updatedOrder)
+    setOrders((current) => current.map((item) => item.id === order.id ? updatedOrder : item))
+    setNotice(`Order #${order.id.slice(0, 8).toUpperCase()} updated to ${label(nextStatus)}.`)
+  }
+
   async function handleSignOut() {
     await supabase.auth.signOut()
   }
@@ -374,7 +392,7 @@ export default function AdminDashboard() {
         </div>
       </main>
 
-      {selectedOrder && <div className="admin-overlay" onClick={() => setSelectedOrder(null)}><section className="admin-dialog admin-order-dialog" role="dialog" aria-modal="true" onClick={(event) => event.stopPropagation()}><button className="admin-dialog-close" onClick={() => setSelectedOrder(null)}>×</button><p className="admin-eyebrow">ORDER / {selectedOrder.id.slice(0, 8).toUpperCase()}</p><h2>{selectedOrder.customer_name}</h2><div className="admin-order-details"><div><small>EMAIL</small><strong>{selectedOrder.customer_email}</strong></div><div><small>PHONE</small><strong>{selectedOrder.customer_phone}</strong></div><div><small>ADDRESS</small><strong>{[selectedOrder.address, selectedOrder.city, selectedOrder.postal_code].filter(Boolean).join(', ')}</strong></div><div><small>DATE</small><strong>{dateTime(selectedOrder.created_at)}</strong></div><div><small>STATUS</small><strong>{label(selectedOrder.status)}</strong></div><div><small>PAYMENT</small><strong>{label(selectedOrder.payment_method)} / {label(selectedOrder.payment_status)}</strong></div></div>{selectedOrder.delivery_note && <p className="admin-order-note">NOTE: {selectedOrder.delivery_note}</p>}<p className="admin-eyebrow admin-items-label">PURCHASED ITEMS</p>{(selectedOrder.order_items || []).map((item) => <div className="admin-dialog-item" key={item.id}><div><strong>{item.product_name}</strong><small>{[item.selected_color, item.selected_size].filter(Boolean).join(' / ')} · Qty {item.quantity}</small></div><strong>{money(Number(item.unit_price) * Number(item.quantity))}</strong></div>)}<div className="admin-dialog-total"><span>Subtotal</span><strong>{money(selectedOrder.subtotal)}</strong></div><div className="admin-dialog-total"><span>Shipping</span><strong>{money(selectedOrder.shipping_fee)}</strong></div><div className="admin-dialog-total is-final"><span>Total</span><strong>{money(selectedOrder.total)}</strong></div></section></div>}
+      {selectedOrder && <div className="admin-overlay" onClick={() => setSelectedOrder(null)}><section className="admin-dialog admin-order-dialog" role="dialog" aria-modal="true" onClick={(event) => event.stopPropagation()}><button className="admin-dialog-close" onClick={() => setSelectedOrder(null)}>×</button><p className="admin-eyebrow">ORDER / {selectedOrder.id.slice(0, 8).toUpperCase()}</p><h2>{selectedOrder.customer_name}</h2><div className="admin-order-details"><div><small>EMAIL</small><strong>{selectedOrder.customer_email}</strong></div><div><small>PHONE</small><strong>{selectedOrder.customer_phone}</strong></div><div><small>ADDRESS</small><strong>{[selectedOrder.address, selectedOrder.city, selectedOrder.postal_code].filter(Boolean).join(', ')}</strong></div><div><small>DATE</small><strong>{dateTime(selectedOrder.created_at)}</strong></div><div><small>ORDER STATUS</small><select className="admin-order-status-select" value={selectedOrder.status} onChange={(event) => updateOrderStatus(selectedOrder, event.target.value)}><option value="pending">Pending</option><option value="processing">Processing</option><option value="shipped">Shipped</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option></select></div><div><small>PAYMENT</small><strong>{label(selectedOrder.payment_method)} / {label(selectedOrder.payment_status)}</strong></div></div>{selectedOrder.delivery_note && <p className="admin-order-note">NOTE: {selectedOrder.delivery_note}</p>}<p className="admin-eyebrow admin-items-label">PURCHASED ITEMS</p>{(selectedOrder.order_items || []).map((item) => <div className="admin-dialog-item" key={item.id}><div><strong>{item.product_name}</strong><small>{[item.selected_color, item.selected_size].filter(Boolean).join(' / ')} · Qty {item.quantity}</small></div><strong>{money(Number(item.unit_price) * Number(item.quantity))}</strong></div>)}<div className="admin-dialog-total"><span>Subtotal</span><strong>{money(selectedOrder.subtotal)}</strong></div><div className="admin-dialog-total"><span>Shipping</span><strong>{money(selectedOrder.shipping_fee)}</strong></div><div className="admin-dialog-total is-final"><span>Total</span><strong>{money(selectedOrder.total)}</strong></div></section></div>}
 
       {productEditor && <div className="admin-overlay" onClick={() => !saving && setProductEditor(null)}><form className="admin-dialog admin-product-dialog" onSubmit={saveProduct} onClick={(event) => event.stopPropagation()}><button type="button" className="admin-dialog-close" onClick={() => !saving && setProductEditor(null)}>×</button><p className="admin-eyebrow">CATALOG MANAGEMENT</p><h2>{productEditor === 'edit' ? 'EDIT PRODUCT' : 'NEW PRODUCT'}<span>.</span></h2><p className="admin-dialog-subtitle">Product prices are saved in Egyptian pounds (EGP).</p>
         <div className="admin-form-grid">
