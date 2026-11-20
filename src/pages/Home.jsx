@@ -9,8 +9,15 @@ import usePageMeta from "../lib/usePageMeta";
 import DropCountdown from "../components/DropCountdown";
 import Reveal from "../components/Reveal";
 
+function shouldUseStaticHero(reduceMotion) {
+  if (reduceMotion || typeof navigator === "undefined") return true;
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  return Boolean(connection?.saveData || ["slow-2g", "2g"].includes(connection?.effectiveType));
+}
+
 export default function Home() {
   const reduceMotion = useReducedMotion();
+  const useStaticHero = shouldUseStaticHero(reduceMotion);
   const reveal = reduceMotion
     ? {}
     : { initial: { opacity: 0, y: 34 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, amount: 0.16 }, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } };
@@ -20,7 +27,7 @@ export default function Home() {
   return (
     <>
       <section className="hero home-hero video-hero">
-        {reduceMotion ? (
+        {useStaticHero ? (
           <img
             src={`${import.meta.env.BASE_URL}images/TRAP.jpg`}
             alt="Unseen campaign"
