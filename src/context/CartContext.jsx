@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { supabase } from '../lib/supabase'
 
 const CartContext = createContext(null)
 const STORAGE_KEY = 'Nobi-cart'
@@ -23,10 +24,45 @@ export function CartProvider({ children }) {
   const [items, setItems] = useState(readCart)
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [cartToast, setCartToast] = useState(null)
+  const [userId, setUserId] = useState(null)
+  const [cartReady, setCartReady] = useState(false)
+
+  useEffect(() => {
+    if (!supabase) { setCartReady(true); return undefined }
+    let active = true
+    const restoreForSession = async (session) => {
+      const nextUserId = session?.user?.id || null
+      setCartReady(false)
+      setUserId(nextUserId)
+      if (!nextUserId) { setCartReady(true); return }
+      const { data, error } = await supabase.from('saved_carts').select('items').eq('user_id', nextUserId).maybeSingle()
+      if (!active) return
+      if (!error && Array.isArray(data?.items) && data.items.length) {
+        setItems((current) => current.length ? current : data.items)
+      }
+      setCartReady(true)
+    }
+    supabase.auth.getSession().then(({ data }) => restoreForSession(data?.session ?? null))
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      restoreForSession(session)
+    })
+    return () => { active = false; subscription.unsubscribe() }
+  }, [])
 
   useEffect(() => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)) } catch { /* Session-only fallback. */ }
   }, [items])
+
+  useEffect(() => {
+    if (!supabase || !userId || !cartReady) return
+    supabase.from('saved_carts').upsert({
+      user_id: userId,
+      items,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'user_id' }).then(({ error }) => {
+      if (error) console.warn('Could not sync saved cart:', error.message)
+    })
+  }, [items, userId, cartReady])
 
   const addItem = useCallback((product, { size, color } = {}) => {
     if (!product || product.soldOut || !size || !color) return false
