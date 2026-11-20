@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { products } from '../data/products'
+import useProducts from '../lib/useProducts'
 import { useCart } from '../context/CartContext'
 import ProductCard from '../components/ProductCard'
 import usePageMeta from '../lib/usePageMeta'
@@ -9,6 +9,7 @@ import usePageMeta from '../lib/usePageMeta'
 export default function Product() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { products, loading } = useProducts()
   const product = products.find((item) => item.id === id)
   const { addItem } = useCart()
   const [size, setSize] = useState(product?.sizes?.[0] ?? '')
@@ -17,6 +18,8 @@ export default function Product() {
   const [added, setAdded] = useState(false)
   const reduceMotion = useReducedMotion()
   usePageMeta(product?.name ?? 'Not found', product?.description, product?.images?.[0])
+
+  if (loading) return <section className="section product-not-found"><p>Loading piece...</p></section>
 
   if (!product) {
     return (
