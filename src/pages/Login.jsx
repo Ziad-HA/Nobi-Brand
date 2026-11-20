@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
 
 export default function Login() {
@@ -93,6 +94,7 @@ export default function Login() {
           <p className="eyebrow">Signed in</p>
           <h1>Welcome.</h1>
           <p className="muted" style={{ margin: '1rem 0' }}>{user.email}</p>
+          <Link className="btn btn-primary" to="/account">View my orders ↗</Link>
           <button className="btn btn-ghost" type="button" onClick={handleSignOut}>
             Log out
           </button>
