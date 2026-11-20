@@ -17,6 +17,7 @@ import Login from './pages/Login'
 import Wishlist from './pages/Wishlist'
 import NotFound from './pages/NotFound'
 import AdminDashboard from './pages/AdminDashboard'
+import Account from './pages/Account'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -48,6 +49,7 @@ function AnimatedRoutes() {
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/account" element={<Account />} />
               <Route path="/wishlist" element={<Wishlist />} />
               <Route path="*" element={<NotFound />} />
             </Route>
