@@ -12,6 +12,10 @@ export default function Checkout() {
   const [status, setStatus] = useState('idle')
   const [message, setMessage] = useState('')
   const [orderId, setOrderId] = useState('')
+  const [couponCode, setCouponCode] = useState('')
+  const [appliedCoupon, setAppliedCoupon] = useState(null)
+  const [couponStatus, setCouponStatus] = useState('idle')
+  const [couponMessage, setCouponMessage] = useState('')
   usePageMeta('Checkout')
 
   if (!items.length && !orderId) {
@@ -24,6 +28,43 @@ export default function Checkout() {
     )
   }
 
+  const orderItems = items.map((item) => ({
+    product_id: item.id,
+    quantity: item.qty,
+    selected_color: item.color,
+    selected_size: item.size,
+  }))
+
+  async function applyCoupon() {
+    if (!supabase || !couponCode.trim()) {
+      setCouponMessage('Enter a coupon code first.')
+      return
+    }
+    setCouponStatus('loading')
+    setCouponMessage('')
+    const { data, error } = await supabase.rpc('preview_coupon', {
+      p_code: couponCode.trim().toUpperCase(),
+      p_items: orderItems,
+    })
+    if (error) {
+      setAppliedCoupon(null)
+      setCouponStatus('error')
+      setCouponMessage(error.message)
+      return
+    }
+    setAppliedCoupon(data)
+    setCouponCode(data.code)
+    setCouponStatus('success')
+    setCouponMessage('Coupon applied successfully.')
+  }
+
+  function removeCoupon() {
+    setAppliedCoupon(null)
+    setCouponCode('')
+    setCouponStatus('idle')
+    setCouponMessage('')
+  }
+
   async function onSubmit(event) {
     event.preventDefault()
     if (!supabase || !isSupabaseConfigured) {
@@ -34,13 +75,6 @@ export default function Checkout() {
 
     const form = event.currentTarget
     const formData = new FormData(form)
-    const orderItems = items.map((item) => ({
-      product_id: item.id,
-      quantity: item.qty,
-      selected_color: item.color,
-      selected_size: item.size,
-    }))
-
     setStatus('loading')
     setMessage('')
 
@@ -54,6 +88,7 @@ export default function Checkout() {
         p_postal_code: String(formData.get('postal') || '').trim() || null,
         p_delivery_note: String(formData.get('note') || '').trim() || null,
         p_items: orderItems,
+        p_coupon_code: appliedCoupon?.code || null,
       })
 
       if (error) throw error
@@ -116,6 +151,30 @@ export default function Checkout() {
             <label>Delivery note <textarea name="note" rows="3" placeholder="Anything the delivery team should know? (optional)" /></label>
           </div>
 
+          <div className="checkout-coupon">
+            <p className="checkout-section-title"><span>03</span> Discount code</p>
+            {appliedCoupon ? (
+              <div className="checkout-coupon-applied">
+                <div><strong>{appliedCoupon.code}</strong><span>Discount applied · {money(appliedCoupon.discount_amount)}</span></div>
+                <button type="button" className="text-link" onClick={removeCoupon}>Remove</button>
+              </div>
+            ) : (
+              <div className="checkout-coupon-entry">
+                <input
+                  value={couponCode}
+                  onChange={(event) => setCouponCode(event.target.value.toUpperCase())}
+                  placeholder="Enter coupon code"
+                  aria-label="Coupon code"
+                  autoComplete="off"
+                />
+                <button type="button" className="btn btn-ghost" onClick={applyCoupon} disabled={couponStatus === 'loading' || !couponCode.trim()}>
+                  {couponStatus === 'loading' ? 'Checking…' : 'Apply'}
+                </button>
+              </div>
+            )}
+            {couponMessage && <p className={couponStatus === 'error' ? 'checkout-coupon-message is-error' : 'checkout-coupon-message'} role="status">{couponMessage}</p>}
+          </div>
+
           <p className="checkout-demo-note">Cash on delivery. No online payment is collected.</p>
           {message && <p className="muted" role="alert">{message}</p>}
           <button className="btn btn-primary checkout-submit" type="submit" disabled={status === 'loading'}>
@@ -134,9 +193,10 @@ export default function Checkout() {
               </div>
             ))}
           </div>
-          <div className="cart-summary-line"><span>Subtotal</span><strong>{money(subtotal)}</strong></div>
+          <div className="cart-summary-line"><span>Subtotal</span><strong>{money(appliedCoupon?.subtotal ?? subtotal)}</strong></div>
+          {appliedCoupon && <div className="cart-summary-line checkout-discount-line"><span>Discount · {appliedCoupon.code}</span><strong>−{money(appliedCoupon.discount_amount)}</strong></div>}
           <div className="cart-summary-line muted"><span>Shipping</span><span>Not included</span></div>
-          <div className="cart-summary-total"><span>Subtotal</span><strong>{money(subtotal)}</strong></div>
+          <div className="cart-summary-total"><span>Total</span><strong>{money(appliedCoupon?.total ?? subtotal)}</strong></div>
           <p className="checkout-summary-note">Shipping is not included. Payment is due on delivery.</p>
           <Link to="/cart" className="cart-continue-link">← Edit your bag</Link>
         </aside>
