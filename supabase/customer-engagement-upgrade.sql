@@ -35,6 +35,10 @@ CREATE TABLE IF NOT EXISTS public.product_reviews (
   created_at timestamptz NOT NULL DEFAULT now(),
   UNIQUE (product_id, user_id)
 );
+-- Ensure columns exist when a partial/older reviews table was created previously.
+ALTER TABLE public.product_reviews
+  ADD COLUMN IF NOT EXISTS is_approved boolean NOT NULL DEFAULT true;
+
 CREATE INDEX IF NOT EXISTS product_reviews_product_created_idx
   ON public.product_reviews(product_id, created_at DESC);
 ALTER TABLE public.product_reviews ENABLE ROW LEVEL SECURITY;
