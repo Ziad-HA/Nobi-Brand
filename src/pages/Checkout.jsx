@@ -1,15 +1,18 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+import { isSupabaseConfigured, supabase } from '../lib/supabase'
 import usePageMeta from '../lib/usePageMeta'
 
 export default function Checkout() {
   const { items, subtotal, clearCart } = useCart()
   const navigate = useNavigate()
-  const [placed, setPlaced] = useState(false)
+  const [status, setStatus] = useState('idle')
+  const [message, setMessage] = useState('')
+  const [orderId, setOrderId] = useState('')
   usePageMeta('Checkout')
 
-  if (!items.length && !placed) {
+  if (!items.length && !orderId) {
     return (
       <section className="section cart-empty">
         <p className="eyebrow">UNSEEN / Checkout</p>
@@ -19,18 +22,61 @@ export default function Checkout() {
     )
   }
 
-  const onSubmit = (event) => {
+  async function onSubmit(event) {
     event.preventDefault()
-    clearCart()
-    setPlaced(true)
+    if (!supabase || !isSupabaseConfigured) {
+      setStatus('error')
+      setMessage('Checkout is temporarily unavailable. Please try again later.')
+      return
+    }
+
+    const form = event.currentTarget
+    const formData = new FormData(form)
+    const orderItems = items.map((item) => ({
+      product_id: item.id,
+      quantity: item.qty,
+      selected_color: item.color,
+      selected_size: item.size,
+    }))
+
+    setStatus('loading')
+    setMessage('')
+
+    try {
+      const { data, error } = await supabase.rpc('place_order', {
+        p_customer_name: String(formData.get('name') || '').trim(),
+        p_customer_email: String(formData.get('email') || '').trim(),
+        p_customer_phone: String(formData.get('phone') || '').trim(),
+        p_address: String(formData.get('address') || '').trim(),
+        p_city: String(formData.get('city') || '').trim(),
+        p_postal_code: String(formData.get('postal') || '').trim() || null,
+        p_delivery_note: String(formData.get('note') || '').trim() || null,
+        p_items: orderItems,
+      })
+
+      if (error) throw error
+      if (!data) throw new Error('The order could not be confirmed. Please try again.')
+
+      setOrderId(data)
+      clearCart()
+      setStatus('success')
+    } catch (error) {
+      setStatus('error')
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : 'We could not place your order. Please try again.',
+      )
+    }
   }
 
-  if (placed) {
+  if (orderId) {
     return (
       <section className="section cart-empty checkout-success">
-        <p className="eyebrow">UNSEEN / Demo order</p>
+        <p className="eyebrow">UNSEEN / Order confirmed</p>
         <h1>You’re on the list<span>.</span></h1>
-        <p className="muted">This is a demo checkout. No payment was taken and no real order was sent.</p>
+        <p className="muted">Your order has been saved. Payment is due on delivery.</p>
+        <p className="muted" style={{ overflowWrap: 'anywhere' }}>Order reference: {orderId}</p>
         <button className="btn btn-primary" onClick={() => navigate('/shop')}>Keep exploring ↗</button>
       </section>
     )
@@ -65,8 +111,11 @@ export default function Checkout() {
             <label>Delivery note <textarea name="note" rows="3" placeholder="Anything the delivery team should know? (optional)" /></label>
           </div>
 
-          <p className="checkout-demo-note">Demo only — this form does not process payments or send orders.</p>
-          <button className="btn btn-primary checkout-submit" type="submit" data-sound="confirm">Confirm demo order · ${subtotal.toFixed(2)}</button>
+          <p className="checkout-demo-note">Cash on delivery. No online payment is collected.</p>
+          {message && <p className="muted" role="alert">{message}</p>}
+          <button className="btn btn-primary checkout-submit" type="submit" disabled={status === 'loading'}>
+            {status === 'loading' ? 'Placing order...' : `Place order · $${subtotal.toFixed(2)}`}
+          </button>
         </form>
 
         <aside className="checkout-order-summary">
@@ -83,7 +132,7 @@ export default function Checkout() {
           <div className="cart-summary-line"><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div>
           <div className="cart-summary-line muted"><span>Shipping</span><span>Not included</span></div>
           <div className="cart-summary-total"><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div>
-          <p className="checkout-summary-note">Shipping and taxes are not included. This is a demo checkout only.</p>
+          <p className="checkout-summary-note">Shipping is not included. Payment is due on delivery.</p>
           <Link to="/cart" className="cart-continue-link">← Edit your bag</Link>
         </aside>
       </div>
