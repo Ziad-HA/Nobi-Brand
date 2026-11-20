@@ -5,7 +5,7 @@ import { supabase } from './supabase'
 function mapProduct(row) {
   const base = import.meta.env.BASE_URL
   const images = (row.images || []).map((image) =>
-    image.startsWith('http') ? image : `${base}${image.replace(/^\\/+/, '')}`
+    image.startsWith('http') ? image : `${base}${image.replace(/^\/+/, '')}`
   )
   return {
     id: row.id, name: row.name, price: Number(row.price),
