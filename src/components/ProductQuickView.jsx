@@ -10,6 +10,11 @@ export default function ProductQuickView({ product, onClose }) {
   const { addItem } = useCart()
 
   useEffect(() => {
+    setSize(product?.sizes?.[0] || '')
+    setColor(product?.colors?.[0] || '')
+  }, [product?.id])
+
+  useEffect(() => {
     if (!product) return undefined
     const previous = document.activeElement
     const onKeyDown = (event) => { if (event.key === 'Escape') onClose() }
