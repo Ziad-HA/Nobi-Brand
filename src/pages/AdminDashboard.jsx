@@ -615,6 +615,10 @@ export default function AdminDashboard() {
                   <article className="admin-metric"><div className="admin-metric-top"><span>PAID ORDERS</span><span>✓</span></div><strong>{analyticsData.paid_orders ?? 0}</strong><small>Confirmed payments</small></article>
                   <article className="admin-metric admin-metric--lime"><div className="admin-metric-top"><span>PAID REVENUE</span><span>↗</span></div><strong className="admin-revenue">{money(analyticsData.paid_revenue)}</strong><small>Payments marked paid</small></article>
                   <article className="admin-metric"><div className="admin-metric-top"><span>ORDER VALUE</span><span>EGP</span></div><strong className="admin-revenue">{money(analyticsData.order_value)}</strong><small>Excludes cancelled orders</small></article>
+                  <article className="admin-metric"><div className="admin-metric-top"><span>AVERAGE ORDER</span><span>EGP</span></div><strong className="admin-revenue">{money(analyticsData.average_order_value)}</strong><small>Average non-cancelled order</small></article>
+                  <article className="admin-metric"><div className="admin-metric-top"><span>CANCEL RATE</span><span>%</span></div><strong>{Number(analyticsData.cancellation_rate || 0)}%</strong><small>{analyticsData.cancelled_orders || 0} cancelled orders</small></article>
+                  <article className="admin-metric"><div className="admin-metric-top"><span>ACTIVE SAVED CARTS</span><span>◫</span></div><strong>{analyticsData.saved_carts || 0}</strong><small>Signed-in carts with items</small></article>
+                  <article className="admin-metric"><div className="admin-metric-top"><span>LOW STOCK</span><span>!</span></div><strong>{analyticsData.low_stock || 0}</strong><small>{analyticsData.out_of_stock || 0} tracked products out of stock</small></article>
                 </div>
                 <div className="admin-analytics-grid">
                   <div className="admin-panel">
@@ -630,6 +634,25 @@ export default function AdminDashboard() {
                   <div className="admin-panel">
                     <div className="admin-panel-heading"><div><p className="admin-eyebrow">CATALOG PERFORMANCE</p><h2>TOP PRODUCTS</h2></div></div>
                     {(analyticsData.top_products || []).length ? analyticsData.top_products.map((product, index) => <div className="admin-top-product" key={product.name}><span>{String(index + 1).padStart(2, '0')}</span><div><strong>{product.name}</strong><small>{product.units} units sold</small></div><b>{money(product.sales_value)}</b></div>) : <div className="admin-blank">Sales data will appear here after orders arrive.</div>}
+                  </div>
+                </div>
+                <div className="admin-analytics-grid">
+                  <div className="admin-panel">
+                    <div className="admin-panel-heading"><div><p className="admin-eyebrow">FULFILLMENT MIX</p><h2>ORDER STATUS</h2></div></div>
+                    {(analyticsData.order_statuses || []).length ? <div className="admin-monthly-list">
+                      {(analyticsData.order_statuses || []).map((entry) => {
+                        const total = Math.max(1, Number(analyticsData.total_orders || 0))
+                        const width = Math.max(2, Number(entry.count || 0) / total * 100)
+                        return <div className="admin-month-row" key={entry.status}><div><strong>{label(entry.status)}</strong><small>{entry.count} orders</small></div><div className="admin-month-track"><span style={{ width: `${width}%` }} /></div></div>
+                      })}
+                    </div> : <div className="admin-blank">No order status data yet.</div>}
+                  </div>
+                  <div className="admin-panel">
+                    <div className="admin-panel-heading"><div><p className="admin-eyebrow">INVENTORY HEALTH</p><h2>STOCK SNAPSHOT</h2></div></div>
+                    <div className="admin-inventory-line"><span>Tracked products</span><strong>{analyticsData.inventory_tracked || 0}</strong></div>
+                    <div className="admin-inventory-line"><span>Low stock</span><strong>{analyticsData.low_stock || 0}</strong></div>
+                    <div className="admin-inventory-line"><span>Out of stock</span><strong>{analyticsData.out_of_stock || 0}</strong></div>
+                    <p className="admin-dialog-subtitle">Only products with an inventory quantity entered are included in stock metrics.</p>
                   </div>
                 </div>
               </>}
