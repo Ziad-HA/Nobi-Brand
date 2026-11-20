@@ -494,3 +494,29 @@ BEGIN
   END IF;
 END
 $$;
+
+-- ============================================================
+-- SECTION 6: admin order update permission
+-- ============================================================
+
+-- Allow authenticated administrators to update order fulfillment status.
+-- This policy is scoped to users listed in public.admin_users.
+DROP POLICY IF EXISTS "Admins can update orders" ON public.orders;
+CREATE POLICY "Admins can update orders"
+ON public.orders
+FOR UPDATE
+TO authenticated
+USING (
+  EXISTS (
+    SELECT 1
+    FROM public.admin_users AS admin
+    WHERE admin.user_id = (SELECT auth.uid())
+  )
+)
+WITH CHECK (
+  EXISTS (
+    SELECT 1
+    FROM public.admin_users AS admin
+    WHERE admin.user_id = (SELECT auth.uid())
+  )
+);
