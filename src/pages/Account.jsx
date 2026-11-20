@@ -38,7 +38,7 @@ export default function Account() {
       const { data, error: queryError } = await supabase
         .from('orders')
         .select(`
-          id, subtotal, discount_amount, coupon_code, shipping_fee, total, status,
+          id, subtotal, discount_amount, coupon_code, shipping_fee, total, status, updated_at,
           payment_status, payment_method, created_at,
           order_items (id, product_name, unit_price, quantity, selected_color, selected_size)
         `)
@@ -120,6 +120,32 @@ export default function Account() {
                 <div><span>PLACED</span><strong>{dateTime(order.created_at)}</strong></div>
                 <div><span>STATUS</span><strong className="account-order-status">{readable(order.status)}</strong></div>
                 <div><span>TOTAL</span><strong>{money(order.total)}</strong></div>
+              </div>
+              <div className={`order-tracking ${order.status === 'cancelled' ? 'is-cancelled' : ''}`}>
+                <div className="order-tracking-heading">
+                  <span>ORDER TRACKING</span>
+                  <strong>{order.status === 'cancelled' ? 'ORDER CANCELLED' : `${Math.min(['pending', 'processing', 'shipped', 'delivered'].indexOf(order.status) + 1, 4)} / 4`}</strong>
+                </div>
+                {order.status === 'cancelled' ? (
+                  <p className="order-tracking-cancelled">This order has been cancelled.</p>
+                ) : (
+                  <div className="order-tracking-steps">
+                    {[
+                      ['pending', 'Placed'],
+                      ['processing', 'Processing'],
+                      ['shipped', 'Shipped'],
+                      ['delivered', 'Delivered'],
+                    ].map(([status, title], index) => {
+                      const currentIndex = ['pending', 'processing', 'shipped', 'delivered'].indexOf(order.status);
+                      const complete = currentIndex >= index;
+                      return <div className={`order-tracking-step ${complete ? 'is-complete' : ''} ${currentIndex === index ? 'is-current' : ''}`} key={status}>
+                        <span className="order-tracking-dot">{complete ? '✓' : index + 1}</span>
+                        <span>{title}</span>
+                      </div>;
+                    })}
+                  </div>
+                )}
+                <p className="order-tracking-updated">Last updated: {dateTime(order.updated_at || order.created_at)}</p>
               </div>
               <div className="account-order-items">
                 {(order.order_items || []).map((item) => (
