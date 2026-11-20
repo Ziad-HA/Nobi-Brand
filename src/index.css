@@ -5575,3 +5575,31 @@ main h2 > span,
   .nav-right .nav-wishlist { gap: .15rem; }
   .nav-right .nav-cart { font-size: .58rem; }
 }
+
+
+/* UNSEEN — slightly larger mobile hero copy, lifted for better balance */
+@media (max-width: 640px) {
+  .home-hero.video-hero {
+    padding-bottom: 3.6rem;
+  }
+
+  .home-hero.video-hero .home-hero-copy > .eyebrow {
+    font-size: 0.6rem;
+  }
+
+  .home-hero.video-hero .home-hero-copy > h1 small {
+    font-size: clamp(0.74rem, 3.2vw, 0.9rem);
+  }
+
+  .home-hero.video-hero .home-hero-copy > h1 strong {
+    font-size: clamp(4rem, 19vw, 6.5rem);
+  }
+
+  .home-hero.video-hero .home-hero-copy > .lede {
+    font-size: 0.81rem;
+  }
+
+  .home-hero.video-hero .hero-actions .btn {
+    font-size: 0.66rem;
+  }
+}
