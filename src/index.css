@@ -5230,3 +5230,18 @@ main h2 > span,
   color: #ffffff;
   text-shadow: var(--phosphor-glow);
 }
+
+
+/* Home hero video (replaces the still image) */
+.home-hero > .hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+  filter: saturate(.68) contrast(1.12) brightness(.78);
+  transform: scale(1.025);
+  animation: nobi-hero-image-arrive 2.4s cubic-bezier(.16,1,.3,1) both;
+  background: #080908;
+}

@@ -20,13 +20,27 @@ export default function Home() {
   return (
     <>
       <section className="hero home-hero">
-        <img
-          src={`${import.meta.env.BASE_URL}images/TRAP.jpg`}
-          alt="Unseen campaign"
-          loading="eager"
-          fetchPriority="high"
-          decoding="async"
-        />
+        {reduceMotion ? (
+          <img
+            src={`${import.meta.env.BASE_URL}images/TRAP.jpg`}
+            alt="Unseen campaign"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+          />
+        ) : (
+          <video
+            className="hero-video"
+            src={`${import.meta.env.BASE_URL}videos/hero.mp4`}
+            poster={`${import.meta.env.BASE_URL}images/TRAP.jpg`}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            aria-hidden="true"
+          />
+        )}
         <div className="hero-overlay" />
         <Hero3DLayer />
         <div className="hero-copy home-hero-copy">
