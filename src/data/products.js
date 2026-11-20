@@ -5,7 +5,7 @@ const productImg = (number) =>
 
 export const products = [
   {
-    id: 'nobi-game-changers-raglan',
+    id: 'unseen-game-changers-raglan',
     season: 's26',
     name: 'Game Changers Raglan Jersey',
     price: 95,
@@ -18,7 +18,7 @@ export const products = [
     description: 'Heavyweight pinstripe cotton raglan with contrast black sleeves and vintage heraldic crest print. Cut with an exaggerated boxy silhouette and ribbed collar, crafted for late-night movement.'
   },
   {
-    id: 'nobi-contour-track-jacket',
+    id: 'unseen-contour-track-jacket',
     season: 's26',
     name: 'Night Contour Track Jacket',
     price: 135,
@@ -31,7 +31,7 @@ export const products = [
     description: 'Technical matte nylon zip jacket featuring high-contrast white contour piping along the spine and sleeves. Finished with bold archival back typography, funnel neck, and elasticated storm cuffs.'
   },
   {
-    id: 'nobi-washed-charcoal-hoodie',
+    id: 'unseen-washed-charcoal-hoodie',
     season: 's26',
     name: 'Washed Charcoal Heavy Hoodie',
     price: 115,
@@ -44,7 +44,7 @@ export const products = [
     description: '460 GSM custom-milled brushed French terry fleece in a vintage stone-wash treatment. Dropped shoulder cut with seamless kangaroo pocket, double-layered hood, and raw distressed seam detailing.'
   },
   {
-    id: 'nobi-arabic-script-baggy-denim',
+    id: 'unseen-arabic-script-baggy-denim',
     season: 's26',
     name: 'Archival Arabic Script Denim',
     price: 125,
@@ -57,7 +57,7 @@ export const products = [
     description: '14.5oz rigid raw-feel denim with an extreme wide-leg puddle drape and heavy sneaker stack. Features custom white Arabic script embroidery across back pockets and reinforced rivet construction.'
   },
   {
-    id: 'nobi-night-contour-track-pants',
+    id: 'unseen-night-contour-track-pants',
     season: 's26',
     name: 'Night Contour Track Pants',
     price: 105,
@@ -70,7 +70,7 @@ export const products = [
     description: 'Relaxed nylon track trousers mirroring the jacket with sweeping white contour lines along the outer legs. Elastic waistband with extended drawstring and zippered hems for custom silhouette flared stacking.'
   },
   {
-    id: 'nobi-editorial-tracksuit-set',
+    id: 'unseen-editorial-tracksuit-set',
     season: 's26',
     name: 'Contour Tracksuit Full Set',
     price: 220,
@@ -83,7 +83,7 @@ export const products = [
     description: 'Complete night uniform set comprising the contour track jacket and matching flared track trousers. Engineered in ultra-durable matte windbreaker nylon with distinctive fluid contour architecture.'
   },
   {
-    id: 'nobi-tactical-knit-balaclava',
+    id: 'unseen-tactical-knit-balaclava',
     season: 's26',
     name: 'Tactical Changer Balaclava',
     price: 45,
@@ -97,7 +97,7 @@ export const products = [
   },
 
   {
-    id: 'nobi-signal-tee',
+    id: 'unseen-signal-tee',
     name: 'Signal Tee',
     price: 45,
     category: 'Tops',
@@ -106,10 +106,10 @@ export const products = [
     sizes: ['S', 'M', 'L', 'XL'],
     soldOut: false,
     images: [img('tee-signal'), img('tee-signal-front')],
-    description: 'Boxy heavyweight black tee with an oversized NOBI signal-wave graphic across the back and a mini wave mark on the chest. Cracked ink print, dropped shoulders and a clean ribbed collar.'
+    description: 'Boxy heavyweight black tee with an oversized UNSEEN signal-wave graphic across the back and a mini wave mark on the chest. Cracked ink print, dropped shoulders and a clean ribbed collar.'
   },
   {
-    id: 'nobi-after-hours-tee',
+    id: 'unseen-after-hours-tee',
     name: 'After Hours Tee',
     price: 48,
     category: 'Tops',
@@ -121,7 +121,7 @@ export const products = [
     description: 'A crescent moon over the city skyline printed large across the back, with a tiny moon on the chest. Oversized black tee made for the late shift.'
   },
   {
-    id: 'nobi-static-tee',
+    id: 'unseen-static-tee',
     name: 'Static Tee',
     price: 42,
     category: 'Tops',
@@ -133,7 +133,7 @@ export const products = [
     description: 'Glitched NO SIGNAL graphic with scan-line slices and a barcode strip on the back, small N mark on the chest. Heavy black cotton in a relaxed, oversized fit.'
   },
   {
-    id: 'nobi-orbit-tee',
+    id: 'unseen-orbit-tee',
     name: 'Orbit Tee',
     price: 55,
     category: 'Tops',
@@ -142,10 +142,10 @@ export const products = [
     sizes: ['S', 'M', 'L'],
     soldOut: false,
     images: [img('tee-orbit'), img('tee-orbit-front')],
-    description: 'Limited run. A lime orbit-ring graphic with arced NOBI ORBIT CLUB lettering on the back and a matching mini ring on the chest. Boxy black tee, small batch only.'
+    description: 'Limited run. A lime orbit-ring graphic with arced UNSEEN ORBIT CLUB lettering on the back and a matching mini ring on the chest. Boxy black tee, small batch only.'
   },
   {
-    id: 'nobi-concrete-tee',
+    id: 'unseen-concrete-tee',
     name: 'Concrete Tee',
     price: 50,
     category: 'Tops',
@@ -154,10 +154,10 @@ export const products = [
     sizes: ['S', 'M', 'L', 'XL'],
     soldOut: false,
     images: [img('tee-concrete'), img('tee-concrete-front')],
-    description: 'Block-grid city graphic with CONCRETE lettering across the back and a small NOBI WORKS tag on the chest. Heavy black cotton, boxy cut, built hard.'
+    description: 'Block-grid city graphic with CONCRETE lettering across the back and a small UNSEEN WORKS tag on the chest. Heavy black cotton, boxy cut, built hard.'
   },
   {
-    id: 'nobi-barbed-n-tee',
+    id: 'unseen-barbed-n-tee',
     name: 'Barbed N Tee',
     price: 52,
     category: 'Tops',
@@ -166,10 +166,10 @@ export const products = [
     sizes: ['S', 'M', 'L', 'XL'],
     soldOut: false,
     images: [img('tee-barbed'), img('tee-barbed-front')],
-    description: 'A barbed-wire wreath wrapped around the NOBI N on the back, with a small N mark on the chest. Oversized black tee with a hard street edge.'
+    description: 'A barbed-wire wreath wrapped around the UNSEEN N on the back, with a small N mark on the chest. Oversized black tee with a hard street edge.'
   },
   {
-    id: 'nobi-core-logo-tee',
+    id: 'unseen-core-logo-tee',
     name: 'Core Logo Tee',
     price: 35,
     category: 'Tops',
@@ -178,10 +178,10 @@ export const products = [
     sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
     soldOut: false,
     images: [img('tee-core'), img('tee-core-front')],
-    description: 'The everyday NOBI tee. Big wordmark and glitch N across the back, small N on the chest. Heavyweight black cotton, oversized fit, ribbed collar.'
+    description: 'The everyday UNSEEN tee. Big wordmark and glitch N across the back, small N on the chest. Heavyweight black cotton, oversized fit, ribbed collar.'
   },
   {
-    id: 'nobi-archive-tee',
+    id: 'unseen-archive-tee',
     name: 'Archive Tee',
     price: 38,
     category: 'Tops',
@@ -190,7 +190,7 @@ export const products = [
     sizes: ['S', 'M', 'L'],
     soldOut: true,
     images: [img('tee-archive'), img('tee-archive-front')],
-    description: 'Washed grey tee with an all-over repeating NOBI text print on the back and a small ARCHIVE tag on the chest. A piece from the first drop, now sold out.'
+    description: 'Washed grey tee with an all-over repeating UNSEEN text print on the back and a small ARCHIVE tag on the chest. A piece from the first drop, now sold out.'
   },
 
   {

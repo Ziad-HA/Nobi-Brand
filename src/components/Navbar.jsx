@@ -21,7 +21,7 @@ export default function Navbar() {
     <header className="nav">
       <div className="nav-inner">
         <button type="button" className={`nav-toggle ${open ? 'is-open' : ''}`} onClick={() => setOpen((value) => !value)} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="site-nav"><span /><span /></button>
-        <Link to="/" className="logo" onClick={() => setOpen(false)}>NOBI</Link>
+        <Link to="/" className="logo" onClick={() => setOpen(false)}>UNSEEN</Link>
         <nav id="site-nav" aria-label="Main" className={`nav-links ${open ? 'is-open' : ''}`}>
           {links.map((link) => <NavLink key={link.to} to={link.to} onClick={() => setOpen(false)}>{link.label}</NavLink>)}
         </nav>

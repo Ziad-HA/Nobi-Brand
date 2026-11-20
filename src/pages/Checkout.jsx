@@ -12,7 +12,7 @@ export default function Checkout() {
   if (!items.length && !placed) {
     return (
       <section className="section cart-empty">
-        <p className="eyebrow">NOBI / Checkout</p>
+        <p className="eyebrow">UNSEEN / Checkout</p>
         <h1>Your bag is empty<span>.</span></h1>
         <Link to="/shop" className="btn btn-primary">Shop the drop</Link>
       </section>
@@ -28,7 +28,7 @@ export default function Checkout() {
   if (placed) {
     return (
       <section className="section cart-empty checkout-success">
-        <p className="eyebrow">NOBI / Demo order</p>
+        <p className="eyebrow">UNSEEN / Demo order</p>
         <h1>You’re on the list<span>.</span></h1>
         <p className="muted">This is a demo checkout. No payment was taken and no real order was sent.</p>
         <button className="btn btn-primary" onClick={() => navigate('/shop')}>Keep exploring ↗</button>
@@ -39,7 +39,7 @@ export default function Checkout() {
   return (
     <section className="section checkout-page checkout-page-upgraded">
       <div className="checkout-heading">
-        <p className="eyebrow">NOBI / Final step</p>
+        <p className="eyebrow">UNSEEN / Final step</p>
         <h1>Make it yours<span>.</span></h1>
         <p className="muted">Add your delivery details and review your selection.</p>
       </div>

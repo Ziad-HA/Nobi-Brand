@@ -16,7 +16,7 @@ export default function DropCountdown() {
     return () => window.clearInterval(timer)
   }, [valid, target])
   return (
-    <section className="drop-countdown" aria-label="Next NOBI drop">
+    <section className="drop-countdown" aria-label="Next UNSEEN drop">
       <div><p className="eyebrow">The next release</p><h2>DON'T MISS THE DROP<span>.</span></h2><p>Small runs. No reruns promised.</p></div>
       {valid ? remaining && (target <= Date.now()
         ? <strong className="drop-countdown-status">THE DROP IS LIVE</strong>

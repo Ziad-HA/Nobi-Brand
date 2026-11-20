@@ -31,7 +31,7 @@ export default function Footer() {
 
         {!hideNewsletter && (
           <div className="footer-newsletter">
-            <p className="eyebrow">NOBI / DROP ALERTS</p>
+            <p className="eyebrow">UNSEEN / DROP ALERTS</p>
             <h2>STAY ON THE LIST<span>.</span></h2>
 
             <p className="muted">
@@ -76,7 +76,7 @@ export default function Footer() {
           </div>
 
           <div className="footer-col footer-socials">
-            <p className="eyebrow">FOLLOW NOBI</p>
+            <p className="eyebrow">FOLLOW UNSEEN</p>
 
             <div className="social-links">
               <a
@@ -130,7 +130,7 @@ export default function Footer() {
       </div>
 
       <div className="footer-bottom">
-        <p>© {new Date().getFullYear()} NOBI STUDIO</p>
+        <p>© {new Date().getFullYear()} UNSEEN STUDIO</p>
 
         <p className="muted">
           CUT FOR THE NIGHT. MADE IN SMALL RUNS.

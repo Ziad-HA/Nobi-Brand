@@ -89,12 +89,12 @@ export default function Intro() {
     <section
       ref={rootRef}
       className={`nobi-intro phase-${phase}`}
-      aria-label="NOBI introduction"
+      aria-label="UNSEEN introduction"
       onClick={startExit}
     >
       <i className="nobi-intro-grain" aria-hidden="true" />
 
-      <p className="nobi-intro-stamp" aria-hidden="true">NOBI / 09</p>
+      <p className="nobi-intro-stamp" aria-hidden="true">UNSEEN / 09</p>
 
       <h1 className="nobi-intro-statement" aria-label="The world is yours">
         <span className="nobi-intro-eyebrow" aria-hidden="true">

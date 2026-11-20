@@ -1,4 +1,4 @@
-# Nobi — Streetwear Storefront
+# Unseen — Streetwear Storefront
 
 A modern React storefront for a fictional streetwear house. Built with Vite, React Router, and a browser-persisted cart.
 

@@ -9,7 +9,7 @@ export default function Cart() {
   if (!items.length) {
     return (
       <section className="section cart-empty cart-empty-upgraded">
-        <p className="eyebrow">NOBI / Your bag</p>
+        <p className="eyebrow">UNSEEN / Your bag</p>
         <h1>Nothing in here<span>.</span></h1>
         <p className="muted">The next piece is waiting in the collection.</p>
         <Link to="/shop" className="btn btn-primary">Explore the drop ↗</Link>
@@ -20,7 +20,7 @@ export default function Cart() {
   return (
     <section className="section cart-page cart-page-upgraded">
       <div className="section-head cart-heading">
-        <div><p className="eyebrow">NOBI / Your bag</p><h1>Your selection<span>.</span></h1></div>
+        <div><p className="eyebrow">UNSEEN / Your bag</p><h1>Your selection<span>.</span></h1></div>
         <p className="cart-item-count">{items.length} {items.length === 1 ? 'line item' : 'line items'} · {items.reduce((sum, item) => sum + item.qty, 0)} pieces</p>
       </div>
 

@@ -12,7 +12,7 @@ function readCart() {
       const qty = Number(item?.qty), price = Number(item?.price)
       return item && item.key && item.id && Number.isFinite(qty) && qty >= 1 && Number.isFinite(price) && price >= 0
     }).map((item) => ({
-      ...item, key: String(item.key), id: String(item.id), name: String(item.name || 'NOBI piece'),
+      ...item, key: String(item.key), id: String(item.id), name: String(item.name || 'UNSEEN piece'),
       image: typeof item.image === 'string' ? item.image : '', size: String(item.size || ''),
       color: String(item.color || ''), price: Number(item.price), qty: Math.min(99, Math.floor(Number(item.qty))),
     }))

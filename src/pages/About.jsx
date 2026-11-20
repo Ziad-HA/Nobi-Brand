@@ -8,13 +8,13 @@ export default function About() {
   const reduce = useReducedMotion()
   const { scrollYProgress } = useScroll({ target: wrap, offset: ['start end', 'end start'] })
   const y = useTransform(scrollYProgress, [0, 1], ['-7%', '7%'])
-  usePageMeta('About', 'Nobi is a night brand: small drops, heavy fabrics, prints that crack on purpose.')
+  usePageMeta('About', 'Unseen is a night brand: small drops, heavy fabrics, prints that crack on purpose.')
   return (
     <section className="section about-page">
       <div className="about-heading">
-        <p className="eyebrow">Who's Nobi?</p>
-        <h1>Nobi is a night brand.</h1>
-        <span className="about-index">NOBI / ABOUT — 001</span>
+        <p className="eyebrow">Who's Unseen?</p>
+        <h1>Unseen is a night brand.</h1>
+        <span className="about-index">UNSEEN / ABOUT — 001</span>
       </div>
 
       <div className="about-grid">
@@ -57,10 +57,10 @@ export default function About() {
         <motion.img
           className="about-image"
           style={reduce ? undefined : { y, scale: 1.16 }}
-          alt="Nobi TRAP"
+          alt="Unseen TRAP"
           src={`${import.meta.env.BASE_URL}images/TRAP.jpg`}
         />
-        <span className="about-image-label">NOBI — VISUAL ARCHIVE</span>
+        <span className="about-image-label">UNSEEN — VISUAL ARCHIVE</span>
       </div>
     </section>
   )

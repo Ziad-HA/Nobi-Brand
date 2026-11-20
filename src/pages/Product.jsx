@@ -21,7 +21,7 @@ export default function Product() {
   if (!product) {
     return (
       <section className="section product-not-found">
-        <p className="eyebrow">NOBI archive</p>
+        <p className="eyebrow">UNSEEN archive</p>
         <h1>Piece not found<span>.</span></h1>
         <Link to="/shop" className="btn btn-primary">Back to shop</Link>
       </section>

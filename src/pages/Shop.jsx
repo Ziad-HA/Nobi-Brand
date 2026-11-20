@@ -40,7 +40,7 @@ export default function Shop() {
     <section className="section shop-page max-w-7xl mx-auto px-4 md:px-8 py-12 text-white">
       <div className="section-head shop-heading">
         <div>
-          <p className="eyebrow">Catalog / NOBI archive</p>
+          <p className="eyebrow">Catalog / UNSEEN archive</p>
           <h1>Shop the drop<span>.</span></h1>
           <p className="shop-intro">Pieces made to be worn on repeat. Find your next uniform.</p>
         </div>

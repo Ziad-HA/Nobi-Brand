@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
-const SITE = 'Nobi'
-const DEFAULT_DESC = 'Nobi — streetwear cut for the night. Limited drops, oversized silhouettes, city-grade construction.'
+const SITE = 'Unseen'
+const DEFAULT_DESC = 'Unseen — streetwear cut for the night. Limited drops, oversized silhouettes, city-grade construction.'
 
 function setCanonical(pathname) {
   let link = document.head.querySelector('link[rel="canonical"]')

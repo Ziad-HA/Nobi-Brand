@@ -15,11 +15,11 @@ export default function Lookbook() {
     window.addEventListener('keydown', close)
     return () => window.removeEventListener('keydown', close)
   }, [activeShot])
-  usePageMeta('Lookbook', 'Captured after dark: the Nobi lookbook, season by season.', shots[0]?.image)
+  usePageMeta('Lookbook', 'Captured after dark: the Unseen lookbook, season by season.', shots[0]?.image)
   return (
     <>
       <OrbitGallery className="section lookbook-page" gridClassName="look-masonry"
-        head={<div className="section-head"><div><p className="eyebrow">NOBI / Visual archive</p><h1>Lookbook</h1></div><p className="muted">Campaign frames from the NOBI archive. Select a frame to explore it.</p></div>}
+        head={<div className="section-head"><div><p className="eyebrow">UNSEEN / Visual archive</p><h1>Lookbook</h1></div><p className="muted">Campaign frames from the UNSEEN archive. Select a frame to explore it.</p></div>}
         items={shots.map((shot, index) => (
           <motion.figure key={shot.id} initial={reduceMotion ? false : { opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: .2 }} transition={{ duration: .55, delay: index * .06 }}>

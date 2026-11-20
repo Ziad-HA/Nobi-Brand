@@ -31,7 +31,7 @@ export default function CartDrawer() {
             initial={reduceMotion ? false : { x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
             transition={{ duration: reduceMotion ? 0.01 : 0.32, ease: [0.22, 1, 0.36, 1] }}>
             <header className="cart-drawer-head">
-              <div><p className="eyebrow">NOBI / Selection</p><h2 id="cart-drawer-title">Your bag <span>({count})</span></h2></div>
+              <div><p className="eyebrow">UNSEEN / Selection</p><h2 id="cart-drawer-title">Your bag <span>({count})</span></h2></div>
               <button type="button" className="cart-drawer-close" onClick={closeCart} aria-label="Close bag">×</button>
             </header>
             {items.length ? (

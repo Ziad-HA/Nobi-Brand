@@ -22,7 +22,7 @@ export default function Home() {
       <section className="hero home-hero">
         <img
           src={`${import.meta.env.BASE_URL}images/TRAP.jpg`}
-          alt="Nobi campaign"
+          alt="Unseen campaign"
           loading="eager"
           fetchPriority="high"
           decoding="async"
@@ -45,7 +45,7 @@ export default function Home() {
             <Link to="/lookbook" className="btn btn-ghost">Explore lookbook</Link>
           </div>
         </div>
-        <p className="hero-stamp">NOBI / 09</p>
+        <p className="hero-stamp">UNSEEN / 09</p>
         <span className="hero-bottom-label">UNIFORM FOR THE AFTER HOURS</span>
       </section>
 
@@ -70,11 +70,11 @@ export default function Home() {
         <div className="split-media">
           <img
             src={`${import.meta.env.BASE_URL}images/download.jpg`}
-            alt="Nobi editorial campaign"
+            alt="Unseen editorial campaign"
             loading="lazy"
             decoding="async"
           />
-          <span className="story-image-label">NOBI / EDITORIAL 004</span>
+          <span className="story-image-label">UNSEEN / EDITORIAL 004</span>
         </div>
         <div className="split-copy">
           <p className="eyebrow">House notes / 001</p>
@@ -84,11 +84,11 @@ export default function Home() {
             NOT A TREND CYCLE<span>.</span>
           </h2>
           <p>
-            Nobi cuts streetwear for people who actually wear it — late trains,
+            Unseen cuts streetwear for people who actually wear it — late trains,
             wet pavement, rooms that don’t close until four. Every piece is a
             small run. When it’s gone, it’s gone.
           </p>
-          <Link to="/about" className="btn btn-primary">Discover Nobi</Link>
+          <Link to="/about" className="btn btn-primary">Discover Unseen</Link>
         </div>
       </motion.section>
 
@@ -124,7 +124,7 @@ export default function Home() {
       <DropCountdown />
 
       <motion.section className="home-final" {...reveal}>
-        <p className="eyebrow">NOBI / AFTER HOURS</p>
+        <p className="eyebrow">UNSEEN / AFTER HOURS</p>
         <h2>OWN THE NIGHT<span>.</span></h2>
         <Link to="/shop" className="btn btn-primary">Shop the collection</Link>
       </motion.section>
