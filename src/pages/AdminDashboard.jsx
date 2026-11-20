@@ -16,7 +16,7 @@ const slugify = (value) => value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-'
 
 const emptyProduct = {
   id: '', name: '', price: '', category: '', tag: '', season: '',
-  colors: '', sizes: '', images: '', description: '',
+  colors: '', sizes: '', images: '', description: '', stock_quantity: '0', low_stock_threshold: '5',
   sold_out: false, is_active: true,
 }
 
@@ -102,7 +102,7 @@ export default function AdminDashboard() {
     setProductsLoading(true)
     const { data, error: queryError } = await supabase
       .from('products')
-      .select('id, name, price, category, tag, season, colors, sizes, sold_out, images, description, is_active, created_at')
+      .select('id, name, price, category, tag, season, colors, sizes, sold_out, images, description, is_active, stock_quantity, low_stock_threshold, created_at')
       .order('created_at', { ascending: false })
     if (queryError) setError(queryError.message)
     else setProducts(data || [])
@@ -135,6 +135,8 @@ export default function AdminDashboard() {
         || (productFilter === 'active' && product.is_active && !product.sold_out)
         || (productFilter === 'sold' && product.sold_out)
         || (productFilter === 'hidden' && !product.is_active)
+        || (productFilter === 'low' && Number(product.stock_quantity) > 0 && Number(product.stock_quantity) <= Number(product.low_stock_threshold ?? 5))
+        || (productFilter === 'out' && Number(product.stock_quantity) === 0)
       return matchesQuery && matchesFilter
     })
   }, [products, productSearch, productFilter])
@@ -147,6 +149,8 @@ export default function AdminDashboard() {
       .reduce((sum, order) => sum + Number(order.total || 0), 0),
     products: products.length,
     activeProducts: products.filter((product) => product.is_active && !product.sold_out).length,
+    lowStock: products.filter((product) => Number(product.stock_quantity) > 0 && Number(product.stock_quantity) <= Number(product.low_stock_threshold ?? 5)).length,
+    outOfStock: products.filter((product) => Number(product.stock_quantity) === 0).length,
   }), [orders, products])
 
   async function refreshAll() {
@@ -177,6 +181,8 @@ export default function AdminDashboard() {
       description: product.description || '',
       sold_out: Boolean(product.sold_out),
       is_active: product.is_active !== false,
+      stock_quantity: String(product.stock_quantity ?? 0),
+      low_stock_threshold: String(product.low_stock_threshold ?? 5),
     })
     setProductEditor('edit')
   }
@@ -215,6 +221,8 @@ export default function AdminDashboard() {
       description: productForm.description.trim() || null,
       sold_out: productForm.sold_out,
       is_active: productForm.is_active,
+      stock_quantity: Math.max(0, Math.floor(Number(productForm.stock_quantity || 0))),
+      low_stock_threshold: Math.max(0, Math.floor(Number(productForm.low_stock_threshold || 0))),
       updated_at: new Date().toISOString(),
     }
     setSaving(true)
@@ -332,7 +340,7 @@ export default function AdminDashboard() {
                   <p className="admin-eyebrow">CATALOG SNAPSHOT</p><h2>YOUR PRODUCTS</h2>
                   <div className="admin-inventory-number">{stats.products.toString().padStart(2, '0')}<span> PRODUCTS</span></div>
                   <div className="admin-inventory-line"><span>Published & available</span><strong>{stats.activeProducts}</strong></div>
-                  <div className="admin-inventory-line"><span>Sold out</span><strong>{products.filter((product) => product.sold_out).length}</strong></div>
+                  <div className="admin-inventory-line"><span>Low stock</span><strong>{stats.lowStock}</strong></div><div className="admin-inventory-line"><span>Out of stock</span><strong>{stats.outOfStock}</strong></div>
                   <button className="admin-btn admin-btn--lime admin-full-btn" onClick={() => setSection('products')}>Manage catalog ↗</button>
                 </div>
               </section>
@@ -352,12 +360,12 @@ export default function AdminDashboard() {
           {section === 'products' && (
             <section className="admin-page-section">
               <div className="admin-section-title"><div><p className="admin-eyebrow">CATALOG / INVENTORY</p><h1>PRODUCTS<span>.</span></h1><p>Build, update and control your storefront catalog.</p></div><button className="admin-btn admin-btn--lime" onClick={openNewProduct}>＋ Add product</button></div>
-              <div className="admin-product-summary"><div><strong>{stats.products}</strong><span>ALL PRODUCTS</span></div><div><strong>{stats.activeProducts}</strong><span>LIVE & AVAILABLE</span></div><div><strong>{products.filter((product) => product.sold_out).length}</strong><span>SOLD OUT</span></div><button className="admin-btn admin-btn--secondary" onClick={loadProducts} disabled={productsLoading}>↻ {productsLoading ? 'Loading' : 'Refresh catalog'}</button></div>
-              <div className="admin-toolbar"><input value={productSearch} onChange={(event) => setProductSearch(event.target.value)} placeholder="Search product name, ID or category…" /><select value={productFilter} onChange={(event) => setProductFilter(event.target.value)}><option value="all">All products</option><option value="active">Live & available</option><option value="sold">Sold out</option><option value="hidden">Hidden</option></select></div>
+              <div className="admin-product-summary"><div><strong>{stats.products}</strong><span>ALL PRODUCTS</span></div><div><strong>{stats.activeProducts}</strong><span>LIVE & AVAILABLE</span></div><div><strong>{stats.lowStock}</strong><span>LOW STOCK</span></div><div><strong>{stats.outOfStock}</strong><span>OUT OF STOCK</span></div><button className="admin-btn admin-btn--secondary" onClick={loadProducts} disabled={productsLoading}>↻ {productsLoading ? 'Loading' : 'Refresh catalog'}</button></div>
+              <div className="admin-toolbar"><input value={productSearch} onChange={(event) => setProductSearch(event.target.value)} placeholder="Search product name, ID or category…" /><select value={productFilter} onChange={(event) => setProductFilter(event.target.value)}><option value="all">All products</option><option value="active">Live & available</option><option value="sold">Sold out</option><option value="hidden">Hidden</option><option value="low">Low stock</option><option value="out">Out of stock</option></select></div>
               <div className="admin-catalog-grid">
                 {filteredProducts.map((product) => <article className="admin-catalog-card" key={product.id}>
                   <div className="admin-catalog-image">{product.images?.[0] ? <img src={product.images[0]} alt={product.name} loading="lazy" /> : <span>NO IMAGE</span>}<span className={`admin-status-tag ${product.is_active && !product.sold_out ? 'is-live' : 'is-muted'}`}>{!product.is_active ? 'HIDDEN' : product.sold_out ? 'SOLD OUT' : 'LIVE'}</span></div>
-                  <div className="admin-catalog-body"><div className="admin-catalog-heading"><div><h3>{product.name}</h3><small>{product.id}</small></div><strong>{money(product.price)}</strong></div><p className="admin-catalog-category">{product.category || 'Uncategorized'}{product.tag ? ` / ${product.tag}` : ''}</p><div className="admin-catalog-options"><span>COLORS <b>{product.colors?.join(', ') || '—'}</b></span><span>SIZES <b>{product.sizes?.join(', ') || '—'}</b></span></div><div className="admin-card-actions"><button onClick={() => openEditProduct(product)}>Edit product</button><button onClick={() => toggleProduct(product, 'is_active')}>{product.is_active ? 'Hide' : 'Publish'}</button><button onClick={() => toggleProduct(product, 'sold_out')}>{product.sold_out ? 'Mark available' : 'Mark sold out'}</button><button className="admin-delete-action" onClick={() => deleteProduct(product)}>Delete</button></div></div>
+                  <div className="admin-catalog-body"><div className="admin-catalog-heading"><div><h3>{product.name}</h3><small>{product.id}</small></div><strong>{money(product.price)}</strong></div><p className="admin-catalog-category">{product.category || 'Uncategorized'}{product.tag ? ` / ${product.tag}` : ''}</p><div className="admin-stock-line"><span>IN STOCK</span><strong className={Number(product.stock_quantity) === 0 ? 'is-out' : Number(product.stock_quantity) <= Number(product.low_stock_threshold ?? 5) ? 'is-low' : ''}>{Number(product.stock_quantity)} units</strong></div><div className="admin-catalog-options"><span>COLORS <b>{product.colors?.join(', ') || '—'}</b></span><span>SIZES <b>{product.sizes?.join(', ') || '—'}</b></span></div><div className="admin-card-actions"><button onClick={() => openEditProduct(product)}>Edit product</button><button onClick={() => toggleProduct(product, 'is_active')}>{product.is_active ? 'Hide' : 'Publish'}</button><button onClick={() => toggleProduct(product, 'sold_out')}>{product.sold_out ? 'Mark available' : 'Mark sold out'}</button><button className="admin-delete-action" onClick={() => deleteProduct(product)}>Delete</button></div></div>
                 </article>)}
               </div>
               {!filteredProducts.length && <div className="admin-blank">{productsLoading ? 'Loading products…' : 'No products found. Add your first product to get started.'}</div>}
@@ -373,6 +381,8 @@ export default function AdminDashboard() {
           <label className="wide">PRODUCT NAME<input value={productForm.name} onChange={(event) => updateProductField('name', event.target.value)} placeholder="Oversized Graphic Tee" required /></label>
           <label>PRODUCT ID<input value={productForm.id} onChange={(event) => updateProductField('id', event.target.value)} readOnly={productEditor === 'edit'} placeholder="oversized-tee" required /></label>
           <label>PRICE (EGP)<input type="number" min="0" step="1" value={productForm.price} onChange={(event) => updateProductField('price', event.target.value)} placeholder="850" required /></label>
+          <label>STOCK QUANTITY<input type="number" min="0" step="1" value={productForm.stock_quantity} onChange={(event) => updateProductField('stock_quantity', event.target.value)} placeholder="0" required /></label>
+          <label>LOW STOCK ALERT AT<input type="number" min="0" step="1" value={productForm.low_stock_threshold} onChange={(event) => updateProductField('low_stock_threshold', event.target.value)} placeholder="5" required /></label>
           <label>CATEGORY<input value={productForm.category} onChange={(event) => updateProductField('category', event.target.value)} placeholder="T-Shirts" /></label>
           <label>TAG<input value={productForm.tag} onChange={(event) => updateProductField('tag', event.target.value)} placeholder="New / Best Seller" /></label>
           <label>SEASON<input value={productForm.season} onChange={(event) => updateProductField('season', event.target.value)} placeholder="Core / Winter 26" /></label>
