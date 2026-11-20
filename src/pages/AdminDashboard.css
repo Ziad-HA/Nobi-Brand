@@ -153,3 +153,8 @@
   outline: 2px solid #d6ff3a;
   outline-offset: 2px;
 }
+
+
+.admin-form-grid select{min-height:43px;padding:0 12px;border:1px solid #30362b;border-radius:0;outline:none;background:#11140f;color:#edf0e6;font:11px 'Manrope',sans-serif}
+.admin-form-grid select:focus{border-color:#a4c53a}
+.admin-data-table td .admin-row-action{margin-right:7px}
