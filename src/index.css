@@ -5620,3 +5620,30 @@ main h2 > span,
 .checkout-coupon-message.is-error{color:#e99b91}
 .checkout-discount-line{color:var(--volt)!important}
 @media(max-width:520px){.checkout-coupon{padding:13px}.checkout-coupon-entry{flex-direction:column}.checkout-coupon-entry .btn{width:100%}}
+
+
+/* UNSEEN customer account and order history */
+.account-page{min-height:70vh}
+.account-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:35px;border-bottom:1px solid var(--line)}
+.account-heading h1{font-size:clamp(3rem,8vw,6.5rem)}
+.account-heading h1 span{color:var(--volt)}
+.account-heading .muted{margin-top:13px;font-size:13px}
+.account-orders-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:42px 0 18px}
+.account-orders-heading h2{font-size:clamp(2rem,5vw,3.5rem)}
+.account-orders-heading>span{color:var(--muted);font:10px 'DM Mono',monospace;letter-spacing:.12em}
+.account-order-list{display:grid;gap:12px}
+.account-order-card{padding:20px;border:1px solid var(--line);background:#101010}
+.account-order-top{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:14px;padding-bottom:17px;border-bottom:1px solid #292929}
+.account-order-top div span,.account-order-top div strong{display:block}
+.account-order-top div span{margin-bottom:6px;color:#81817a;font:9px 'DM Mono',monospace;letter-spacing:.1em}
+.account-order-top div strong{font-size:12px;text-transform:capitalize}
+.account-order-top div:first-child strong,.account-order-top div:last-child strong{color:var(--volt)}
+.account-order-items{padding:9px 0}
+.account-order-item{display:flex;justify-content:space-between;gap:14px;padding:9px 0;color:#bdbdb5;font-size:11px}
+.account-order-item strong{white-space:nowrap;color:#f1f1eb}
+.account-order-bottom{display:flex;justify-content:space-between;gap:12px;padding-top:13px;border-top:1px solid #292929;color:#8c8c86;font-size:10px}
+.account-order-bottom span:first-child{color:var(--volt)}
+.account-empty{padding:48px 20px;border:1px dashed #353535;color:var(--muted);text-align:center}
+.account-empty .btn{margin-top:18px}
+.account-message{margin:15px 0;color:#e99b91;font-size:12px}
+@media(max-width:650px){.account-heading{align-items:flex-start;flex-direction:column}.account-heading .btn{width:100%}.account-order-top{grid-template-columns:1fr 1fr}.account-order-item{align-items:flex-start}.account-order-bottom{flex-direction:column}.account-orders-heading{align-items:flex-start}}
