@@ -12,10 +12,9 @@ import { useSyncExternalStore } from 'react'
      click        - a card / photo link is pressed
      orbitSpin    - lookbook photos start spinning (on the way in and on the way out)
      orbitSettle  - lookbook photos lock into place
-     toggle       - the Sound button in the nav is switched
 
-   Sound is OFF by default and only loads files once the visitor turns it on
-   (browsers block autoplay anyway). The choice is remembered.
+   Sound is ON by default. Browsers may block playback until the visitor interacts
+   with the page, after which supported effects can play normally.
 
    To trigger a sound from anywhere else:  import { sfx } from '../lib/sfx'
                                            sfx.play('hover')
@@ -26,7 +25,6 @@ export const SOUNDS = {
   orbitSpin: { file: 'orbit-spin.mp3', volume: 0.5 },
 }
 
-const STORAGE_KEY = 'nobi-sound'
 const MIN_GAP_MS = 90 // stops a sound from machine-gunning when the cursor jitters
 
 const listeners = new Set()
@@ -34,12 +32,9 @@ const loaded = {} // name -> HTMLAudioElement
 const missing = new Set() // names whose file failed to load, so we stop trying
 const lastPlayed = {}
 
-let enabled = false
-try {
-  enabled = localStorage.getItem(STORAGE_KEY) === 'on'
-} catch {
-  /* storage can be blocked; sound just starts off */
-}
+// Sound and interface effects are enabled by default.
+// Browsers may block audio until the visitor's first interaction.
+let enabled = true
 
 function emit() {
   listeners.forEach((fn) => fn())
@@ -62,7 +57,6 @@ export const sfx = {
   setEnabled(next) {
     enabled = Boolean(next)
     try {
-      localStorage.setItem(STORAGE_KEY, enabled ? 'on' : 'off')
     } catch {
       /* ignore */
     }
