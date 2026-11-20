@@ -116,6 +116,18 @@ export default function AdminDashboard() {
     setProductsLoading(false)
   }, [])
 
+  const loadCoupons = useCallback(async () => {
+    if (!supabase) return
+    setCouponsLoading(true)
+    const { data, error: queryError } = await supabase
+      .from('coupons')
+      .select('id, code, discount_type, discount_value, min_order_amount, max_discount_amount, usage_limit, usage_count, starts_at, expires_at, is_active, created_at')
+      .order('created_at', { ascending: false })
+    if (queryError) setError(queryError.message)
+    else setCoupons(data || [])
+    setCouponsLoading(false)
+  }, [])
+
   useEffect(() => {
     if (authState === 'admin') {
       loadOrders()
@@ -165,18 +177,6 @@ export default function AdminDashboard() {
     setError('')
     await Promise.all([loadOrders(), loadProducts(), loadCoupons()])
   }
-
-  const loadCoupons = useCallback(async () => {
-    if (!supabase) return
-    setCouponsLoading(true)
-    const { data, error: queryError } = await supabase
-      .from('coupons')
-      .select('id, code, discount_type, discount_value, min_order_amount, max_discount_amount, usage_limit, usage_count, starts_at, expires_at, is_active, created_at')
-      .order('created_at', { ascending: false })
-    if (queryError) setError(queryError.message)
-    else setCoupons(data || [])
-    setCouponsLoading(false)
-  }, [])
 
   async function updateOrderStatus(order, nextStatus) {
     if (!order || !nextStatus || order.status === nextStatus) return
