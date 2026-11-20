@@ -22,6 +22,7 @@ function readCart() {
 export function CartProvider({ children }) {
   const [items, setItems] = useState(readCart)
   const [isCartOpen, setIsCartOpen] = useState(false)
+  const [cartToast, setCartToast] = useState(null)
 
   useEffect(() => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)) } catch { /* Session-only fallback. */ }
@@ -35,6 +36,7 @@ export function CartProvider({ children }) {
       if (existing) return prev.map((item) => item.key === key ? { ...item, qty: Math.min(99, item.qty + 1) } : item)
       return [...prev, { key, id: product.id, name: product.name, price: Math.max(0, Number(product.price) || 0), image: product.images?.[0] ?? '', size, color, qty: 1 }]
     })
+    setCartToast({ id: Date.now(), name: product.name })
     setIsCartOpen(true)
     return true
   }, [])
@@ -51,8 +53,8 @@ export function CartProvider({ children }) {
   const closeCart = useCallback(() => setIsCartOpen(false), [])
   const count = items.reduce((sum, item) => sum + item.qty, 0)
   const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0)
-  const value = useMemo(() => ({ items, addItem, updateQty, removeItem, clearCart, count, subtotal, isCartOpen, openCart, closeCart }),
-    [items, addItem, updateQty, removeItem, clearCart, count, subtotal, isCartOpen, openCart, closeCart])
+  const value = useMemo(() => ({ items, addItem, updateQty, removeItem, clearCart, count, subtotal, isCartOpen, openCart, closeCart, cartToast, setCartToast }),
+    [items, addItem, updateQty, removeItem, clearCart, count, subtotal, isCartOpen, openCart, closeCart, cartToast])
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }
 
