@@ -622,7 +622,7 @@ export default function AdminDashboard() {
                 </div>
                 <div className="admin-analytics-grid">
                   <div className="admin-panel">
-                    <div className="admin-panel-heading"><div><p className="admin-eyebrow">LAST SIX MONTHS</p><h2>MONTHLY ACTIVITY</h2></div></div>
+                    <div className="admin-panel-heading"><div><p className="admin-eyebrow">LAST TWELVE MONTHS</p><h2>MONTHLY ACTIVITY</h2></div></div>
                     {(analyticsData.monthly || []).length ? <div className="admin-monthly-list">
                       {analyticsData.monthly.map((month) => {
                         const maxRevenue = Math.max(1, ...(analyticsData.monthly || []).map((entry) => Number(entry.revenue || 0)))
