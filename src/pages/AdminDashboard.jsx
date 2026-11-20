@@ -46,6 +46,10 @@ export default function AdminDashboard() {
   const [settingsSaving, setSettingsSaving] = useState(false)
   const [analyticsData, setAnalyticsData] = useState(null)
   const [analyticsLoading, setAnalyticsLoading] = useState(false)
+  const [abandonedCarts, setAbandonedCarts] = useState([])
+  const [abandonedLoading, setAbandonedLoading] = useState(false)
+  const [reviews, setReviews] = useState([])
+  const [reviewsLoading, setReviewsLoading] = useState(false)
   const [couponForm, setCouponForm] = useState({
     code: '', discount_type: 'percent', discount_value: '10', min_order_amount: '0',
     max_discount_amount: '', usage_limit: '', starts_at: '', expires_at: '', is_active: true,
@@ -158,6 +162,36 @@ export default function AdminDashboard() {
     setAnalyticsLoading(false)
   }, [])
 
+  const loadAbandonedCarts = useCallback(async () => {
+    if (!supabase) return
+    setAbandonedLoading(true)
+    const { data, error: queryError } = await supabase.rpc('admin_abandoned_carts')
+    if (queryError) setError(queryError.message)
+    else setAbandonedCarts(Array.isArray(data) ? data : [])
+    setAbandonedLoading(false)
+  }, [])
+
+  const loadReviews = useCallback(async () => {
+    if (!supabase) return
+    setReviewsLoading(true)
+    const { data, error: queryError } = await supabase.from('product_reviews')
+      .select('id, product_id, user_id, rating, title, body, is_approved, created_at')
+      .order('created_at', { ascending: false }).limit(200)
+    if (queryError) setError(queryError.message)
+    else setReviews(data || [])
+    setReviewsLoading(false)
+  }, [])
+
+  async function moderateReview(review, isApproved) {
+    const { error: updateError } = await supabase.from('product_reviews')
+      .update({ is_approved: isApproved }).eq('id', review.id)
+    if (updateError) setError(updateError.message)
+    else {
+      setNotice(isApproved ? 'Review approved and visible on the store.' : 'Review hidden from the store.')
+      await loadReviews()
+    }
+  }
+
   useEffect(() => {
     if (authState === 'admin') {
       loadOrders()
@@ -165,8 +199,10 @@ export default function AdminDashboard() {
       loadCoupons()
       loadStoreSettings()
       loadAnalytics()
+      loadAbandonedCarts()
+      loadReviews()
     }
-  }, [authState, loadOrders, loadProducts, loadCoupons, loadStoreSettings, loadAnalytics])
+  }, [authState, loadOrders, loadProducts, loadCoupons, loadStoreSettings, loadAnalytics, loadAbandonedCarts, loadReviews])
 
   useEffect(() => {
     if (authState !== 'admin' || !supabase) return undefined
@@ -224,7 +260,7 @@ export default function AdminDashboard() {
 
   async function refreshAll() {
     setError('')
-    await Promise.all([loadOrders(), loadProducts(), loadCoupons(), loadStoreSettings(), loadAnalytics()])
+    await Promise.all([loadOrders(), loadProducts(), loadCoupons(), loadStoreSettings(), loadAnalytics(), loadAbandonedCarts(), loadReviews()])
   }
 
   async function updateOrderStatus(order, nextStatus) {
@@ -499,6 +535,8 @@ export default function AdminDashboard() {
           <button className={section === 'products' ? 'is-active' : ''} onClick={() => setSection('products')}><span>▦</span> Products <i>{stats.products}</i></button>
           <button className={section === 'coupons' ? 'is-active' : ''} onClick={() => setSection('coupons')}><span>%</span> Coupons <i>{coupons.length}</i></button>
           <button className={section === 'analytics' ? 'is-active' : ''} onClick={() => setSection('analytics')}><span>⌁</span> Analytics</button>
+          <button className={section === 'abandoned' ? 'is-active' : ''} onClick={() => setSection('abandoned')}><span>◫</span> Abandoned carts <i>{abandonedCarts.length}</i></button>
+          <button className={section === 'reviews' ? 'is-active' : ''} onClick={() => setSection('reviews')}><span>★</span> Reviews <i>{reviews.length}</i></button>
           <button className={section === 'settings' ? 'is-active' : ''} onClick={() => setSection('settings')}><span>⚙</span> Settings</button>
         </nav>
         <div className="admin-rail-bottom">
@@ -657,6 +695,26 @@ export default function AdminDashboard() {
                 </div>
               </>}
               {!analyticsData && <div className="admin-blank">{analyticsLoading ? 'Loading store analytics…' : 'Analytics are unavailable. Run the admin-analytics.sql migration in Supabase.'}</div>}
+            </section>
+          )}
+
+          {section === 'abandoned' && (
+            <section className="admin-page-section">
+              <div className="admin-section-title"><div><p className="admin-eyebrow">CUSTOMER ACTIVITY / RECOVERY</p><h1>ABANDONED CARTS<span>.</span></h1><p>Signed-in carts with items and no update for at least 24 hours.</p></div><button className="admin-btn admin-btn--secondary" onClick={loadAbandonedCarts} disabled={abandonedLoading}>↻ Refresh</button></div>
+              <div className="admin-product-summary"><div><strong>{abandonedCarts.length}</strong><span>STALE CARTS</span></div><div><strong>24H+</strong><span>INACTIVE WINDOW</span></div></div>
+              <div className="admin-table-shell"><table className="admin-data-table"><thead><tr><th>CUSTOMER EMAIL</th><th>ITEMS</th><th>LAST UPDATED</th><th>ESTIMATED VALUE</th></tr></thead><tbody>
+                {abandonedCarts.map((cart) => { const items = Array.isArray(cart.items) ? cart.items : []; const total = items.reduce((sum, item) => sum + Number(item.price || 0) * Number(item.qty || 0), 0); return <tr key={cart.user_id}><td>{cart.email || 'Account email unavailable'}</td><td>{items.map((item) => `${item.name || item.id} × ${item.qty || 1}`).join(', ') || '—'}</td><td>{dateTime(cart.updated_at)}</td><td className="admin-money">{money(total)}</td></tr> })}
+              </tbody></table>{!abandonedCarts.length && <div className="admin-blank">{abandonedLoading ? 'Loading carts…' : 'No carts have been inactive for 24 hours yet. Only signed-in customer carts are included.'}</div>}</div>
+            </section>
+          )}
+
+          {section === 'reviews' && (
+            <section className="admin-page-section">
+              <div className="admin-section-title"><div><p className="admin-eyebrow">CUSTOMER FEEDBACK / MODERATION</p><h1>REVIEWS<span>.</span></h1><p>Approve or hide customer reviews on product pages.</p></div><button className="admin-btn admin-btn--secondary" onClick={loadReviews} disabled={reviewsLoading}>↻ Refresh</button></div>
+              <div className="admin-product-summary"><div><strong>{reviews.length}</strong><span>TOTAL REVIEWS</span></div><div><strong>{reviews.filter((review) => review.is_approved).length}</strong><span>VISIBLE</span></div><div><strong>{reviews.filter((review) => !review.is_approved).length}</strong><span>HIDDEN</span></div></div>
+              <div className="admin-table-shell"><table className="admin-data-table"><thead><tr><th>PRODUCT</th><th>RATING</th><th>REVIEW</th><th>DATE</th><th>VISIBILITY</th><th>ACTION</th></tr></thead><tbody>
+                {reviews.map((review) => <tr key={review.id}><td className="admin-mono">{review.product_id}</td><td>{'★'.repeat(review.rating)}{'☆'.repeat(5-review.rating)}</td><td><strong>{review.title}</strong><small>{review.body}</small></td><td>{dateTime(review.created_at)}</td><td>{review.is_approved ? 'Visible' : 'Hidden'}</td><td><button className="admin-row-action" onClick={() => moderateReview(review, !review.is_approved)}>{review.is_approved ? 'Hide' : 'Approve'}</button></td></tr>)}
+              </tbody></table>{!reviews.length && <div className="admin-blank">{reviewsLoading ? 'Loading reviews…' : 'No customer reviews yet.'}</div>}</div>
             </section>
           )}
 
