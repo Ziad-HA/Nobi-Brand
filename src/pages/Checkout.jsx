@@ -16,6 +16,7 @@ export default function Checkout() {
   const [appliedCoupon, setAppliedCoupon] = useState(null)
   const [couponStatus, setCouponStatus] = useState('idle')
   const [couponMessage, setCouponMessage] = useState('')
+  const [customerEmail, setCustomerEmail] = useState('')
   const [storeSettings, setStoreSettings] = useState({ shipping_fee: 0, free_shipping_threshold: null })
 
   useEffect(() => {
@@ -27,6 +28,21 @@ export default function Checkout() {
       .then(({ data }) => {
         if (data) setStoreSettings(data)
       })
+  }, [])
+
+  useEffect(() => {
+    if (!supabase) return undefined
+    let active = true
+    supabase.auth.getSession().then(({ data }) => {
+      if (active) setCustomerEmail(data.session?.user?.email ?? '')
+    })
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (active) setCustomerEmail(session?.user?.email ?? '')
+    })
+    return () => {
+      active = false
+      subscription.unsubscribe()
+    }
   }, [])
 
   const discountedSubtotal = Number(appliedCoupon?.total ?? subtotal)
@@ -154,8 +170,8 @@ export default function Checkout() {
             <p className="checkout-section-title"><span>01</span> Contact details</p>
             <label>Full name<input required name="name" autoComplete="name" placeholder="Your full name" /></label>
             <div className="form-row">
-              <label>Email<input type="email" required name="email" autoComplete="email" inputMode="email" placeholder="you@example.com" /></label>
-              <label>Phone<input type="tel" required name="phone" autoComplete="tel" inputMode="tel" placeholder="+20" /></label>
+              <label>Email<input type="email" required name="email" autoComplete="email" inputMode="email" placeholder="you@example.com" value={customerEmail} onChange={(event) => setCustomerEmail(event.target.value)} /></label>
+              <label>Phone<input type="tel" required name="phone" autoComplete="tel" placeholder="+20" /></label>
             </div>
           </div>
 
