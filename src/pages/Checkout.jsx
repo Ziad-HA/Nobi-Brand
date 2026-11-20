@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
@@ -16,6 +16,24 @@ export default function Checkout() {
   const [appliedCoupon, setAppliedCoupon] = useState(null)
   const [couponStatus, setCouponStatus] = useState('idle')
   const [couponMessage, setCouponMessage] = useState('')
+  const [storeSettings, setStoreSettings] = useState({ shipping_fee: 0, free_shipping_threshold: null })
+
+  useEffect(() => {
+    if (!supabase) return
+    supabase.from('store_settings')
+      .select('shipping_fee, free_shipping_threshold')
+      .eq('id', true)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data) setStoreSettings(data)
+      })
+  }, [])
+
+  const discountedSubtotal = Number(appliedCoupon?.total ?? subtotal)
+  const shippingIsFree = storeSettings.free_shipping_threshold != null
+    && discountedSubtotal >= Number(storeSettings.free_shipping_threshold)
+  const shippingFee = shippingIsFree ? 0 : Number(storeSettings.shipping_fee || 0)
+  const checkoutTotal = discountedSubtotal + shippingFee
   usePageMeta('Checkout')
 
   if (!items.length && !orderId) {
@@ -178,7 +196,7 @@ export default function Checkout() {
           <p className="checkout-demo-note">Cash on delivery. No online payment is collected.</p>
           {message && <p className="muted" role="alert">{message}</p>}
           <button className="btn btn-primary checkout-submit" type="submit" disabled={status === 'loading'}>
-            {status === 'loading' ? 'Placing order...' : `Place order · ${money(subtotal)}`}
+            {status === 'loading' ? 'Placing order...' : `Place order · ${money(checkoutTotal)}`}
           </button>
         </form>
 
@@ -195,9 +213,10 @@ export default function Checkout() {
           </div>
           <div className="cart-summary-line"><span>Subtotal</span><strong>{money(appliedCoupon?.subtotal ?? subtotal)}</strong></div>
           {appliedCoupon && <div className="cart-summary-line checkout-discount-line"><span>Discount · {appliedCoupon.code}</span><strong>−{money(appliedCoupon.discount_amount)}</strong></div>}
-          <div className="cart-summary-line muted"><span>Shipping</span><span>Not included</span></div>
-          <div className="cart-summary-total"><span>Total</span><strong>{money(appliedCoupon?.total ?? subtotal)}</strong></div>
-          <p className="checkout-summary-note">Shipping is not included. Payment is due on delivery.</p>
+          <div className="cart-summary-line muted"><span>Shipping</span><span>{shippingFee === 0 ? 'Free' : money(shippingFee)}</span></div>
+          {shippingIsFree && <p className="checkout-summary-note">Free shipping unlocked.</p>}
+          <div className="cart-summary-total"><span>Total</span><strong>{money(checkoutTotal)}</strong></div>
+          <p className="checkout-summary-note">Cash on delivery. Payment is due on delivery.</p>
           <Link to="/cart" className="cart-continue-link">← Edit your bag</Link>
         </aside>
       </div>
