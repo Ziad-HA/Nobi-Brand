@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
+import useProducts from "../lib/useProducts";
 import { motion, useReducedMotion } from "motion/react";
 import ProductCard from "../components/ProductCard";
 import Hero3DLayer from "../components/Hero3DLayer";
 import OrbitGallery from "../components/OrbitGallery";
 import TiltLink, { Glare } from "../components/TiltLink";
-import { lookbook, products } from "../data/products";
+import { lookbook } from "../data/products";
 import usePageMeta from "../lib/usePageMeta";
 import DropCountdown from "../components/DropCountdown";
 import Reveal from "../components/Reveal";
@@ -16,6 +17,7 @@ function shouldUseStaticHero(reduceMotion) {
 }
 
 export default function Home() {
+  const { products } = useProducts();
   const reduceMotion = useReducedMotion();
   const useStaticHero = shouldUseStaticHero(reduceMotion);
   const reveal = reduceMotion
