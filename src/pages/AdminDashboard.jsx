@@ -44,6 +44,8 @@ export default function AdminDashboard() {
   const [storeSettings, setStoreSettings] = useState({ shipping_fee: '0', free_shipping_threshold: '' })
   const [settingsLoading, setSettingsLoading] = useState(false)
   const [settingsSaving, setSettingsSaving] = useState(false)
+  const [analyticsData, setAnalyticsData] = useState(null)
+  const [analyticsLoading, setAnalyticsLoading] = useState(false)
   const [couponForm, setCouponForm] = useState({
     code: '', discount_type: 'percent', discount_value: '10', min_order_amount: '0',
     max_discount_amount: '', usage_limit: '', starts_at: '', expires_at: '', is_active: true,
@@ -147,14 +149,24 @@ export default function AdminDashboard() {
     setSettingsLoading(false)
   }, [])
 
+  const loadAnalytics = useCallback(async () => {
+    if (!supabase) return
+    setAnalyticsLoading(true)
+    const { data, error: queryError } = await supabase.rpc('admin_store_analytics')
+    if (queryError) setError(queryError.message)
+    else setAnalyticsData(data)
+    setAnalyticsLoading(false)
+  }, [])
+
   useEffect(() => {
     if (authState === 'admin') {
       loadOrders()
       loadProducts()
       loadCoupons()
       loadStoreSettings()
+      loadAnalytics()
     }
-  }, [authState, loadOrders, loadProducts, loadCoupons, loadStoreSettings])
+  }, [authState, loadOrders, loadProducts, loadCoupons, loadStoreSettings, loadAnalytics])
 
   useEffect(() => {
     if (authState !== 'admin' || !supabase) return undefined
@@ -212,7 +224,7 @@ export default function AdminDashboard() {
 
   async function refreshAll() {
     setError('')
-    await Promise.all([loadOrders(), loadProducts(), loadCoupons(), loadStoreSettings()])
+    await Promise.all([loadOrders(), loadProducts(), loadCoupons(), loadStoreSettings(), loadAnalytics()])
   }
 
   async function updateOrderStatus(order, nextStatus) {
@@ -486,6 +498,7 @@ export default function AdminDashboard() {
           <button className={section === 'orders' ? 'is-active' : ''} onClick={() => setSection('orders')}><span>▤</span> Orders <i>{stats.orders}</i></button>
           <button className={section === 'products' ? 'is-active' : ''} onClick={() => setSection('products')}><span>▦</span> Products <i>{stats.products}</i></button>
           <button className={section === 'coupons' ? 'is-active' : ''} onClick={() => setSection('coupons')}><span>%</span> Coupons <i>{coupons.length}</i></button>
+          <button className={section === 'analytics' ? 'is-active' : ''} onClick={() => setSection('analytics')}><span>⌁</span> Analytics</button>
           <button className={section === 'settings' ? 'is-active' : ''} onClick={() => setSection('settings')}><span>⚙</span> Settings</button>
         </nav>
         <div className="admin-rail-bottom">
@@ -590,6 +603,37 @@ export default function AdminDashboard() {
                 </table>
                 {!coupons.length && <div className="admin-blank">{couponsLoading ? 'Loading coupons…' : 'No coupons yet. Create your first discount code.'}</div>}
               </div>
+            </section>
+          )}
+
+          {section === 'analytics' && (
+            <section className="admin-page-section">
+              <div className="admin-section-title"><div><p className="admin-eyebrow">PERFORMANCE / BUSINESS INTELLIGENCE</p><h1>ANALYTICS<span>.</span></h1><p>Store-wide performance, not just the latest orders.</p></div><button className="admin-btn admin-btn--secondary" onClick={loadAnalytics} disabled={analyticsLoading}>↻ {analyticsLoading ? 'Updating' : 'Refresh analytics'}</button></div>
+              {analyticsData && <>
+                <div className="admin-metric-grid">
+                  <article className="admin-metric"><div className="admin-metric-top"><span>ALL ORDERS</span><span>↗</span></div><strong>{analyticsData.total_orders ?? 0}</strong><small>All-time orders</small></article>
+                  <article className="admin-metric"><div className="admin-metric-top"><span>PAID ORDERS</span><span>✓</span></div><strong>{analyticsData.paid_orders ?? 0}</strong><small>Confirmed payments</small></article>
+                  <article className="admin-metric admin-metric--lime"><div className="admin-metric-top"><span>PAID REVENUE</span><span>↗</span></div><strong className="admin-revenue">{money(analyticsData.paid_revenue)}</strong><small>Payments marked paid</small></article>
+                  <article className="admin-metric"><div className="admin-metric-top"><span>ORDER VALUE</span><span>EGP</span></div><strong className="admin-revenue">{money(analyticsData.order_value)}</strong><small>Excludes cancelled orders</small></article>
+                </div>
+                <div className="admin-analytics-grid">
+                  <div className="admin-panel">
+                    <div className="admin-panel-heading"><div><p className="admin-eyebrow">LAST SIX MONTHS</p><h2>MONTHLY ACTIVITY</h2></div></div>
+                    {(analyticsData.monthly || []).length ? <div className="admin-monthly-list">
+                      {analyticsData.monthly.map((month) => {
+                        const maxRevenue = Math.max(1, ...(analyticsData.monthly || []).map((entry) => Number(entry.revenue || 0)))
+                        const width = Math.max(2, Number(month.revenue || 0) / maxRevenue * 100)
+                        return <div className="admin-month-row" key={month.month}><div><strong>{month.month}</strong><small>{month.orders} orders · {money(month.revenue)}</small></div><div className="admin-month-track"><span style={{ width: `${width}%` }} /></div></div>
+                      })}
+                    </div> : <div className="admin-blank">No monthly order activity yet.</div>}
+                  </div>
+                  <div className="admin-panel">
+                    <div className="admin-panel-heading"><div><p className="admin-eyebrow">CATALOG PERFORMANCE</p><h2>TOP PRODUCTS</h2></div></div>
+                    {(analyticsData.top_products || []).length ? analyticsData.top_products.map((product, index) => <div className="admin-top-product" key={product.name}><span>{String(index + 1).padStart(2, '0')}</span><div><strong>{product.name}</strong><small>{product.units} units sold</small></div><b>{money(product.sales_value)}</b></div>) : <div className="admin-blank">Sales data will appear here after orders arrive.</div>}
+                  </div>
+                </div>
+              </>}
+              {!analyticsData && <div className="admin-blank">{analyticsLoading ? 'Loading store analytics…' : 'Analytics are unavailable. Run the admin-analytics.sql migration in Supabase.'}</div>}
             </section>
           )}
 
