@@ -371,7 +371,7 @@ export default function AdminDashboard() {
       {productEditor && <div className="admin-overlay" onClick={() => !saving && setProductEditor(null)}><form className="admin-dialog admin-product-dialog" onSubmit={saveProduct} onClick={(event) => event.stopPropagation()}><button type="button" className="admin-dialog-close" onClick={() => !saving && setProductEditor(null)}>×</button><p className="admin-eyebrow">CATALOG MANAGEMENT</p><h2>{productEditor === 'edit' ? 'EDIT PRODUCT' : 'NEW PRODUCT'}<span>.</span></h2><p className="admin-dialog-subtitle">Product prices are saved in Egyptian pounds (EGP).</p>
         <div className="admin-form-grid">
           <label className="wide">PRODUCT NAME<input value={productForm.name} onChange={(event) => updateProductField('name', event.target.value)} placeholder="Oversized Graphic Tee" required /></label>
-          <label>PRODUCT ID<input value={productForm.id} onChange={(event) => updateProductField('id', event.target.value)} placeholder="oversized-tee" required /></label>
+          <label>PRODUCT ID<input value={productForm.id} onChange={(event) => updateProductField('id', event.target.value)} readOnly={productEditor === 'edit'} placeholder="oversized-tee" required /></label>
           <label>PRICE (EGP)<input type="number" min="0" step="1" value={productForm.price} onChange={(event) => updateProductField('price', event.target.value)} placeholder="850" required /></label>
           <label>CATEGORY<input value={productForm.category} onChange={(event) => updateProductField('category', event.target.value)} placeholder="T-Shirts" /></label>
           <label>TAG<input value={productForm.tag} onChange={(event) => updateProductField('tag', event.target.value)} placeholder="New / Best Seller" /></label>
