@@ -4,6 +4,8 @@ import { useCart } from '../context/CartContext'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
 import usePageMeta from '../lib/usePageMeta'
 
+const money = (value) => new Intl.NumberFormat('en-EG', { style: 'currency', currency: 'EGP', maximumFractionDigits: 0 }).format(Number(value || 0))
+
 export default function Checkout() {
   const { items, subtotal, clearCart } = useCart()
   const navigate = useNavigate()
@@ -117,7 +119,7 @@ export default function Checkout() {
           <p className="checkout-demo-note">Cash on delivery. No online payment is collected.</p>
           {message && <p className="muted" role="alert">{message}</p>}
           <button className="btn btn-primary checkout-submit" type="submit" disabled={status === 'loading'}>
-            {status === 'loading' ? 'Placing order...' : `Place order · $${subtotal.toFixed(2)}`}
+            {status === 'loading' ? 'Placing order...' : `Place order · ${money(subtotal)}`}
           </button>
         </form>
 
@@ -128,13 +130,13 @@ export default function Checkout() {
               <div className="checkout-order-item" key={item.key}>
                 <img src={item.image} alt="" />
                 <div><strong>{item.name}</strong><span>{item.color} / {item.size} · Qty {item.qty}</span></div>
-                <b>${(item.price * item.qty).toFixed(2)}</b>
+                <b>{money(item.price * item.qty)}</b>
               </div>
             ))}
           </div>
-          <div className="cart-summary-line"><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div>
+          <div className="cart-summary-line"><span>Subtotal</span><strong>{money(subtotal)}</strong></div>
           <div className="cart-summary-line muted"><span>Shipping</span><span>Not included</span></div>
-          <div className="cart-summary-total"><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div>
+          <div className="cart-summary-total"><span>Subtotal</span><strong>{money(subtotal)}</strong></div>
           <p className="checkout-summary-note">Shipping is not included. Payment is due on delivery.</p>
           <Link to="/cart" className="cart-continue-link">← Edit your bag</Link>
         </aside>
