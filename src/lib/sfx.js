@@ -70,7 +70,7 @@ export const sfx = {
     }
     if (enabled) Object.keys(SOUNDS).forEach(load)
     emit()
-    if (enabled) sfx.play('toggle')
+    if (enabled) sfx.play('click')
   },
 
   toggle() {
