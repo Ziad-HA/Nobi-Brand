@@ -136,6 +136,23 @@ export default function AdminDashboard() {
     }
   }, [authState, loadOrders, loadProducts, loadCoupons])
 
+  useEffect(() => {
+    if (authState !== 'admin' || !supabase) return undefined
+    const channel = supabase
+      .channel('unseen-admin-order-alerts')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'orders',
+      }, (payload) => {
+        const order = payload.new || {}
+        setNotice(`New order received: #${String(order.id || '').slice(0, 8).toUpperCase()} · ${order.customer_name || 'Customer'}.`)
+        loadOrders()
+      })
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [authState, loadOrders])
+
   const filteredOrders = useMemo(() => {
     const query = orderSearch.trim().toLowerCase()
     return orders.filter((order) => {
