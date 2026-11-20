@@ -62,11 +62,14 @@ export default function Checkout() {
       setStatus('success')
     } catch (error) {
       setStatus('error')
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : 'We could not place your order. Please try again.',
-      )
+      const readableError =
+        error?.message ||
+        error?.details ||
+        error?.hint ||
+        (typeof error === 'string' ? error : '') ||
+        'Unknown checkout error. Please try again.'
+      console.error('UNSEEN checkout error:', error)
+      setMessage(readableError)
     }
   }
 
