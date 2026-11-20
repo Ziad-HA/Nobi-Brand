@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import useProducts from '../lib/useProducts'
@@ -14,6 +14,11 @@ export default function Product() {
   const { addItem } = useCart()
   const [size, setSize] = useState(product?.sizes?.[0] ?? '')
   const [color, setColor] = useState(product?.colors?.[0] ?? '')
+  useEffect(() => {
+    if (!product) return
+    setSize(product.sizes?.[0] ?? '')
+    setColor(product.colors?.[0] ?? '')
+  }, [product?.id])
   const [shot, setShot] = useState(0)
   const [added, setAdded] = useState(false)
   const reduceMotion = useReducedMotion()
