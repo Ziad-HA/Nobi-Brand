@@ -16,6 +16,7 @@ import Checkout from './pages/Checkout'
 import Login from './pages/Login'
 import Wishlist from './pages/Wishlist'
 import NotFound from './pages/NotFound'
+import AdminDashboard from './pages/AdminDashboard'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -36,6 +37,7 @@ function AnimatedRoutes() {
         <motion.div key={location.pathname} variants={variants} initial="initial" animate="animate" exit="exit"
           transition={{ duration: reduceMotion ? 0.01 : 0.42, ease: [0.16, 1, 0.3, 1] }}>
           <Routes location={location}>
+            <Route path="/admin" element={<AdminDashboard />} />
             <Route element={<Layout />}>
               <Route path="/" element={<Home />} />
               <Route path="/shop" element={<Shop />} />
