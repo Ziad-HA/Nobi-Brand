@@ -24,8 +24,6 @@ export const SOUNDS = {
   hover: { file: 'hover.mp3', volume: 0.35 },
   click: { file: 'click.mp3', volume: 0.5 },
   orbitSpin: { file: 'orbit-spin.mp3', volume: 0.5 },
-  orbitSettle: { file: 'orbit-settle.mp3', volume: 0.6 },
-  toggle: { file: 'toggle.mp3', volume: 0.4 },
 }
 
 const STORAGE_KEY = 'nobi-sound'
