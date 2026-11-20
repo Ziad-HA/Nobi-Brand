@@ -94,7 +94,7 @@ export default function Account() {
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      syncSession(session)
+      window.setTimeout(() => syncSession(session), 0)
     })
 
     let notificationChannel = null
