@@ -5,6 +5,8 @@ import useProducts from '../lib/useProducts'
 import { useCart } from '../context/CartContext'
 import ProductCard from '../components/ProductCard'
 import usePageMeta from '../lib/usePageMeta'
+import ProductReviews from '../components/ProductReviews'
+import RecentlyViewed, { rememberRecentlyViewed } from '../components/RecentlyViewed'
 
 export default function Product() {
   const { id } = useParams()
@@ -23,6 +25,7 @@ export default function Product() {
   const [added, setAdded] = useState(false)
   const reduceMotion = useReducedMotion()
   usePageMeta(product?.name ?? 'Not found', product?.description, product?.images?.[0])
+  useEffect(() => { if (product?.id) rememberRecentlyViewed(product.id) }, [product?.id])
 
   if (loading) return <section className="section product-not-found"><p>Loading piece...</p></section>
 
@@ -155,6 +158,8 @@ export default function Product() {
         </div>
       </div>
 
+      <ProductReviews productId={product.id} />
+
       {related.length > 0 && (
         <div className="product-related">
           <div className="section-head">
@@ -166,6 +171,7 @@ export default function Product() {
           </div>
         </div>
       )}
+      <RecentlyViewed excludeId={product.id} />
     </section>
   )
 }
