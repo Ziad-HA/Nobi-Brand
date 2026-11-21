@@ -9,6 +9,7 @@ import { lookbook } from "../data/products";
 import usePageMeta from "../lib/usePageMeta";
 import DropCountdown from "../components/DropCountdown";
 import Reveal from "../components/Reveal";
+import RecentlyViewed from "../components/RecentlyViewed";
 
 function shouldUseStaticHero(reduceMotion) {
   if (reduceMotion || typeof navigator === "undefined") return true;
@@ -143,6 +144,7 @@ export default function Home() {
       />
 
       <DropCountdown />
+      <RecentlyViewed />
 
       <motion.section className="home-final" {...reveal}>
         <p className="eyebrow">UNSEEN / AFTER HOURS</p>

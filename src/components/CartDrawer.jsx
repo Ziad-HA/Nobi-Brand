@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useCart } from '../context/CartContext'
 
+const money = (value) => new Intl.NumberFormat('en-EG', { style: 'currency', currency: 'EGP', maximumFractionDigits: 0 }).format(Number(value || 0))
+
 export default function CartDrawer() {
   const { items, count, subtotal, updateQty, removeItem, isCartOpen, closeCart } = useCart()
   const reduceMotion = useReducedMotion()
@@ -43,7 +45,7 @@ export default function CartDrawer() {
                       <div className="cart-drawer-info">
                         <p className="eyebrow">{item.color} · {item.size}</p>
                         <Link to={`/product/${item.id}`} onClick={closeCart}><strong>{item.name}</strong></Link>
-                        <span>${item.price.toFixed(2)}</span>
+                        <span>{money(item.price)}</span>
                         <div className="cart-drawer-controls">
                           <button type="button" onClick={() => updateQty(item.key, item.qty - 1)} aria-label={`Decrease ${item.name} quantity`}>−</button>
                           <span>{item.qty}</span>
@@ -55,7 +57,7 @@ export default function CartDrawer() {
                   ))}
                 </ul>
                 <footer className="cart-drawer-footer">
-                  <div className="cart-drawer-subtotal"><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div>
+                  <div className="cart-drawer-subtotal"><span>Subtotal</span><strong>{money(subtotal)}</strong></div>
                   <p>Shipping and taxes are calculated at checkout.</p>
                   <Link to="/checkout" className="btn btn-primary" onClick={closeCart}>Continue to checkout ↗</Link>
                   <Link to="/cart" className="cart-drawer-view" onClick={closeCart}>View full bag</Link>

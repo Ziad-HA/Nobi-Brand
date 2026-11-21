@@ -5603,3 +5603,158 @@ main h2 > span,
     font-size: 0.66rem;
   }
 }
+
+
+/* UNSEEN checkout coupon controls */
+.checkout-coupon{margin:26px 0;padding:18px;border:1px solid var(--line);background:#101010}
+.checkout-coupon .checkout-section-title{margin-bottom:13px}
+.checkout-coupon-entry{display:flex;gap:9px}
+.checkout-coupon-entry input{flex:1;min-width:0;min-height:46px;padding:0 13px;border:1px solid #333;background:#090909;color:#f4f4f0;text-transform:uppercase;outline:none}
+.checkout-coupon-entry input:focus{border-color:var(--volt)}
+.checkout-coupon-entry .btn{min-width:105px}
+.checkout-coupon-applied{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid #52622d;background:#151a0e}
+.checkout-coupon-applied strong,.checkout-coupon-applied span{display:block}
+.checkout-coupon-applied strong{color:var(--volt);font:14px 'DM Mono',monospace;letter-spacing:.08em}
+.checkout-coupon-applied span{margin-top:4px;color:#aeb79a;font-size:11px}
+.checkout-coupon-message{margin-top:10px;color:var(--volt);font-size:11px}
+.checkout-coupon-message.is-error{color:#e99b91}
+.checkout-discount-line{color:var(--volt)!important}
+@media(max-width:520px){.checkout-coupon{padding:13px}.checkout-coupon-entry{flex-direction:column}.checkout-coupon-entry .btn{width:100%}}
+
+
+/* UNSEEN customer account and order history */
+.account-page{min-height:70vh}
+.account-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:35px;border-bottom:1px solid var(--line)}
+.account-heading h1{font-size:clamp(3rem,8vw,6.5rem)}
+.account-heading h1 span{color:var(--volt)}
+.account-heading .muted{margin-top:13px;font-size:13px}
+.account-orders-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:42px 0 18px}
+.account-orders-heading h2{font-size:clamp(2rem,5vw,3.5rem)}
+.account-orders-heading>span{color:var(--muted);font:10px 'DM Mono',monospace;letter-spacing:.12em}
+.account-order-list{display:grid;gap:12px}
+.account-order-card{padding:20px;border:1px solid var(--line);background:#101010}
+.account-order-top{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:14px;padding-bottom:17px;border-bottom:1px solid #292929}
+.account-order-top div span,.account-order-top div strong{display:block}
+.account-order-top div span{margin-bottom:6px;color:#81817a;font:9px 'DM Mono',monospace;letter-spacing:.1em}
+.account-order-top div strong{font-size:12px;text-transform:capitalize}
+.account-order-top div:first-child strong,.account-order-top div:last-child strong{color:var(--volt)}
+.account-order-items{padding:9px 0}
+.account-order-item{display:flex;justify-content:space-between;gap:14px;padding:9px 0;color:#bdbdb5;font-size:11px}
+.account-order-item strong{white-space:nowrap;color:#f1f1eb}
+.account-order-bottom{display:flex;justify-content:space-between;gap:12px;padding-top:13px;border-top:1px solid #292929;color:#8c8c86;font-size:10px}
+.account-order-bottom span:first-child{color:var(--volt)}
+.account-empty{padding:48px 20px;border:1px dashed #353535;color:var(--muted);text-align:center}
+.account-empty .btn{margin-top:18px}
+.account-message{margin:15px 0;color:#e99b91;font-size:12px}
+@media(max-width:650px){.account-heading{align-items:flex-start;flex-direction:column}.account-heading .btn{width:100%}.account-order-top{grid-template-columns:1fr 1fr}.account-order-item{align-items:flex-start}.account-order-bottom{flex-direction:column}.account-orders-heading{align-items:flex-start}}
+
+
+/* UNSEEN order tracking */
+.order-tracking{margin:16px 0 6px;padding:16px 17px;background:#0b0b0b;border:1px solid #292929}
+.order-tracking-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:17px}
+.order-tracking-heading span{color:#888;font:9px 'DM Mono',monospace;letter-spacing:.13em}
+.order-tracking-heading strong{color:var(--volt);font:10px 'DM Mono',monospace;letter-spacing:.08em}
+.order-tracking-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));position:relative;gap:8px}
+.order-tracking-step{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;color:#686862;font-size:10px;text-align:center}
+.order-tracking-step:not(:last-child)::after{content:"";position:absolute;top:11px;left:calc(50% + 16px);width:calc(100% - 24px);height:1px;background:#383832}
+.order-tracking-step.is-complete:not(:last-child)::after{background:var(--volt)}
+.order-tracking-dot{z-index:1;display:grid;place-items:center;width:23px;height:23px;border:1px solid #444;border-radius:50%;background:#101010;font:10px 'DM Mono',monospace}
+.order-tracking-step.is-complete{color:#c9c9c1}
+.order-tracking-step.is-complete .order-tracking-dot{border-color:var(--volt);background:var(--volt);color:#080808}
+.order-tracking-step.is-current>span:last-child{color:var(--volt);font-weight:700}
+.order-tracking-updated{margin:15px 0 0;color:#777;font-size:10px}
+.order-tracking-cancelled{margin:0;color:#e99b91;font-size:12px}
+@media(max-width:420px){.order-tracking{padding:13px 9px}.order-tracking-steps{gap:2px}.order-tracking-step{font-size:9px}.order-tracking-step:not(:last-child)::after{left:calc(50% + 13px);width:calc(100% - 17px)}}
+
+
+/* UNSEEN — add-to-cart toast notification */
+.cart-toast {
+  position: fixed;
+  top: 86px;
+  left: 50%;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(420px, calc(100vw - 28px));
+  padding: 14px 16px;
+  border: 1px solid rgba(214,255,58,.42);
+  background: rgba(15,16,12,.96);
+  box-shadow: 0 16px 48px rgba(0,0,0,.42);
+  backdrop-filter: blur(16px);
+  transform: translateX(-50%);
+  animation: cart-toast-enter .28s cubic-bezier(.2,.8,.2,1) both;
+}
+.cart-toast-check {
+  display: grid;
+  place-items: center;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--volt);
+  color: #090909;
+  font-weight: 800;
+}
+.cart-toast > span:nth-child(2) { display: grid; gap: 2px; min-width: 0; }
+.cart-toast strong { color: var(--volt); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+.cart-toast small { overflow: hidden; color: #d5d5ce; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.cart-toast button { margin-left: auto; padding: 4px 7px; color: #aaa; font-size: 20px; line-height: 1; }
+@keyframes cart-toast-enter {
+  from { opacity: 0; transform: translate(-50%,-12px); }
+  to { opacity: 1; transform: translate(-50%,0); }
+}
+@media (max-width: 640px) {
+  .cart-toast { top: 68px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cart-toast { animation: none; }
+}
+
+
+/* UNSEEN engagement features */
+.recently-viewed-section { padding-top: 30px; }
+.product-reviews { width: min(1180px, calc(100% - 48px)); margin: 70px auto 55px; padding-top: 34px; border-top: 1px solid rgba(255,255,255,.12); color: #f1f1ec; }
+.product-reviews-heading,.account-notifications-heading { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; margin-bottom:22px; }
+.product-reviews-heading h2,.account-notifications-heading h2 { font-size:clamp(24px,3vw,36px); letter-spacing:-.055em; }
+.product-reviews-heading h2 span { color:#d6ff3a; }
+.product-review-summary { display:flex; align-items:center; gap:7px; }
+.product-review-summary strong { font-size:27px; }
+.product-review-summary span { color:#d6ff3a; }
+.product-review-summary small { color:#8e9588; font-size:10px; }
+.product-review-form { display:grid; grid-template-columns:150px 1fr; gap:13px; max-width:760px; margin:25px 0; padding:20px; border:1px solid rgba(255,255,255,.12); background:#10110f; }
+.product-review-form label { display:grid; gap:7px; color:#aab09f; font:9px 'DM Mono',monospace; letter-spacing:.1em; }
+.product-review-form label:nth-child(3) { grid-column:1/-1; }
+.product-review-form input,.product-review-form textarea,.product-review-form select { width:100%; min-height:42px; padding:11px 12px; border:1px solid #30362b; outline:none; background:#151713; color:#f1f1ec; font:12px 'Manrope',sans-serif; }
+.product-review-form textarea { resize:vertical; }
+.product-review-form input:focus,.product-review-form textarea:focus,.product-review-form select:focus { border-color:#d6ff3a; }
+.product-review-form button { justify-self:start; }
+.product-review-empty,.product-review-message { padding:15px 0; color:#92998b; font-size:12px; }
+.product-review-empty a { color:#d6ff3a; }
+.product-review-message { color:#f0b4a9; }
+.product-review-message.is-success { color:#d6ff3a; }
+.product-review-list { display:grid; gap:0; }
+.product-review-card { padding:20px 0; border-top:1px solid rgba(255,255,255,.1); }
+.product-review-card-top { display:flex; justify-content:space-between; gap:12px; }
+.product-review-card-top strong { color:#d6ff3a; letter-spacing:.12em; }
+.product-review-card-top span { color:#838b7c; font:9px 'DM Mono',monospace; }
+.product-review-card h3 { margin-top:10px; font-size:15px; }
+.product-review-card p { margin-top:7px; max-width:780px; color:#a7ad9f; font-size:12px; line-height:1.7; }
+.account-notifications { margin:32px 0 42px; padding:22px; border:1px solid rgba(214,255,58,.2); background:#10120f; }
+.account-notifications-heading { margin-bottom:10px; }
+.account-notifications-heading>span { color:#d6ff3a; font:10px 'DM Mono',monospace; }
+.account-notification { display:flex; align-items:center; justify-content:space-between; gap:15px; padding:14px 0; border-top:1px solid #292e25; }
+.account-notification>div { min-width:0; }
+.account-notification strong,.account-notification small { display:block; }
+.account-notification strong { color:#e7eadf; font-size:12px; }
+.account-notification small { margin-top:5px; color:#858d7d; font-size:10px; }
+.account-notification.is-read { opacity:.55; }
+.account-notification button { flex:0 0 auto; color:#d6ff3a; font-size:10px; }
+@media(max-width:620px) {
+  .product-reviews { width:calc(100% - 30px); margin:48px auto 35px; }
+  .product-review-form { grid-template-columns:1fr; padding:14px; }
+  .product-review-form label:nth-child(3) { grid-column:auto; }
+  .product-review-card-top { flex-direction:column; gap:6px; }
+  .account-notifications { padding:15px; }
+  .account-notification { align-items:flex-start; flex-direction:column; }
+}
